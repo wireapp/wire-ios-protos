@@ -97,3 +97,15 @@
 }
 
 @end
+
+@implementation ZMReaction (Utils)
+
++ (instancetype)reactionWithEmoji:(NSString *)emoji;
+{
+    ZMReactionBuilder *builder = [ZMReaction builder];
+    builder.emoji = emoji;    
+    return [builder build];
+}
+
+
+@end

@@ -107,19 +107,13 @@
 @class ZMMessageEditBuilder;
 @class ZMMessageHide;
 @class ZMMessageHideBuilder;
+@class ZMReaction;
+@class ZMReactionBuilder;
 @class ZMText;
 @class ZMTextBuilder;
 @class ZMTweet;
 @class ZMTweetBuilder;
 
-
-typedef NS_ENUM(SInt32, ZMLikeAction) {
-  ZMLikeActionLIKE = 0,
-  ZMLikeActionUNLIKE = 1,
-};
-
-BOOL ZMLikeActionIsValidValue(ZMLikeAction value);
-NSString *NSStringFromZMLikeAction(ZMLikeAction value);
 
 typedef NS_ENUM(SInt32, ZMClientAction) {
   ZMClientActionRESETSESSION = 0,
@@ -147,7 +141,7 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 #define GenericMessage_text @"text"
 #define GenericMessage_image @"image"
 #define GenericMessage_knock @"knock"
-#define GenericMessage_liking @"liking"
+#define GenericMessage_reaction @"reaction"
 #define GenericMessage_lastRead @"lastRead"
 #define GenericMessage_cleared @"cleared"
 #define GenericMessage_external @"external"
@@ -164,6 +158,7 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
   BOOL hasText_:1;
   BOOL hasImage_:1;
   BOOL hasKnock_:1;
+  BOOL hasReaction_:1;
   BOOL hasLastRead_:1;
   BOOL hasCleared_:1;
   BOOL hasExternal_:1;
@@ -173,12 +168,12 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
   BOOL hasLocation_:1;
   BOOL hasDeleted_:1;
   BOOL hasEdited_:1;
-  BOOL hasLiking_:1;
   BOOL hasClientAction_:1;
   NSString* messageId;
   ZMText* text;
   ZMImageAsset* image;
   ZMKnock* knock;
+  ZMReaction* reaction;
   ZMLastRead* lastRead;
   ZMCleared* cleared;
   ZMExternal* external;
@@ -188,14 +183,13 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
   ZMLocation* location;
   ZMMessageDelete* deleted;
   ZMMessageEdit* edited;
-  ZMLikeAction liking;
   ZMClientAction clientAction;
 }
 - (BOOL) hasMessageId;
 - (BOOL) hasText;
 - (BOOL) hasImage;
 - (BOOL) hasKnock;
-- (BOOL) hasLiking;
+- (BOOL) hasReaction;
 - (BOOL) hasLastRead;
 - (BOOL) hasCleared;
 - (BOOL) hasExternal;
@@ -210,7 +204,7 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 @property (readonly, strong) ZMText* text;
 @property (readonly, strong) ZMImageAsset* image;
 @property (readonly, strong) ZMKnock* knock;
-@property (readonly) ZMLikeAction liking;
+@property (readonly, strong) ZMReaction* reaction;
 @property (readonly, strong) ZMLastRead* lastRead;
 @property (readonly, strong) ZMCleared* cleared;
 @property (readonly, strong) ZMExternal* external;
@@ -283,10 +277,12 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 - (ZMGenericMessageBuilder*) mergeKnock:(ZMKnock*) value;
 - (ZMGenericMessageBuilder*) clearKnock;
 
-- (BOOL) hasLiking;
-- (ZMLikeAction) liking;
-- (ZMGenericMessageBuilder*) setLiking:(ZMLikeAction) value;
-- (ZMGenericMessageBuilder*) clearLiking;
+- (BOOL) hasReaction;
+- (ZMReaction*) reaction;
+- (ZMGenericMessageBuilder*) setReaction:(ZMReaction*) value;
+- (ZMGenericMessageBuilder*) setReactionBuilder:(ZMReactionBuilder*) builderForValue;
+- (ZMGenericMessageBuilder*) mergeReaction:(ZMReaction*) value;
+- (ZMGenericMessageBuilder*) clearReaction;
 
 - (BOOL) hasLastRead;
 - (ZMLastRead*) lastRead;
@@ -1941,6 +1937,56 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 - (NSData*) sha256;
 - (ZMExternalBuilder*) setSha256:(NSData*) value;
 - (ZMExternalBuilder*) clearSha256;
+@end
+
+#define Reaction_emoji @"emoji"
+@interface ZMReaction : PBGeneratedMessage<GeneratedMessageProtocol> {
+@private
+  BOOL hasEmoji_:1;
+  NSString* emoji;
+}
+- (BOOL) hasEmoji;
+@property (readonly, strong) NSString* emoji;
+
++ (instancetype) defaultInstance;
+- (instancetype) defaultInstance;
+
+- (BOOL) isInitialized;
+- (void) writeToCodedOutputStream:(PBCodedOutputStream*) output;
+- (ZMReactionBuilder*) builder;
++ (ZMReactionBuilder*) builder;
++ (ZMReactionBuilder*) builderWithPrototype:(ZMReaction*) prototype;
+- (ZMReactionBuilder*) toBuilder;
+
++ (ZMReaction*) parseFromData:(NSData*) data;
++ (ZMReaction*) parseFromData:(NSData*) data extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
++ (ZMReaction*) parseFromInputStream:(NSInputStream*) input;
++ (ZMReaction*) parseFromInputStream:(NSInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
++ (ZMReaction*) parseFromCodedInputStream:(PBCodedInputStream*) input;
++ (ZMReaction*) parseFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
+@end
+
+@interface ZMReactionBuilder : PBGeneratedMessageBuilder {
+@private
+  ZMReaction* resultReaction;
+}
+
+- (ZMReaction*) defaultInstance;
+
+- (ZMReactionBuilder*) clear;
+- (ZMReactionBuilder*) clone;
+
+- (ZMReaction*) build;
+- (ZMReaction*) buildPartial;
+
+- (ZMReactionBuilder*) mergeFrom:(ZMReaction*) other;
+- (ZMReactionBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input;
+- (ZMReactionBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
+
+- (BOOL) hasEmoji;
+- (NSString*) emoji;
+- (ZMReactionBuilder*) setEmoji:(NSString*) value;
+- (ZMReactionBuilder*) clearEmoji;
 @end
 
 #define Calling_content @"content"

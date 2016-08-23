@@ -38,26 +38,6 @@ static PBExtensionRegistry* extensionRegistry = nil;
 }
 @end
 
-BOOL ZMLikeActionIsValidValue(ZMLikeAction value) {
-  switch (value) {
-    case ZMLikeActionLIKE:
-    case ZMLikeActionUNLIKE:
-      return YES;
-    default:
-      return NO;
-  }
-}
-NSString *NSStringFromZMLikeAction(ZMLikeAction value) {
-  switch (value) {
-    case ZMLikeActionLIKE:
-      return @"ZMLikeActionLIKE";
-    case ZMLikeActionUNLIKE:
-      return @"ZMLikeActionUNLIKE";
-    default:
-      return nil;
-  }
-}
-
 BOOL ZMClientActionIsValidValue(ZMClientAction value) {
   switch (value) {
     case ZMClientActionRESETSESSION:
@@ -80,7 +60,7 @@ NSString *NSStringFromZMClientAction(ZMClientAction value) {
 @property (strong) ZMText* text;
 @property (strong) ZMImageAsset* image;
 @property (strong) ZMKnock* knock;
-@property ZMLikeAction liking;
+@property (strong) ZMReaction* reaction;
 @property (strong) ZMLastRead* lastRead;
 @property (strong) ZMCleared* cleared;
 @property (strong) ZMExternal* external;
@@ -123,13 +103,13 @@ NSString *NSStringFromZMClientAction(ZMClientAction value) {
   hasKnock_ = !!_value_;
 }
 @synthesize knock;
-- (BOOL) hasLiking {
-  return !!hasLiking_;
+- (BOOL) hasReaction {
+  return !!hasReaction_;
 }
-- (void) setHasLiking:(BOOL) _value_ {
-  hasLiking_ = !!_value_;
+- (void) setHasReaction:(BOOL) _value_ {
+  hasReaction_ = !!_value_;
 }
-@synthesize liking;
+@synthesize reaction;
 - (BOOL) hasLastRead {
   return !!hasLastRead_;
 }
@@ -206,7 +186,7 @@ NSString *NSStringFromZMClientAction(ZMClientAction value) {
     self.text = [ZMText defaultInstance];
     self.image = [ZMImageAsset defaultInstance];
     self.knock = [ZMKnock defaultInstance];
-    self.liking = ZMLikeActionLIKE;
+    self.reaction = [ZMReaction defaultInstance];
     self.lastRead = [ZMLastRead defaultInstance];
     self.cleared = [ZMCleared defaultInstance];
     self.external = [ZMExternal defaultInstance];
@@ -311,8 +291,8 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
   if (self.hasKnock) {
     [output writeMessage:4 value:self.knock];
   }
-  if (self.hasLiking) {
-    [output writeEnum:5 value:self.liking];
+  if (self.hasReaction) {
+    [output writeMessage:5 value:self.reaction];
   }
   if (self.hasLastRead) {
     [output writeMessage:6 value:self.lastRead];
@@ -365,8 +345,8 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
   if (self.hasKnock) {
     size_ += computeMessageSize(4, self.knock);
   }
-  if (self.hasLiking) {
-    size_ += computeEnumSize(5, self.liking);
+  if (self.hasReaction) {
+    size_ += computeMessageSize(5, self.reaction);
   }
   if (self.hasLastRead) {
     size_ += computeMessageSize(6, self.lastRead);
@@ -454,8 +434,11 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
                          withIndent:[NSString stringWithFormat:@"%@  ", indent]];
     [output appendFormat:@"%@}\n", indent];
   }
-  if (self.hasLiking) {
-    [output appendFormat:@"%@%@: %@\n", indent, @"liking", NSStringFromZMLikeAction(self.liking)];
+  if (self.hasReaction) {
+    [output appendFormat:@"%@%@ {\n", indent, @"reaction"];
+    [self.reaction writeDescriptionTo:output
+                         withIndent:[NSString stringWithFormat:@"%@  ", indent]];
+    [output appendFormat:@"%@}\n", indent];
   }
   if (self.hasLastRead) {
     [output appendFormat:@"%@%@ {\n", indent, @"lastRead"];
@@ -535,8 +518,10 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
    [self.knock storeInDictionary:messageDictionary];
    [dictionary setObject:[NSDictionary dictionaryWithDictionary:messageDictionary] forKey:@"knock"];
   }
-  if (self.hasLiking) {
-    [dictionary setObject: @(self.liking) forKey: @"liking"];
+  if (self.hasReaction) {
+   NSMutableDictionary *messageDictionary = [NSMutableDictionary dictionary]; 
+   [self.reaction storeInDictionary:messageDictionary];
+   [dictionary setObject:[NSDictionary dictionaryWithDictionary:messageDictionary] forKey:@"reaction"];
   }
   if (self.hasLastRead) {
    NSMutableDictionary *messageDictionary = [NSMutableDictionary dictionary]; 
@@ -605,8 +590,8 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
       (!self.hasImage || [self.image isEqual:otherMessage.image]) &&
       self.hasKnock == otherMessage.hasKnock &&
       (!self.hasKnock || [self.knock isEqual:otherMessage.knock]) &&
-      self.hasLiking == otherMessage.hasLiking &&
-      (!self.hasLiking || self.liking == otherMessage.liking) &&
+      self.hasReaction == otherMessage.hasReaction &&
+      (!self.hasReaction || [self.reaction isEqual:otherMessage.reaction]) &&
       self.hasLastRead == otherMessage.hasLastRead &&
       (!self.hasLastRead || [self.lastRead isEqual:otherMessage.lastRead]) &&
       self.hasCleared == otherMessage.hasCleared &&
@@ -643,8 +628,8 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
   if (self.hasKnock) {
     hashCode = hashCode * 31 + [self.knock hash];
   }
-  if (self.hasLiking) {
-    hashCode = hashCode * 31 + self.liking;
+  if (self.hasReaction) {
+    hashCode = hashCode * 31 + [self.reaction hash];
   }
   if (self.hasLastRead) {
     hashCode = hashCode * 31 + [self.lastRead hash];
@@ -731,8 +716,8 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
   if (other.hasKnock) {
     [self mergeKnock:other.knock];
   }
-  if (other.hasLiking) {
-    [self setLiking:other.liking];
+  if (other.hasReaction) {
+    [self mergeReaction:other.reaction];
   }
   if (other.hasLastRead) {
     [self mergeLastRead:other.lastRead];
@@ -816,13 +801,13 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
         [self setKnock:[subBuilder buildPartial]];
         break;
       }
-      case 40: {
-        ZMLikeAction value = (ZMLikeAction)[input readEnum];
-        if (ZMLikeActionIsValidValue(value)) {
-          [self setLiking:value];
-        } else {
-          [unknownFields mergeVarintField:5 value:value];
+      case 42: {
+        ZMReactionBuilder* subBuilder = [ZMReaction builder];
+        if (self.hasReaction) {
+          [subBuilder mergeFrom:self.reaction];
         }
+        [input readMessage:subBuilder extensionRegistry:extensionRegistry];
+        [self setReaction:[subBuilder buildPartial]];
         break;
       }
       case 50: {
@@ -1024,20 +1009,34 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
   resultGenericMessage.knock = [ZMKnock defaultInstance];
   return self;
 }
-- (BOOL) hasLiking {
-  return resultGenericMessage.hasLiking;
+- (BOOL) hasReaction {
+  return resultGenericMessage.hasReaction;
 }
-- (ZMLikeAction) liking {
-  return resultGenericMessage.liking;
+- (ZMReaction*) reaction {
+  return resultGenericMessage.reaction;
 }
-- (ZMGenericMessageBuilder*) setLiking:(ZMLikeAction) value {
-  resultGenericMessage.hasLiking = YES;
-  resultGenericMessage.liking = value;
+- (ZMGenericMessageBuilder*) setReaction:(ZMReaction*) value {
+  resultGenericMessage.hasReaction = YES;
+  resultGenericMessage.reaction = value;
   return self;
 }
-- (ZMGenericMessageBuilder*) clearLiking {
-  resultGenericMessage.hasLiking = NO;
-  resultGenericMessage.liking = ZMLikeActionLIKE;
+- (ZMGenericMessageBuilder*) setReactionBuilder:(ZMReactionBuilder*) builderForValue {
+  return [self setReaction:[builderForValue build]];
+}
+- (ZMGenericMessageBuilder*) mergeReaction:(ZMReaction*) value {
+  if (resultGenericMessage.hasReaction &&
+      resultGenericMessage.reaction != [ZMReaction defaultInstance]) {
+    resultGenericMessage.reaction =
+      [[[ZMReaction builderWithPrototype:resultGenericMessage.reaction] mergeFrom:value] buildPartial];
+  } else {
+    resultGenericMessage.reaction = value;
+  }
+  resultGenericMessage.hasReaction = YES;
+  return self;
+}
+- (ZMGenericMessageBuilder*) clearReaction {
+  resultGenericMessage.hasReaction = NO;
+  resultGenericMessage.reaction = [ZMReaction defaultInstance];
   return self;
 }
 - (BOOL) hasLastRead {
@@ -8686,6 +8685,212 @@ static ZMExternal* defaultZMExternalInstance = nil;
 - (ZMExternalBuilder*) clearSha256 {
   resultExternal.hasSha256 = NO;
   resultExternal.sha256 = [NSData data];
+  return self;
+}
+@end
+
+@interface ZMReaction ()
+@property (strong) NSString* emoji;
+@end
+
+@implementation ZMReaction
+
+- (BOOL) hasEmoji {
+  return !!hasEmoji_;
+}
+- (void) setHasEmoji:(BOOL) _value_ {
+  hasEmoji_ = !!_value_;
+}
+@synthesize emoji;
+- (instancetype) init {
+  if ((self = [super init])) {
+    self.emoji = @"";
+  }
+  return self;
+}
+static ZMReaction* defaultZMReactionInstance = nil;
++ (void) initialize {
+  if (self == [ZMReaction class]) {
+    defaultZMReactionInstance = [[ZMReaction alloc] init];
+  }
+}
++ (instancetype) defaultInstance {
+  return defaultZMReactionInstance;
+}
+- (instancetype) defaultInstance {
+  return defaultZMReactionInstance;
+}
+- (BOOL) isInitialized {
+  return YES;
+}
+- (void) writeToCodedOutputStream:(PBCodedOutputStream*) output {
+  if (self.hasEmoji) {
+    [output writeString:1 value:self.emoji];
+  }
+  [self.unknownFields writeToCodedOutputStream:output];
+}
+- (SInt32) serializedSize {
+  __block SInt32 size_ = memoizedSerializedSize;
+  if (size_ != -1) {
+    return size_;
+  }
+
+  size_ = 0;
+  if (self.hasEmoji) {
+    size_ += computeStringSize(1, self.emoji);
+  }
+  size_ += self.unknownFields.serializedSize;
+  memoizedSerializedSize = size_;
+  return size_;
+}
++ (ZMReaction*) parseFromData:(NSData*) data {
+  return (ZMReaction*)[[[ZMReaction builder] mergeFromData:data] build];
+}
++ (ZMReaction*) parseFromData:(NSData*) data extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  return (ZMReaction*)[[[ZMReaction builder] mergeFromData:data extensionRegistry:extensionRegistry] build];
+}
++ (ZMReaction*) parseFromInputStream:(NSInputStream*) input {
+  return (ZMReaction*)[[[ZMReaction builder] mergeFromInputStream:input] build];
+}
++ (ZMReaction*) parseFromInputStream:(NSInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  return (ZMReaction*)[[[ZMReaction builder] mergeFromInputStream:input extensionRegistry:extensionRegistry] build];
+}
++ (ZMReaction*) parseFromCodedInputStream:(PBCodedInputStream*) input {
+  return (ZMReaction*)[[[ZMReaction builder] mergeFromCodedInputStream:input] build];
+}
++ (ZMReaction*) parseFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  return (ZMReaction*)[[[ZMReaction builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
+}
++ (ZMReactionBuilder*) builder {
+  return [[ZMReactionBuilder alloc] init];
+}
++ (ZMReactionBuilder*) builderWithPrototype:(ZMReaction*) prototype {
+  return [[ZMReaction builder] mergeFrom:prototype];
+}
+- (ZMReactionBuilder*) builder {
+  return [ZMReaction builder];
+}
+- (ZMReactionBuilder*) toBuilder {
+  return [ZMReaction builderWithPrototype:self];
+}
+- (void) writeDescriptionTo:(NSMutableString*) output withIndent:(NSString*) indent {
+  if (self.hasEmoji) {
+    [output appendFormat:@"%@%@: %@\n", indent, @"emoji", self.emoji];
+  }
+  [self.unknownFields writeDescriptionTo:output withIndent:indent];
+}
+- (void) storeInDictionary:(NSMutableDictionary *)dictionary {
+  if (self.hasEmoji) {
+    [dictionary setObject: self.emoji forKey: @"emoji"];
+  }
+  [self.unknownFields storeInDictionary:dictionary];
+}
+- (BOOL) isEqual:(id)other {
+  if (other == self) {
+    return YES;
+  }
+  if (![other isKindOfClass:[ZMReaction class]]) {
+    return NO;
+  }
+  ZMReaction *otherMessage = other;
+  return
+      self.hasEmoji == otherMessage.hasEmoji &&
+      (!self.hasEmoji || [self.emoji isEqual:otherMessage.emoji]) &&
+      (self.unknownFields == otherMessage.unknownFields || (self.unknownFields != nil && [self.unknownFields isEqual:otherMessage.unknownFields]));
+}
+- (NSUInteger) hash {
+  __block NSUInteger hashCode = 7;
+  if (self.hasEmoji) {
+    hashCode = hashCode * 31 + [self.emoji hash];
+  }
+  hashCode = hashCode * 31 + [self.unknownFields hash];
+  return hashCode;
+}
+@end
+
+@interface ZMReactionBuilder()
+@property (strong) ZMReaction* resultReaction;
+@end
+
+@implementation ZMReactionBuilder
+@synthesize resultReaction;
+- (instancetype) init {
+  if ((self = [super init])) {
+    self.resultReaction = [[ZMReaction alloc] init];
+  }
+  return self;
+}
+- (PBGeneratedMessage*) internalGetResult {
+  return resultReaction;
+}
+- (ZMReactionBuilder*) clear {
+  self.resultReaction = [[ZMReaction alloc] init];
+  return self;
+}
+- (ZMReactionBuilder*) clone {
+  return [ZMReaction builderWithPrototype:resultReaction];
+}
+- (ZMReaction*) defaultInstance {
+  return [ZMReaction defaultInstance];
+}
+- (ZMReaction*) build {
+  [self checkInitialized];
+  return [self buildPartial];
+}
+- (ZMReaction*) buildPartial {
+  ZMReaction* returnMe = resultReaction;
+  self.resultReaction = nil;
+  return returnMe;
+}
+- (ZMReactionBuilder*) mergeFrom:(ZMReaction*) other {
+  if (other == [ZMReaction defaultInstance]) {
+    return self;
+  }
+  if (other.hasEmoji) {
+    [self setEmoji:other.emoji];
+  }
+  [self mergeUnknownFields:other.unknownFields];
+  return self;
+}
+- (ZMReactionBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input {
+  return [self mergeFromCodedInputStream:input extensionRegistry:[PBExtensionRegistry emptyRegistry]];
+}
+- (ZMReactionBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  PBUnknownFieldSetBuilder* unknownFields = [PBUnknownFieldSet builderWithUnknownFields:self.unknownFields];
+  while (YES) {
+    SInt32 tag = [input readTag];
+    switch (tag) {
+      case 0:
+        [self setUnknownFields:[unknownFields build]];
+        return self;
+      default: {
+        if (![self parseUnknownField:input unknownFields:unknownFields extensionRegistry:extensionRegistry tag:tag]) {
+          [self setUnknownFields:[unknownFields build]];
+          return self;
+        }
+        break;
+      }
+      case 10: {
+        [self setEmoji:[input readString]];
+        break;
+      }
+    }
+  }
+}
+- (BOOL) hasEmoji {
+  return resultReaction.hasEmoji;
+}
+- (NSString*) emoji {
+  return resultReaction.emoji;
+}
+- (ZMReactionBuilder*) setEmoji:(NSString*) value {
+  resultReaction.hasEmoji = YES;
+  resultReaction.emoji = value;
+  return self;
+}
+- (ZMReactionBuilder*) clearEmoji {
+  resultReaction.hasEmoji = NO;
+  resultReaction.emoji = @"";
   return self;
 }
 @end

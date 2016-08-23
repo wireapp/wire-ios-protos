@@ -65,3 +65,10 @@
 
 @end
 
+
+@interface ZMReaction (Utils)
+
++ (instancetype)reactionWithEmoji:(NSString *)emoji;
+
+@end
+

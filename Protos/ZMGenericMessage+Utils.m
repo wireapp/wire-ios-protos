@@ -235,9 +235,15 @@
     return [builder build];
 }
 
++ (ZMGenericMessage *)messageWithEmojiString:(NSString *)emojiString
+                                       nonce:(NSString *)nonce;
+{
+    ZMGenericMessageBuilder *builder = [ZMGenericMessage builder];
+    builder.reaction = [ZMReaction reactionWithEmoji:emojiString];
+    return [builder build];
+}
+
 @end
-
-
 
 
 @implementation ZMImageAsset (Internal)
