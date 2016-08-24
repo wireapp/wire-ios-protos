@@ -88,7 +88,7 @@
     self.hasText ||
     self.hasKnock ||
     self.hasImage ||
-    self.hasLiking ||
+    self.hasReaction ||
     self.hasLastRead ||
     self.hasCleared ||
     self.hasClientAction ||
