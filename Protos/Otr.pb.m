@@ -746,7 +746,7 @@ static ZMClientEntry* defaultZMClientEntryInstance = nil;
 
 @interface ZMUserEntry ()
 @property (strong) ZMUserId* user;
-@property (strong) NSMutableArray<ZMClientEntry*> * clientsArray;
+@property (strong) NSMutableArray * clientsArray;
 @end
 
 @implementation ZMUserEntry
@@ -778,7 +778,7 @@ static ZMUserEntry* defaultZMUserEntryInstance = nil;
 - (instancetype) defaultInstance {
   return defaultZMUserEntryInstance;
 }
-- (NSArray<ZMClientEntry*> *)clients {
+- (NSArray *)clients {
   return clientsArray;
 }
 - (ZMClientEntry*)clientsAtIndex:(NSUInteger)index {
@@ -1029,7 +1029,7 @@ static ZMUserEntry* defaultZMUserEntryInstance = nil;
   resultUserEntry.user = [ZMUserId defaultInstance];
   return self;
 }
-- (NSMutableArray<ZMClientEntry*> *)clients {
+- (NSMutableArray *)clients {
   return resultUserEntry.clientsArray;
 }
 - (ZMClientEntry*)clientsAtIndex:(NSUInteger)index {
@@ -1042,7 +1042,7 @@ static ZMUserEntry* defaultZMUserEntryInstance = nil;
   [resultUserEntry.clientsArray addObject:value];
   return self;
 }
-- (ZMUserEntryBuilder *)setClientsArray:(NSArray<ZMClientEntry*> *)array {
+- (ZMUserEntryBuilder *)setClientsArray:(NSArray *)array {
   resultUserEntry.clientsArray = [[NSMutableArray alloc]initWithArray:array];
   return self;
 }
@@ -1054,7 +1054,7 @@ static ZMUserEntry* defaultZMUserEntryInstance = nil;
 
 @interface ZMNewOtrMessage ()
 @property (strong) ZMClientId* sender;
-@property (strong) NSMutableArray<ZMUserEntry*> * recipientsArray;
+@property (strong) NSMutableArray * recipientsArray;
 @property BOOL nativePush;
 @property (strong) NSData* blob;
 @end
@@ -1109,7 +1109,7 @@ static ZMNewOtrMessage* defaultZMNewOtrMessageInstance = nil;
 - (instancetype) defaultInstance {
   return defaultZMNewOtrMessageInstance;
 }
-- (NSArray<ZMUserEntry*> *)recipients {
+- (NSArray *)recipients {
   return recipientsArray;
 }
 - (ZMUserEntry*)recipientsAtIndex:(NSUInteger)index {
@@ -1408,7 +1408,7 @@ static ZMNewOtrMessage* defaultZMNewOtrMessageInstance = nil;
   resultNewOtrMessage.sender = [ZMClientId defaultInstance];
   return self;
 }
-- (NSMutableArray<ZMUserEntry*> *)recipients {
+- (NSMutableArray *)recipients {
   return resultNewOtrMessage.recipientsArray;
 }
 - (ZMUserEntry*)recipientsAtIndex:(NSUInteger)index {
@@ -1421,7 +1421,7 @@ static ZMNewOtrMessage* defaultZMNewOtrMessageInstance = nil;
   [resultNewOtrMessage.recipientsArray addObject:value];
   return self;
 }
-- (ZMNewOtrMessageBuilder *)setRecipientsArray:(NSArray<ZMUserEntry*> *)array {
+- (ZMNewOtrMessageBuilder *)setRecipientsArray:(NSArray *)array {
   resultNewOtrMessage.recipientsArray = [[NSMutableArray alloc]initWithArray:array];
   return self;
 }
@@ -1465,7 +1465,7 @@ static ZMNewOtrMessage* defaultZMNewOtrMessageInstance = nil;
 
 @interface ZMOtrAssetMeta ()
 @property (strong) ZMClientId* sender;
-@property (strong) NSMutableArray<ZMUserEntry*> * recipientsArray;
+@property (strong) NSMutableArray * recipientsArray;
 @property BOOL isInline;
 @property BOOL nativePush;
 @end
@@ -1525,7 +1525,7 @@ static ZMOtrAssetMeta* defaultZMOtrAssetMetaInstance = nil;
 - (instancetype) defaultInstance {
   return defaultZMOtrAssetMetaInstance;
 }
-- (NSArray<ZMUserEntry*> *)recipients {
+- (NSArray *)recipients {
   return recipientsArray;
 }
 - (ZMUserEntry*)recipientsAtIndex:(NSUInteger)index {
@@ -1824,7 +1824,7 @@ static ZMOtrAssetMeta* defaultZMOtrAssetMetaInstance = nil;
   resultOtrAssetMeta.sender = [ZMClientId defaultInstance];
   return self;
 }
-- (NSMutableArray<ZMUserEntry*> *)recipients {
+- (NSMutableArray *)recipients {
   return resultOtrAssetMeta.recipientsArray;
 }
 - (ZMUserEntry*)recipientsAtIndex:(NSUInteger)index {
@@ -1837,7 +1837,7 @@ static ZMOtrAssetMeta* defaultZMOtrAssetMetaInstance = nil;
   [resultOtrAssetMeta.recipientsArray addObject:value];
   return self;
 }
-- (ZMOtrAssetMetaBuilder *)setRecipientsArray:(NSArray<ZMUserEntry*> *)array {
+- (ZMOtrAssetMetaBuilder *)setRecipientsArray:(NSArray *)array {
   resultOtrAssetMeta.recipientsArray = [[NSMutableArray alloc]initWithArray:array];
   return self;
 }
