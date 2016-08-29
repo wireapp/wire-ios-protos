@@ -97,3 +97,28 @@
 }
 
 @end
+
+@implementation ZMReaction (Utils)
+
++ (instancetype)reactionWithEmoji:(NSString *)emoji messageID:(NSString *)messageID;
+{
+    ZMReactionBuilder *builder = [ZMReaction builder];
+    builder.emoji = emoji;
+    builder.messageId = messageID;
+    return [builder build];
+}
+
+
+@end
+
+@implementation ZMConfirmation (Utils)
+
++ (instancetype)messageWithMessageID:(NSString *)messageID confirmationType:(ZMConfirmationType)confirmationType;
+{
+    ZMConfirmationBuilder *builder = [ZMConfirmation builder];
+    builder.messageId = messageID;
+    builder.type = confirmationType;
+    return [builder build];
+}
+
+@end
