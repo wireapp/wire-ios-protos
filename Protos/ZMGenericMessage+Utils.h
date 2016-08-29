@@ -88,6 +88,7 @@
 
 
 + (ZMGenericMessage *)messageWithEmojiString:(NSString *)emojiString
+                                   messageID:(NSString *)messageID
                                        nonce:(NSString *)nonce;
 - (BOOL)knownMessage;
 

@@ -85,6 +85,8 @@
 @class ZMCallingBuilder;
 @class ZMCleared;
 @class ZMClearedBuilder;
+@class ZMConfirmation;
+@class ZMConfirmationBuilder;
 @class ZMExternal;
 @class ZMExternalBuilder;
 @class ZMGenericMessage;
@@ -122,6 +124,14 @@ typedef NS_ENUM(SInt32, ZMClientAction) {
 BOOL ZMClientActionIsValidValue(ZMClientAction value);
 NSString *NSStringFromZMClientAction(ZMClientAction value);
 
+typedef NS_ENUM(SInt32, ZMConfirmationType) {
+  ZMConfirmationTypeDELIVERED = 0,
+  ZMConfirmationTypeREAD = 1,
+};
+
+BOOL ZMConfirmationTypeIsValidValue(ZMConfirmationType value);
+NSString *NSStringFromZMConfirmationType(ZMConfirmationType value);
+
 typedef NS_ENUM(SInt32, ZMAssetNotUploaded) {
   ZMAssetNotUploadedCANCELLED = 0,
   ZMAssetNotUploadedFAILED = 1,
@@ -152,6 +162,7 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 #define GenericMessage_location @"location"
 #define GenericMessage_deleted @"deleted"
 #define GenericMessage_edited @"edited"
+#define GenericMessage_confirmation @"confirmation"
 @interface ZMGenericMessage : PBGeneratedMessage<GeneratedMessageProtocol> {
 @private
   BOOL hasMessageId_:1;
@@ -168,6 +179,7 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
   BOOL hasLocation_:1;
   BOOL hasDeleted_:1;
   BOOL hasEdited_:1;
+  BOOL hasConfirmation_:1;
   BOOL hasClientAction_:1;
   NSString* messageId;
   ZMText* text;
@@ -183,6 +195,7 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
   ZMLocation* location;
   ZMMessageDelete* deleted;
   ZMMessageEdit* edited;
+  ZMConfirmation* confirmation;
   ZMClientAction clientAction;
 }
 - (BOOL) hasMessageId;
@@ -200,6 +213,7 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 - (BOOL) hasLocation;
 - (BOOL) hasDeleted;
 - (BOOL) hasEdited;
+- (BOOL) hasConfirmation;
 @property (readonly, strong) NSString* messageId;
 @property (readonly, strong) ZMText* text;
 @property (readonly, strong) ZMImageAsset* image;
@@ -215,6 +229,7 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 @property (readonly, strong) ZMLocation* location;
 @property (readonly, strong) ZMMessageDelete* deleted;
 @property (readonly, strong) ZMMessageEdit* edited;
+@property (readonly, strong) ZMConfirmation* confirmation;
 
 + (instancetype) defaultInstance;
 - (instancetype) defaultInstance;
@@ -351,6 +366,13 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 - (ZMGenericMessageBuilder*) setEditedBuilder:(ZMMessageEditBuilder*) builderForValue;
 - (ZMGenericMessageBuilder*) mergeEdited:(ZMMessageEdit*) value;
 - (ZMGenericMessageBuilder*) clearEdited;
+
+- (BOOL) hasConfirmation;
+- (ZMConfirmation*) confirmation;
+- (ZMGenericMessageBuilder*) setConfirmation:(ZMConfirmation*) value;
+- (ZMGenericMessageBuilder*) setConfirmationBuilder:(ZMConfirmationBuilder*) builderForValue;
+- (ZMGenericMessageBuilder*) mergeConfirmation:(ZMConfirmation*) value;
+- (ZMGenericMessageBuilder*) clearConfirmation;
 @end
 
 #define Text_content @"content"
@@ -1091,6 +1113,66 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 - (ZMMessageEditBuilder*) setTextBuilder:(ZMTextBuilder*) builderForValue;
 - (ZMMessageEditBuilder*) mergeText:(ZMText*) value;
 - (ZMMessageEditBuilder*) clearText;
+@end
+
+#define Confirmation_message_id @"messageId"
+#define Confirmation_type @"type"
+@interface ZMConfirmation : PBGeneratedMessage<GeneratedMessageProtocol> {
+@private
+  BOOL hasMessageId_:1;
+  BOOL hasType_:1;
+  NSString* messageId;
+  ZMConfirmationType type;
+}
+- (BOOL) hasMessageId;
+- (BOOL) hasType;
+@property (readonly, strong) NSString* messageId;
+@property (readonly) ZMConfirmationType type;
+
++ (instancetype) defaultInstance;
+- (instancetype) defaultInstance;
+
+- (BOOL) isInitialized;
+- (void) writeToCodedOutputStream:(PBCodedOutputStream*) output;
+- (ZMConfirmationBuilder*) builder;
++ (ZMConfirmationBuilder*) builder;
++ (ZMConfirmationBuilder*) builderWithPrototype:(ZMConfirmation*) prototype;
+- (ZMConfirmationBuilder*) toBuilder;
+
++ (ZMConfirmation*) parseFromData:(NSData*) data;
++ (ZMConfirmation*) parseFromData:(NSData*) data extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
++ (ZMConfirmation*) parseFromInputStream:(NSInputStream*) input;
++ (ZMConfirmation*) parseFromInputStream:(NSInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
++ (ZMConfirmation*) parseFromCodedInputStream:(PBCodedInputStream*) input;
++ (ZMConfirmation*) parseFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
+@end
+
+@interface ZMConfirmationBuilder : PBGeneratedMessageBuilder {
+@private
+  ZMConfirmation* resultConfirmation;
+}
+
+- (ZMConfirmation*) defaultInstance;
+
+- (ZMConfirmationBuilder*) clear;
+- (ZMConfirmationBuilder*) clone;
+
+- (ZMConfirmation*) build;
+- (ZMConfirmation*) buildPartial;
+
+- (ZMConfirmationBuilder*) mergeFrom:(ZMConfirmation*) other;
+- (ZMConfirmationBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input;
+- (ZMConfirmationBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
+
+- (BOOL) hasMessageId;
+- (NSString*) messageId;
+- (ZMConfirmationBuilder*) setMessageId:(NSString*) value;
+- (ZMConfirmationBuilder*) clearMessageId;
+
+- (BOOL) hasType;
+- (ZMConfirmationType) type;
+- (ZMConfirmationBuilder*) setType:(ZMConfirmationType) value;
+- (ZMConfirmationBuilder*) clearType;
 @end
 
 #define Location_longitude @"longitude"
@@ -1940,13 +2022,18 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 @end
 
 #define Reaction_emoji @"emoji"
+#define Reaction_message_id @"messageId"
 @interface ZMReaction : PBGeneratedMessage<GeneratedMessageProtocol> {
 @private
   BOOL hasEmoji_:1;
+  BOOL hasMessageId_:1;
   NSString* emoji;
+  NSString* messageId;
 }
 - (BOOL) hasEmoji;
+- (BOOL) hasMessageId;
 @property (readonly, strong) NSString* emoji;
+@property (readonly, strong) NSString* messageId;
 
 + (instancetype) defaultInstance;
 - (instancetype) defaultInstance;
@@ -1987,6 +2074,11 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 - (NSString*) emoji;
 - (ZMReactionBuilder*) setEmoji:(NSString*) value;
 - (ZMReactionBuilder*) clearEmoji;
+
+- (BOOL) hasMessageId;
+- (NSString*) messageId;
+- (ZMReactionBuilder*) setMessageId:(NSString*) value;
+- (ZMReactionBuilder*) clearMessageId;
 @end
 
 #define Calling_content @"content"

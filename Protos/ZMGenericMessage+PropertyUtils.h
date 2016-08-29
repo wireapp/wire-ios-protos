@@ -68,7 +68,7 @@
 
 @interface ZMReaction (Utils)
 
-+ (instancetype)reactionWithEmoji:(NSString *)emoji;
++ (instancetype)reactionWithEmoji:(NSString *)emoji messageID:(NSString *)messageID;
 
 @end
 

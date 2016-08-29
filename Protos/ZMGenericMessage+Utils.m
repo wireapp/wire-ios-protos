@@ -236,10 +236,12 @@
 }
 
 + (ZMGenericMessage *)messageWithEmojiString:(NSString *)emojiString
+                                   messageID:(NSString *)messageID
                                        nonce:(NSString *)nonce;
 {
     ZMGenericMessageBuilder *builder = [ZMGenericMessage builder];
-    builder.reaction = [ZMReaction reactionWithEmoji:emojiString];
+    builder.reaction = [ZMReaction reactionWithEmoji:emojiString messageID:messageID];
+    builder.messageId = nonce;
     return [builder build];
 }
 

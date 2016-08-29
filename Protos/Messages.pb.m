@@ -71,6 +71,7 @@ NSString *NSStringFromZMClientAction(ZMClientAction value) {
 @property (strong) ZMLocation* location;
 @property (strong) ZMMessageDelete* deleted;
 @property (strong) ZMMessageEdit* edited;
+@property (strong) ZMConfirmation* confirmation;
 @end
 
 @implementation ZMGenericMessage
@@ -180,6 +181,13 @@ NSString *NSStringFromZMClientAction(ZMClientAction value) {
   hasEdited_ = !!_value_;
 }
 @synthesize edited;
+- (BOOL) hasConfirmation {
+  return !!hasConfirmation_;
+}
+- (void) setHasConfirmation:(BOOL) _value_ {
+  hasConfirmation_ = !!_value_;
+}
+@synthesize confirmation;
 - (instancetype) init {
   if ((self = [super init])) {
     self.messageId = @"";
@@ -197,6 +205,7 @@ NSString *NSStringFromZMClientAction(ZMClientAction value) {
     self.location = [ZMLocation defaultInstance];
     self.deleted = [ZMMessageDelete defaultInstance];
     self.edited = [ZMMessageEdit defaultInstance];
+    self.confirmation = [ZMConfirmation defaultInstance];
   }
   return self;
 }
@@ -228,6 +237,11 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
   }
   if (self.hasKnock) {
     if (!self.knock.isInitialized) {
+      return NO;
+    }
+  }
+  if (self.hasReaction) {
+    if (!self.reaction.isInitialized) {
       return NO;
     }
   }
@@ -273,6 +287,11 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
   }
   if (self.hasEdited) {
     if (!self.edited.isInitialized) {
+      return NO;
+    }
+  }
+  if (self.hasConfirmation) {
+    if (!self.confirmation.isInitialized) {
       return NO;
     }
   }
@@ -323,6 +342,9 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
   }
   if (self.hasEdited) {
     [output writeMessage:15 value:self.edited];
+  }
+  if (self.hasConfirmation) {
+    [output writeMessage:16 value:self.confirmation];
   }
   [self.unknownFields writeToCodedOutputStream:output];
 }
@@ -377,6 +399,9 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
   }
   if (self.hasEdited) {
     size_ += computeMessageSize(15, self.edited);
+  }
+  if (self.hasConfirmation) {
+    size_ += computeMessageSize(16, self.confirmation);
   }
   size_ += self.unknownFields.serializedSize;
   memoizedSerializedSize = size_;
@@ -497,6 +522,12 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
                          withIndent:[NSString stringWithFormat:@"%@  ", indent]];
     [output appendFormat:@"%@}\n", indent];
   }
+  if (self.hasConfirmation) {
+    [output appendFormat:@"%@%@ {\n", indent, @"confirmation"];
+    [self.confirmation writeDescriptionTo:output
+                         withIndent:[NSString stringWithFormat:@"%@  ", indent]];
+    [output appendFormat:@"%@}\n", indent];
+  }
   [self.unknownFields writeDescriptionTo:output withIndent:indent];
 }
 - (void) storeInDictionary:(NSMutableDictionary *)dictionary {
@@ -571,6 +602,11 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
    [self.edited storeInDictionary:messageDictionary];
    [dictionary setObject:[NSDictionary dictionaryWithDictionary:messageDictionary] forKey:@"edited"];
   }
+  if (self.hasConfirmation) {
+   NSMutableDictionary *messageDictionary = [NSMutableDictionary dictionary]; 
+   [self.confirmation storeInDictionary:messageDictionary];
+   [dictionary setObject:[NSDictionary dictionaryWithDictionary:messageDictionary] forKey:@"confirmation"];
+  }
   [self.unknownFields storeInDictionary:dictionary];
 }
 - (BOOL) isEqual:(id)other {
@@ -612,6 +648,8 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
       (!self.hasDeleted || [self.deleted isEqual:otherMessage.deleted]) &&
       self.hasEdited == otherMessage.hasEdited &&
       (!self.hasEdited || [self.edited isEqual:otherMessage.edited]) &&
+      self.hasConfirmation == otherMessage.hasConfirmation &&
+      (!self.hasConfirmation || [self.confirmation isEqual:otherMessage.confirmation]) &&
       (self.unknownFields == otherMessage.unknownFields || (self.unknownFields != nil && [self.unknownFields isEqual:otherMessage.unknownFields]));
 }
 - (NSUInteger) hash {
@@ -660,6 +698,9 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
   }
   if (self.hasEdited) {
     hashCode = hashCode * 31 + [self.edited hash];
+  }
+  if (self.hasConfirmation) {
+    hashCode = hashCode * 31 + [self.confirmation hash];
   }
   hashCode = hashCode * 31 + [self.unknownFields hash];
   return hashCode;
@@ -748,6 +789,9 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
   }
   if (other.hasEdited) {
     [self mergeEdited:other.edited];
+  }
+  if (other.hasConfirmation) {
+    [self mergeConfirmation:other.confirmation];
   }
   [self mergeUnknownFields:other.unknownFields];
   return self;
@@ -898,6 +942,15 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
         }
         [input readMessage:subBuilder extensionRegistry:extensionRegistry];
         [self setEdited:[subBuilder buildPartial]];
+        break;
+      }
+      case 130: {
+        ZMConfirmationBuilder* subBuilder = [ZMConfirmation builder];
+        if (self.hasConfirmation) {
+          [subBuilder mergeFrom:self.confirmation];
+        }
+        [input readMessage:subBuilder extensionRegistry:extensionRegistry];
+        [self setConfirmation:[subBuilder buildPartial]];
         break;
       }
     }
@@ -1323,6 +1376,36 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
 - (ZMGenericMessageBuilder*) clearEdited {
   resultGenericMessage.hasEdited = NO;
   resultGenericMessage.edited = [ZMMessageEdit defaultInstance];
+  return self;
+}
+- (BOOL) hasConfirmation {
+  return resultGenericMessage.hasConfirmation;
+}
+- (ZMConfirmation*) confirmation {
+  return resultGenericMessage.confirmation;
+}
+- (ZMGenericMessageBuilder*) setConfirmation:(ZMConfirmation*) value {
+  resultGenericMessage.hasConfirmation = YES;
+  resultGenericMessage.confirmation = value;
+  return self;
+}
+- (ZMGenericMessageBuilder*) setConfirmationBuilder:(ZMConfirmationBuilder*) builderForValue {
+  return [self setConfirmation:[builderForValue build]];
+}
+- (ZMGenericMessageBuilder*) mergeConfirmation:(ZMConfirmation*) value {
+  if (resultGenericMessage.hasConfirmation &&
+      resultGenericMessage.confirmation != [ZMConfirmation defaultInstance]) {
+    resultGenericMessage.confirmation =
+      [[[ZMConfirmation builderWithPrototype:resultGenericMessage.confirmation] mergeFrom:value] buildPartial];
+  } else {
+    resultGenericMessage.confirmation = value;
+  }
+  resultGenericMessage.hasConfirmation = YES;
+  return self;
+}
+- (ZMGenericMessageBuilder*) clearConfirmation {
+  resultGenericMessage.hasConfirmation = NO;
+  resultGenericMessage.confirmation = [ZMConfirmation defaultInstance];
   return self;
 }
 @end
@@ -4707,6 +4790,292 @@ static ZMMessageEdit* defaultZMMessageEditInstance = nil;
 - (ZMMessageEditBuilder*) clearText {
   resultMessageEdit.hasText = NO;
   resultMessageEdit.text = [ZMText defaultInstance];
+  return self;
+}
+@end
+
+@interface ZMConfirmation ()
+@property (strong) NSString* messageId;
+@property ZMConfirmationType type;
+@end
+
+@implementation ZMConfirmation
+
+- (BOOL) hasMessageId {
+  return !!hasMessageId_;
+}
+- (void) setHasMessageId:(BOOL) _value_ {
+  hasMessageId_ = !!_value_;
+}
+@synthesize messageId;
+- (BOOL) hasType {
+  return !!hasType_;
+}
+- (void) setHasType:(BOOL) _value_ {
+  hasType_ = !!_value_;
+}
+@synthesize type;
+- (instancetype) init {
+  if ((self = [super init])) {
+    self.messageId = @"";
+    self.type = ZMConfirmationTypeDELIVERED;
+  }
+  return self;
+}
+static ZMConfirmation* defaultZMConfirmationInstance = nil;
++ (void) initialize {
+  if (self == [ZMConfirmation class]) {
+    defaultZMConfirmationInstance = [[ZMConfirmation alloc] init];
+  }
+}
++ (instancetype) defaultInstance {
+  return defaultZMConfirmationInstance;
+}
+- (instancetype) defaultInstance {
+  return defaultZMConfirmationInstance;
+}
+- (BOOL) isInitialized {
+  if (!self.hasMessageId) {
+    return NO;
+  }
+  if (!self.hasType) {
+    return NO;
+  }
+  return YES;
+}
+- (void) writeToCodedOutputStream:(PBCodedOutputStream*) output {
+  if (self.hasMessageId) {
+    [output writeString:1 value:self.messageId];
+  }
+  if (self.hasType) {
+    [output writeEnum:2 value:self.type];
+  }
+  [self.unknownFields writeToCodedOutputStream:output];
+}
+- (SInt32) serializedSize {
+  __block SInt32 size_ = memoizedSerializedSize;
+  if (size_ != -1) {
+    return size_;
+  }
+
+  size_ = 0;
+  if (self.hasMessageId) {
+    size_ += computeStringSize(1, self.messageId);
+  }
+  if (self.hasType) {
+    size_ += computeEnumSize(2, self.type);
+  }
+  size_ += self.unknownFields.serializedSize;
+  memoizedSerializedSize = size_;
+  return size_;
+}
++ (ZMConfirmation*) parseFromData:(NSData*) data {
+  return (ZMConfirmation*)[[[ZMConfirmation builder] mergeFromData:data] build];
+}
++ (ZMConfirmation*) parseFromData:(NSData*) data extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  return (ZMConfirmation*)[[[ZMConfirmation builder] mergeFromData:data extensionRegistry:extensionRegistry] build];
+}
++ (ZMConfirmation*) parseFromInputStream:(NSInputStream*) input {
+  return (ZMConfirmation*)[[[ZMConfirmation builder] mergeFromInputStream:input] build];
+}
++ (ZMConfirmation*) parseFromInputStream:(NSInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  return (ZMConfirmation*)[[[ZMConfirmation builder] mergeFromInputStream:input extensionRegistry:extensionRegistry] build];
+}
++ (ZMConfirmation*) parseFromCodedInputStream:(PBCodedInputStream*) input {
+  return (ZMConfirmation*)[[[ZMConfirmation builder] mergeFromCodedInputStream:input] build];
+}
++ (ZMConfirmation*) parseFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  return (ZMConfirmation*)[[[ZMConfirmation builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
+}
++ (ZMConfirmationBuilder*) builder {
+  return [[ZMConfirmationBuilder alloc] init];
+}
++ (ZMConfirmationBuilder*) builderWithPrototype:(ZMConfirmation*) prototype {
+  return [[ZMConfirmation builder] mergeFrom:prototype];
+}
+- (ZMConfirmationBuilder*) builder {
+  return [ZMConfirmation builder];
+}
+- (ZMConfirmationBuilder*) toBuilder {
+  return [ZMConfirmation builderWithPrototype:self];
+}
+- (void) writeDescriptionTo:(NSMutableString*) output withIndent:(NSString*) indent {
+  if (self.hasMessageId) {
+    [output appendFormat:@"%@%@: %@\n", indent, @"messageId", self.messageId];
+  }
+  if (self.hasType) {
+    [output appendFormat:@"%@%@: %@\n", indent, @"type", NSStringFromZMConfirmationType(self.type)];
+  }
+  [self.unknownFields writeDescriptionTo:output withIndent:indent];
+}
+- (void) storeInDictionary:(NSMutableDictionary *)dictionary {
+  if (self.hasMessageId) {
+    [dictionary setObject: self.messageId forKey: @"messageId"];
+  }
+  if (self.hasType) {
+    [dictionary setObject: @(self.type) forKey: @"type"];
+  }
+  [self.unknownFields storeInDictionary:dictionary];
+}
+- (BOOL) isEqual:(id)other {
+  if (other == self) {
+    return YES;
+  }
+  if (![other isKindOfClass:[ZMConfirmation class]]) {
+    return NO;
+  }
+  ZMConfirmation *otherMessage = other;
+  return
+      self.hasMessageId == otherMessage.hasMessageId &&
+      (!self.hasMessageId || [self.messageId isEqual:otherMessage.messageId]) &&
+      self.hasType == otherMessage.hasType &&
+      (!self.hasType || self.type == otherMessage.type) &&
+      (self.unknownFields == otherMessage.unknownFields || (self.unknownFields != nil && [self.unknownFields isEqual:otherMessage.unknownFields]));
+}
+- (NSUInteger) hash {
+  __block NSUInteger hashCode = 7;
+  if (self.hasMessageId) {
+    hashCode = hashCode * 31 + [self.messageId hash];
+  }
+  if (self.hasType) {
+    hashCode = hashCode * 31 + self.type;
+  }
+  hashCode = hashCode * 31 + [self.unknownFields hash];
+  return hashCode;
+}
+@end
+
+BOOL ZMConfirmationTypeIsValidValue(ZMConfirmationType value) {
+  switch (value) {
+    case ZMConfirmationTypeDELIVERED:
+    case ZMConfirmationTypeREAD:
+      return YES;
+    default:
+      return NO;
+  }
+}
+NSString *NSStringFromZMConfirmationType(ZMConfirmationType value) {
+  switch (value) {
+    case ZMConfirmationTypeDELIVERED:
+      return @"ZMConfirmationTypeDELIVERED";
+    case ZMConfirmationTypeREAD:
+      return @"ZMConfirmationTypeREAD";
+    default:
+      return nil;
+  }
+}
+
+@interface ZMConfirmationBuilder()
+@property (strong) ZMConfirmation* resultConfirmation;
+@end
+
+@implementation ZMConfirmationBuilder
+@synthesize resultConfirmation;
+- (instancetype) init {
+  if ((self = [super init])) {
+    self.resultConfirmation = [[ZMConfirmation alloc] init];
+  }
+  return self;
+}
+- (PBGeneratedMessage*) internalGetResult {
+  return resultConfirmation;
+}
+- (ZMConfirmationBuilder*) clear {
+  self.resultConfirmation = [[ZMConfirmation alloc] init];
+  return self;
+}
+- (ZMConfirmationBuilder*) clone {
+  return [ZMConfirmation builderWithPrototype:resultConfirmation];
+}
+- (ZMConfirmation*) defaultInstance {
+  return [ZMConfirmation defaultInstance];
+}
+- (ZMConfirmation*) build {
+  [self checkInitialized];
+  return [self buildPartial];
+}
+- (ZMConfirmation*) buildPartial {
+  ZMConfirmation* returnMe = resultConfirmation;
+  self.resultConfirmation = nil;
+  return returnMe;
+}
+- (ZMConfirmationBuilder*) mergeFrom:(ZMConfirmation*) other {
+  if (other == [ZMConfirmation defaultInstance]) {
+    return self;
+  }
+  if (other.hasMessageId) {
+    [self setMessageId:other.messageId];
+  }
+  if (other.hasType) {
+    [self setType:other.type];
+  }
+  [self mergeUnknownFields:other.unknownFields];
+  return self;
+}
+- (ZMConfirmationBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input {
+  return [self mergeFromCodedInputStream:input extensionRegistry:[PBExtensionRegistry emptyRegistry]];
+}
+- (ZMConfirmationBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  PBUnknownFieldSetBuilder* unknownFields = [PBUnknownFieldSet builderWithUnknownFields:self.unknownFields];
+  while (YES) {
+    SInt32 tag = [input readTag];
+    switch (tag) {
+      case 0:
+        [self setUnknownFields:[unknownFields build]];
+        return self;
+      default: {
+        if (![self parseUnknownField:input unknownFields:unknownFields extensionRegistry:extensionRegistry tag:tag]) {
+          [self setUnknownFields:[unknownFields build]];
+          return self;
+        }
+        break;
+      }
+      case 10: {
+        [self setMessageId:[input readString]];
+        break;
+      }
+      case 16: {
+        ZMConfirmationType value = (ZMConfirmationType)[input readEnum];
+        if (ZMConfirmationTypeIsValidValue(value)) {
+          [self setType:value];
+        } else {
+          [unknownFields mergeVarintField:2 value:value];
+        }
+        break;
+      }
+    }
+  }
+}
+- (BOOL) hasMessageId {
+  return resultConfirmation.hasMessageId;
+}
+- (NSString*) messageId {
+  return resultConfirmation.messageId;
+}
+- (ZMConfirmationBuilder*) setMessageId:(NSString*) value {
+  resultConfirmation.hasMessageId = YES;
+  resultConfirmation.messageId = value;
+  return self;
+}
+- (ZMConfirmationBuilder*) clearMessageId {
+  resultConfirmation.hasMessageId = NO;
+  resultConfirmation.messageId = @"";
+  return self;
+}
+- (BOOL) hasType {
+  return resultConfirmation.hasType;
+}
+- (ZMConfirmationType) type {
+  return resultConfirmation.type;
+}
+- (ZMConfirmationBuilder*) setType:(ZMConfirmationType) value {
+  resultConfirmation.hasType = YES;
+  resultConfirmation.type = value;
+  return self;
+}
+- (ZMConfirmationBuilder*) clearType {
+  resultConfirmation.hasType = NO;
+  resultConfirmation.type = ZMConfirmationTypeDELIVERED;
   return self;
 }
 @end
@@ -8691,6 +9060,7 @@ static ZMExternal* defaultZMExternalInstance = nil;
 
 @interface ZMReaction ()
 @property (strong) NSString* emoji;
+@property (strong) NSString* messageId;
 @end
 
 @implementation ZMReaction
@@ -8702,9 +9072,17 @@ static ZMExternal* defaultZMExternalInstance = nil;
   hasEmoji_ = !!_value_;
 }
 @synthesize emoji;
+- (BOOL) hasMessageId {
+  return !!hasMessageId_;
+}
+- (void) setHasMessageId:(BOOL) _value_ {
+  hasMessageId_ = !!_value_;
+}
+@synthesize messageId;
 - (instancetype) init {
   if ((self = [super init])) {
     self.emoji = @"";
+    self.messageId = @"";
   }
   return self;
 }
@@ -8721,11 +9099,17 @@ static ZMReaction* defaultZMReactionInstance = nil;
   return defaultZMReactionInstance;
 }
 - (BOOL) isInitialized {
+  if (!self.hasMessageId) {
+    return NO;
+  }
   return YES;
 }
 - (void) writeToCodedOutputStream:(PBCodedOutputStream*) output {
   if (self.hasEmoji) {
     [output writeString:1 value:self.emoji];
+  }
+  if (self.hasMessageId) {
+    [output writeString:2 value:self.messageId];
   }
   [self.unknownFields writeToCodedOutputStream:output];
 }
@@ -8738,6 +9122,9 @@ static ZMReaction* defaultZMReactionInstance = nil;
   size_ = 0;
   if (self.hasEmoji) {
     size_ += computeStringSize(1, self.emoji);
+  }
+  if (self.hasMessageId) {
+    size_ += computeStringSize(2, self.messageId);
   }
   size_ += self.unknownFields.serializedSize;
   memoizedSerializedSize = size_;
@@ -8777,11 +9164,17 @@ static ZMReaction* defaultZMReactionInstance = nil;
   if (self.hasEmoji) {
     [output appendFormat:@"%@%@: %@\n", indent, @"emoji", self.emoji];
   }
+  if (self.hasMessageId) {
+    [output appendFormat:@"%@%@: %@\n", indent, @"messageId", self.messageId];
+  }
   [self.unknownFields writeDescriptionTo:output withIndent:indent];
 }
 - (void) storeInDictionary:(NSMutableDictionary *)dictionary {
   if (self.hasEmoji) {
     [dictionary setObject: self.emoji forKey: @"emoji"];
+  }
+  if (self.hasMessageId) {
+    [dictionary setObject: self.messageId forKey: @"messageId"];
   }
   [self.unknownFields storeInDictionary:dictionary];
 }
@@ -8796,12 +9189,17 @@ static ZMReaction* defaultZMReactionInstance = nil;
   return
       self.hasEmoji == otherMessage.hasEmoji &&
       (!self.hasEmoji || [self.emoji isEqual:otherMessage.emoji]) &&
+      self.hasMessageId == otherMessage.hasMessageId &&
+      (!self.hasMessageId || [self.messageId isEqual:otherMessage.messageId]) &&
       (self.unknownFields == otherMessage.unknownFields || (self.unknownFields != nil && [self.unknownFields isEqual:otherMessage.unknownFields]));
 }
 - (NSUInteger) hash {
   __block NSUInteger hashCode = 7;
   if (self.hasEmoji) {
     hashCode = hashCode * 31 + [self.emoji hash];
+  }
+  if (self.hasMessageId) {
+    hashCode = hashCode * 31 + [self.messageId hash];
   }
   hashCode = hashCode * 31 + [self.unknownFields hash];
   return hashCode;
@@ -8849,6 +9247,9 @@ static ZMReaction* defaultZMReactionInstance = nil;
   if (other.hasEmoji) {
     [self setEmoji:other.emoji];
   }
+  if (other.hasMessageId) {
+    [self setMessageId:other.messageId];
+  }
   [self mergeUnknownFields:other.unknownFields];
   return self;
 }
@@ -8874,6 +9275,10 @@ static ZMReaction* defaultZMReactionInstance = nil;
         [self setEmoji:[input readString]];
         break;
       }
+      case 18: {
+        [self setMessageId:[input readString]];
+        break;
+      }
     }
   }
 }
@@ -8891,6 +9296,22 @@ static ZMReaction* defaultZMReactionInstance = nil;
 - (ZMReactionBuilder*) clearEmoji {
   resultReaction.hasEmoji = NO;
   resultReaction.emoji = @"";
+  return self;
+}
+- (BOOL) hasMessageId {
+  return resultReaction.hasMessageId;
+}
+- (NSString*) messageId {
+  return resultReaction.messageId;
+}
+- (ZMReactionBuilder*) setMessageId:(NSString*) value {
+  resultReaction.hasMessageId = YES;
+  resultReaction.messageId = value;
+  return self;
+}
+- (ZMReactionBuilder*) clearMessageId {
+  resultReaction.hasMessageId = NO;
+  resultReaction.messageId = @"";
   return self;
 }
 @end
