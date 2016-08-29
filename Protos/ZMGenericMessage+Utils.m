@@ -96,7 +96,8 @@
     self.hasLocation ||
     self.hasDeleted ||
     self.hasHidden ||
-    self.hasEdited;
+    self.hasEdited ||
+    self.hasConfirmation;
 }
 
 + (instancetype)messageWithImageData:(NSData *)imageData format:(ZMImageFormat)format nonce:(NSString *)nonce
@@ -241,6 +242,14 @@
 {
     ZMGenericMessageBuilder *builder = [ZMGenericMessage builder];
     builder.reaction = [ZMReaction reactionWithEmoji:emojiString messageID:messageID];
+    builder.messageId = nonce;
+    return [builder build];
+}
+
++ (ZMGenericMessage *)messageWithConfirmation:(NSString *)messageID type:(ZMConfirmationType)type nonce:(NSString *)nonce;
+{
+    ZMGenericMessageBuilder *builder = [ZMGenericMessage builder];
+    builder.confirmation = [ZMConfirmation messageWithMessageID:messageID confirmationType:type];
     builder.messageId = nonce;
     return [builder build];
 }

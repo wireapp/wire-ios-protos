@@ -387,8 +387,8 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 }
 - (BOOL) hasContent;
 @property (readonly, strong) NSString* content;
-@property (readonly, strong) NSArray * mention;
-@property (readonly, strong) NSArray * linkPreview;
+@property (readonly, strong) NSArray<ZMMention*> * mention;
+@property (readonly, strong) NSArray<ZMLinkPreview*> * linkPreview;
 - (ZMMention*)mentionAtIndex:(NSUInteger)index;
 - (ZMLinkPreview*)linkPreviewAtIndex:(NSUInteger)index;
 
@@ -432,16 +432,16 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 - (ZMTextBuilder*) setContent:(NSString*) value;
 - (ZMTextBuilder*) clearContent;
 
-- (NSMutableArray *)mention;
+- (NSMutableArray<ZMMention*> *)mention;
 - (ZMMention*)mentionAtIndex:(NSUInteger)index;
 - (ZMTextBuilder *)addMention:(ZMMention*)value;
-- (ZMTextBuilder *)setMentionArray:(NSArray *)array;
+- (ZMTextBuilder *)setMentionArray:(NSArray<ZMMention*> *)array;
 - (ZMTextBuilder *)clearMention;
 
-- (NSMutableArray *)linkPreview;
+- (NSMutableArray<ZMLinkPreview*> *)linkPreview;
 - (ZMLinkPreview*)linkPreviewAtIndex:(NSUInteger)index;
 - (ZMTextBuilder *)addLinkPreview:(ZMLinkPreview*)value;
-- (ZMTextBuilder *)setLinkPreviewArray:(NSArray *)array;
+- (ZMTextBuilder *)setLinkPreviewArray:(NSArray<ZMLinkPreview*> *)array;
 - (ZMTextBuilder *)clearLinkPreview;
 @end
 

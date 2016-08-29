@@ -258,7 +258,7 @@
 }
 - (BOOL) hasUser;
 @property (readonly, strong) ZMUserId* user;
-@property (readonly, strong) NSArray * clients;
+@property (readonly, strong) NSArray<ZMClientEntry*> * clients;
 - (ZMClientEntry*)clientsAtIndex:(NSUInteger)index;
 
 + (instancetype) defaultInstance;
@@ -303,10 +303,10 @@
 - (ZMUserEntryBuilder*) mergeUser:(ZMUserId*) value;
 - (ZMUserEntryBuilder*) clearUser;
 
-- (NSMutableArray *)clients;
+- (NSMutableArray<ZMClientEntry*> *)clients;
 - (ZMClientEntry*)clientsAtIndex:(NSUInteger)index;
 - (ZMUserEntryBuilder *)addClients:(ZMClientEntry*)value;
-- (ZMUserEntryBuilder *)setClientsArray:(NSArray *)array;
+- (ZMUserEntryBuilder *)setClientsArray:(NSArray<ZMClientEntry*> *)array;
 - (ZMUserEntryBuilder *)clearClients;
 @end
 
@@ -328,7 +328,7 @@
 - (BOOL) hasNativePush;
 - (BOOL) hasBlob;
 @property (readonly, strong) ZMClientId* sender;
-@property (readonly, strong) NSArray * recipients;
+@property (readonly, strong) NSArray<ZMUserEntry*> * recipients;
 - (BOOL) nativePush;
 @property (readonly, strong) NSData* blob;
 - (ZMUserEntry*)recipientsAtIndex:(NSUInteger)index;
@@ -375,10 +375,10 @@
 - (ZMNewOtrMessageBuilder*) mergeSender:(ZMClientId*) value;
 - (ZMNewOtrMessageBuilder*) clearSender;
 
-- (NSMutableArray *)recipients;
+- (NSMutableArray<ZMUserEntry*> *)recipients;
 - (ZMUserEntry*)recipientsAtIndex:(NSUInteger)index;
 - (ZMNewOtrMessageBuilder *)addRecipients:(ZMUserEntry*)value;
-- (ZMNewOtrMessageBuilder *)setRecipientsArray:(NSArray *)array;
+- (ZMNewOtrMessageBuilder *)setRecipientsArray:(NSArray<ZMUserEntry*> *)array;
 - (ZMNewOtrMessageBuilder *)clearRecipients;
 
 - (BOOL) hasNativePush;
@@ -410,7 +410,7 @@
 - (BOOL) hasIsInline;
 - (BOOL) hasNativePush;
 @property (readonly, strong) ZMClientId* sender;
-@property (readonly, strong) NSArray * recipients;
+@property (readonly, strong) NSArray<ZMUserEntry*> * recipients;
 - (BOOL) isInline;
 - (BOOL) nativePush;
 - (ZMUserEntry*)recipientsAtIndex:(NSUInteger)index;
@@ -457,10 +457,10 @@
 - (ZMOtrAssetMetaBuilder*) mergeSender:(ZMClientId*) value;
 - (ZMOtrAssetMetaBuilder*) clearSender;
 
-- (NSMutableArray *)recipients;
+- (NSMutableArray<ZMUserEntry*> *)recipients;
 - (ZMUserEntry*)recipientsAtIndex:(NSUInteger)index;
 - (ZMOtrAssetMetaBuilder *)addRecipients:(ZMUserEntry*)value;
-- (ZMOtrAssetMetaBuilder *)setRecipientsArray:(NSArray *)array;
+- (ZMOtrAssetMetaBuilder *)setRecipientsArray:(NSArray<ZMUserEntry*> *)array;
 - (ZMOtrAssetMetaBuilder *)clearRecipients;
 
 - (BOOL) hasIsInline;

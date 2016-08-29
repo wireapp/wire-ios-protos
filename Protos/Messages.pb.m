@@ -1412,8 +1412,8 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
 
 @interface ZMText ()
 @property (strong) NSString* content;
-@property (strong) NSMutableArray * mentionArray;
-@property (strong) NSMutableArray * linkPreviewArray;
+@property (strong) NSMutableArray<ZMMention*> * mentionArray;
+@property (strong) NSMutableArray<ZMLinkPreview*> * linkPreviewArray;
 @end
 
 @implementation ZMText
@@ -1447,13 +1447,13 @@ static ZMText* defaultZMTextInstance = nil;
 - (instancetype) defaultInstance {
   return defaultZMTextInstance;
 }
-- (NSArray *)mention {
+- (NSArray<ZMMention*> *)mention {
   return mentionArray;
 }
 - (ZMMention*)mentionAtIndex:(NSUInteger)index {
   return [mentionArray objectAtIndex:index];
 }
-- (NSArray *)linkPreview {
+- (NSArray<ZMLinkPreview*> *)linkPreview {
   return linkPreviewArray;
 }
 - (ZMLinkPreview*)linkPreviewAtIndex:(NSUInteger)index {
@@ -1719,7 +1719,7 @@ static ZMText* defaultZMTextInstance = nil;
   resultText.content = @"";
   return self;
 }
-- (NSMutableArray *)mention {
+- (NSMutableArray<ZMMention*> *)mention {
   return resultText.mentionArray;
 }
 - (ZMMention*)mentionAtIndex:(NSUInteger)index {
@@ -1732,7 +1732,7 @@ static ZMText* defaultZMTextInstance = nil;
   [resultText.mentionArray addObject:value];
   return self;
 }
-- (ZMTextBuilder *)setMentionArray:(NSArray *)array {
+- (ZMTextBuilder *)setMentionArray:(NSArray<ZMMention*> *)array {
   resultText.mentionArray = [[NSMutableArray alloc]initWithArray:array];
   return self;
 }
@@ -1740,7 +1740,7 @@ static ZMText* defaultZMTextInstance = nil;
   resultText.mentionArray = nil;
   return self;
 }
-- (NSMutableArray *)linkPreview {
+- (NSMutableArray<ZMLinkPreview*> *)linkPreview {
   return resultText.linkPreviewArray;
 }
 - (ZMLinkPreview*)linkPreviewAtIndex:(NSUInteger)index {
@@ -1753,7 +1753,7 @@ static ZMText* defaultZMTextInstance = nil;
   [resultText.linkPreviewArray addObject:value];
   return self;
 }
-- (ZMTextBuilder *)setLinkPreviewArray:(NSArray *)array {
+- (ZMTextBuilder *)setLinkPreviewArray:(NSArray<ZMLinkPreview*> *)array {
   resultText.linkPreviewArray = [[NSMutableArray alloc]initWithArray:array];
   return self;
 }
