@@ -1,6 +1,6 @@
 github "wireapp/backend-api-protobuf" "2.2"
 github "wireapp/generic-message-proto" "v1.17.0"
-github "wireapp/ocmock" "v2.2.4-wire"
+github "wireapp/ocmock" "v3.2.2"
 github "wireapp/protobuf-objc" "1.9.9.2"
 github "wireapp/wire-ios-system" "14.40.4"
 github "wireapp/wire-ios-utilities" "10.30.3"
