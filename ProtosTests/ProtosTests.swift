@@ -1,4 +1,4 @@
-// 
+//
 // Wire
 // Copyright (C) 2016 Wire Swiss GmbH
 // 
@@ -109,7 +109,7 @@ class ProtosTests: XCTestCase {
     func testThatItCreatesGenericMessageFromImageData() {
         
         // given
-        let bundle = NSBundle(forClass: self.dynamicType)
+        let bundle = NSBundle(forClass: type(of: self))
         let url = bundle.URLForResource("medium", withExtension: "jpg")!
         let data = NSData(contentsOfURL: url)!
         let nonce = "nonceeeee";
