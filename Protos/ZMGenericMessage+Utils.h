@@ -60,8 +60,8 @@ NS_ASSUME_NONNULL_BEGIN
 + (ZMGenericMessage *)messageWithImageData:(NSData *)imageData format:(ZMImageFormat)format nonce:(NSString *)nonce;
 + (ZMGenericMessage *)messageWithConfirmation:(NSString *)messageID type:(ZMConfirmationType)type nonce:(NSString *)nonce;
 
-+ (ZMGenericMessage *)messageWithMediumImageProperties:(ZMIImageProperties *)mediumProperties
-                              processedImageProperties:(ZMIImageProperties *)processedProperties
++ (ZMGenericMessage *)messageWithMediumImageProperties:(nullable ZMIImageProperties *)mediumProperties
+                              processedImageProperties:(nullable ZMIImageProperties *)processedProperties
                                         encryptionKeys:(nullable ZMImageAssetEncryptionKeys *)encryptionKeys
                                                  nonce:(NSString *)nonce
                                                 format:(ZMImageFormat)format;
