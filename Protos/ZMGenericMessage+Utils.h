@@ -52,48 +52,48 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface ZMGenericMessage (Utils)
 
-+ (ZMGenericMessage *)messageWithBase64String:(NSString *)string;
-+ (ZMGenericMessage *)knockWithNonce:(NSString *)nonce;
-+ (ZMGenericMessage *)sessionResetWithNonce:(NSString *)nonce;
-+ (ZMGenericMessage *)messageWithText:(NSString *)message nonce:(NSString *)nonce;
-+ (ZMGenericMessage *)messageWithText:(NSString *)message linkPreview:(ZMLinkPreview *)linkPreview nonce:(NSString *)nonce;
-+ (ZMGenericMessage *)messageWithImageData:(NSData *)imageData format:(ZMImageFormat)format nonce:(NSString *)nonce;
-+ (ZMGenericMessage *)messageWithConfirmation:(NSString *)messageID type:(ZMConfirmationType)type nonce:(NSString *)nonce;
++ (nonnull ZMGenericMessage *)messageWithBase64String:(nonnull NSString *)string;
++ (nonnull ZMGenericMessage *)knockWithNonce:(nonnull NSString *)nonce;
++ (nonnull ZMGenericMessage *)sessionResetWithNonce:(nonnull NSString *)nonce;
++ (nonnull ZMGenericMessage *)messageWithText:(nonnull NSString *)message nonce:(nonnull NSString *)nonce;
++ (nonnull ZMGenericMessage *)messageWithText:(nonnull NSString *)message linkPreview:(nonnull ZMLinkPreview *)linkPreview nonce:(nonnull NSString *)nonce;
++ (nonnull ZMGenericMessage *)messageWithImageData:(nonnull NSData *)imageData format:(ZMImageFormat)format nonce:(nonnull NSString *)nonce;
++ (nonnull ZMGenericMessage *)messageWithConfirmation:(nonnull NSString *)messageID type:(ZMConfirmationType)type nonce:(nonnull NSString *)nonce;
 
-+ (ZMGenericMessage *)messageWithMediumImageProperties:(nullable ZMIImageProperties *)mediumProperties
++ (nonnull ZMGenericMessage *)messageWithMediumImageProperties:(nullable ZMIImageProperties *)mediumProperties
                               processedImageProperties:(nullable ZMIImageProperties *)processedProperties
                                         encryptionKeys:(nullable ZMImageAssetEncryptionKeys *)encryptionKeys
-                                                 nonce:(NSString *)nonce
+                                                 nonce:(nonnull NSString *)nonce
                                                 format:(ZMImageFormat)format;
 
-+ (ZMGenericMessage *)messageWithLastRead:(NSDate *)timestamp
-                     ofConversationWithID:(NSString *)conversationIDString
-                                    nonce:(NSString *)nonce;
++ (nonnull ZMGenericMessage *)messageWithLastRead:(nonnull NSDate *)timestamp
+                     ofConversationWithID:(nonnull NSString *)conversationIDString
+                                    nonce:(nonnull NSString *)nonce;
 
-+ (ZMGenericMessage *)messageWithClearedTimestamp:(NSDate *)timestamp
-                     ofConversationWithID:(NSString *)conversationIDString
-                                    nonce:(NSString *)nonce;
++ (nonnull ZMGenericMessage *)messageWithClearedTimestamp:(nonnull NSDate *)timestamp
+                     ofConversationWithID:(nonnull NSString *)conversationIDString
+                                    nonce:(nonnull NSString *)nonce;
 
-+ (ZMGenericMessage *)messageWithHideMessage:(NSString *)messageID
-                              inConversation:(NSString *)conversationID
-                                       nonce:(NSString *)nonce;
++ (nonnull ZMGenericMessage *)messageWithHideMessage:(nonnull NSString *)messageID
+                              inConversation:(nonnull NSString *)conversationID
+                                       nonce:(nonnull NSString *)nonce;
 
-+ (ZMGenericMessage *)messageWithDeleteMessage:(NSString *)messageID
-                                         nonce:(NSString *)nonce;
++ (nonnull ZMGenericMessage *)messageWithDeleteMessage:(nonnull NSString *)messageID
+                                         nonce:(nonnull NSString *)nonce;
 
-+ (ZMGenericMessage *)messageWithEditMessage:(NSString *)messageID
-                                     newText:(NSString *)newText
-                                       nonce:(NSString *)nonce;
++ (nonnull ZMGenericMessage *)messageWithEditMessage:(nonnull NSString *)messageID
+                                     newText:(nonnull NSString *)newText
+                                       nonce:(nonnull NSString *)nonce;
 
-+ (ZMGenericMessage *)messageWithEditMessage:(NSString *)messageID
-                                     newText:(NSString *)newText
-                                 linkPreview:(ZMLinkPreview *)linkPreview
-                                       nonce:(NSString *)nonce;
++ (nonnull ZMGenericMessage *)messageWithEditMessage:(nonnull NSString *)messageID
+                                     newText:(nonnull NSString *)newText
+                                 linkPreview:(nonnull ZMLinkPreview *)linkPreview
+                                       nonce:(nonnull NSString *)nonce;
 
 
-+ (ZMGenericMessage *)messageWithEmojiString:(NSString *)emojiString
-                                   messageID:(NSString *)messageID
-                                       nonce:(NSString *)nonce;
++ (nonnull ZMGenericMessage *)messageWithEmojiString:(nonnull NSString *)emojiString
+                                   messageID:(nonnull NSString *)messageID
+                                       nonce:(nonnull NSString *)nonce;
 - (BOOL)knownMessage;
 
 @end
