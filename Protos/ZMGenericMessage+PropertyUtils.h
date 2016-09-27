@@ -19,13 +19,27 @@
 
 #import <ZMProtos/ZMProtos.h>
 
+
+@interface ZMEphemeral (Utils)
+
++ (instancetype)ephemeralWithProtoMessage:(PBGeneratedMessage<GeneratedMessageProtocol> *)protoMessage expiresAfter:(NSTimeInterval)timeout;
+
+@end
+
+
+@interface ZMText (Utils)
+
++ (instancetype)textWithMessage:(NSString *)message linkPreview:(ZMLinkPreview *)linkPreview;
+
+@end
+
+
 @interface ZMLastRead (Utils)
 
 + (ZMLastRead *)lastReadWithTimestamp:(NSDate *)timeStamp
                   conversationRemoteIDString:(NSString *)conversationIDString;
 
 @end
-
 
 
 

@@ -53,18 +53,19 @@ NS_ASSUME_NONNULL_BEGIN
 @interface ZMGenericMessage (Utils)
 
 + (ZMGenericMessage *)messageWithBase64String:(NSString *)string;
-+ (ZMGenericMessage *)knockWithNonce:(NSString *)nonce;
++ (ZMGenericMessage *)knockWithNonce:(NSString *)nonce expiresAfter:(NSTimeInterval)timeout;
 + (ZMGenericMessage *)sessionResetWithNonce:(NSString *)nonce;
-+ (ZMGenericMessage *)messageWithText:(NSString *)message nonce:(NSString *)nonce;
-+ (ZMGenericMessage *)messageWithText:(NSString *)message linkPreview:(ZMLinkPreview *)linkPreview nonce:(NSString *)nonce;
-+ (ZMGenericMessage *)messageWithImageData:(NSData *)imageData format:(ZMImageFormat)format nonce:(NSString *)nonce;
++ (ZMGenericMessage *)messageWithText:(NSString *)message nonce:(NSString *)nonce expiresAfter:(NSTimeInterval)timeout;
++ (ZMGenericMessage *)messageWithText:(NSString *)message linkPreview:(nullable ZMLinkPreview *)linkPreview nonce:(NSString *)nonce expiresAfter:(NSTimeInterval)timeout;
++ (ZMGenericMessage *)messageWithImageData:(NSData *)imageData format:(ZMImageFormat)format nonce:(NSString *)nonce expiresAfter:(NSTimeInterval)timeout;
 + (ZMGenericMessage *)messageWithConfirmation:(NSString *)messageID type:(ZMConfirmationType)type nonce:(NSString *)nonce;
 
 + (ZMGenericMessage *)messageWithMediumImageProperties:(nullable ZMIImageProperties *)mediumProperties
                               processedImageProperties:(nullable ZMIImageProperties *)processedProperties
                                         encryptionKeys:(nullable ZMImageAssetEncryptionKeys *)encryptionKeys
                                                  nonce:(NSString *)nonce
-                                                format:(ZMImageFormat)format;
+                                                format:(ZMImageFormat)format
+                                          expiresAfter:(NSTimeInterval)timeout;
 
 + (ZMGenericMessage *)messageWithLastRead:(NSDate *)timestamp
                      ofConversationWithID:(NSString *)conversationIDString

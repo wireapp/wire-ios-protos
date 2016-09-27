@@ -20,6 +20,50 @@
 #import "ZMGenericMessage+PropertyUtils.h"
 
 
+@implementation ZMEphemeral (Utils)
+
++ (instancetype)ephemeralWithProtoMessage:(PBGeneratedMessage<GeneratedMessageProtocol> *)protoMessage expiresAfter:(NSTimeInterval)timeout;
+{
+    ZMEphemeralBuilder *builder = [ZMEphemeral builder];
+    if ([protoMessage isKindOfClass:ZMText.class]){
+        builder.text = (ZMText *)protoMessage;
+    }
+    else if ([protoMessage isKindOfClass:ZMLocation.class]){
+        builder.location = (ZMLocation *)protoMessage;
+    }
+    else if ([protoMessage isKindOfClass:ZMKnock.class]){
+        builder.knock = (ZMKnock *)protoMessage;
+    }
+    else if ([protoMessage isKindOfClass:ZMImageAsset.class]){
+        builder.image = (ZMImageAsset *)protoMessage;
+    }
+    else if ([protoMessage isKindOfClass:ZMAsset.class]){
+        builder.asset = (ZMAsset *)protoMessage;
+    }
+    else {
+        return nil;
+    }
+    builder.expireAfterMillis = (SInt64)timeout*1000;
+    return [builder build];
+}
+
+@end
+
+
+@implementation ZMText (Utils)
+
++ (instancetype)textWithMessage:(NSString *)message linkPreview:(ZMLinkPreview *)linkPreview;
+{
+    ZMTextBuilder *textBuilder = [ZMText builder];
+    textBuilder.content = message;
+    if (linkPreview != nil) {
+        [textBuilder addLinkPreview:linkPreview];
+    }
+    return [textBuilder build];
+}
+
+@end
+
 
 @implementation ZMLastRead (Utils)
 

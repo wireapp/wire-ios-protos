@@ -97,15 +97,20 @@
     self.hasDeleted ||
     self.hasHidden ||
     self.hasEdited ||
-    self.hasConfirmation;
+    self.hasConfirmation ||
+    self.hasEphemeral;
 }
 
-+ (instancetype)messageWithImageData:(NSData *)imageData format:(ZMImageFormat)format nonce:(NSString *)nonce
++ (instancetype)messageWithImageData:(NSData *)imageData format:(ZMImageFormat)format nonce:(NSString *)nonce expiresAfter:(NSTimeInterval)timeout
 {
     ZMImageAsset *asset = [ZMImageAsset imageAssetWithData:imageData format:format nonce:[[NSUUID alloc] initWithUUIDString:nonce]];
     ZMGenericMessageBuilder *builder = [ZMGenericMessage builder];
     builder.messageId = nonce;
-    builder.image = asset;
+    if (timeout > 0) {
+        builder.ephemeral = [ZMEphemeral ephemeralWithProtoMessage:asset expiresAfter:timeout];
+    } else {
+        builder.image = asset;
+    }
     return [builder build];
 
 }
@@ -119,36 +124,37 @@
     return message;
 }
 
-+ (instancetype)messageWithText:(NSString *)message nonce:(NSString *)nonce;
++ (instancetype)messageWithText:(NSString *)message nonce:(NSString *)nonce expiresAfter:(NSTimeInterval)timeout;
 {
-    ZMTextBuilder *textBuilder = [ZMText builder];
-    textBuilder.content = message;
-    ZMText *text = [textBuilder build];
+    return [self messageWithText:message linkPreview:nil nonce:nonce expiresAfter:timeout];
+}
+
++ (instancetype)messageWithText:(NSString *)message linkPreview:(ZMLinkPreview *)linkPreview nonce:(NSString *)nonce expiresAfter:(NSTimeInterval)timeout;
+{
+    ZMText *text = [ZMText textWithMessage:message linkPreview:linkPreview];
     ZMGenericMessageBuilder *builder = [ZMGenericMessage builder];
+    if (timeout > 0) {
+        builder.ephemeral = [ZMEphemeral ephemeralWithProtoMessage:text expiresAfter:timeout];
+    } else {
+        builder.text = text;
+    }
     builder.messageId = nonce;
-    builder.text = text;
     return [builder build];
 }
 
-+ (instancetype)messageWithText:(NSString *)message linkPreview:(ZMLinkPreview *)linkPreview nonce:(NSString *)nonce;
-{
-    ZMTextBuilder *textBuilder = [ZMText builder];
-    textBuilder.content = message;
-    [textBuilder addLinkPreview:linkPreview];
-    ZMText *text = [textBuilder build];
-    ZMGenericMessageBuilder *builder = [ZMGenericMessage builder];
-    builder.messageId = nonce;
-    builder.text = text;
-    return [builder build];
-}
-
-+ (ZMGenericMessage *)knockWithNonce:(NSString *)nonce
++ (ZMGenericMessage *)knockWithNonce:(NSString *)nonce expiresAfter:(NSTimeInterval)timeout
 {
     ZMKnockBuilder *knockBuilder = [ZMKnock builder];
     [knockBuilder setHotKnock:NO];
+    ZMKnock *knock = [knockBuilder build];
     ZMGenericMessageBuilder *builder = [ZMGenericMessage builder];
+    if (timeout > 0) {
+        builder.ephemeral = [ZMEphemeral ephemeralWithProtoMessage:knock expiresAfter:timeout];
+
+    } else {
+        builder.knock = knock;
+    }
     builder.messageId = nonce;
-    builder.knock = [knockBuilder build];
     return [builder build];
 }
 
@@ -164,15 +170,21 @@
                         processedImageProperties:(ZMIImageProperties *)processedProperties
                                   encryptionKeys:(ZMImageAssetEncryptionKeys *)encryptionKeys
                                            nonce:(NSString *)nonce
-                                          format:(ZMImageFormat)format;
+                                          format:(ZMImageFormat)format
+                                    expiresAfter:(NSTimeInterval)timeout;
 {
     ZMGenericMessageBuilder *builder = [ZMGenericMessage builder];
     builder.messageId = nonce;
-    builder.image = [ZMImageAsset imageAssetWithMediumProperties:mediumProperties
-                                             processedProperties:processedProperties
-                                                  encryptionKeys:encryptionKeys
-                                                           nonce:nonce
-                                                          format:format];
+    ZMImageAsset *imageAsset = [ZMImageAsset imageAssetWithMediumProperties:mediumProperties
+                                                        processedProperties:processedProperties
+                                                             encryptionKeys:encryptionKeys
+                                                                      nonce:nonce
+                                                                     format:format];
+    if (timeout > 0) {
+        builder.ephemeral = [ZMEphemeral ephemeralWithProtoMessage:imageAsset expiresAfter:timeout];
+    } else {
+        builder.image = imageAsset;
+    }
     return [builder build];
 }
 
