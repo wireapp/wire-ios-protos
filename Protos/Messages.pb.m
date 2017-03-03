@@ -10419,6 +10419,11 @@ static ZMPoll* defaultZMPollInstance = nil;
   return defaultZMPollInstance;
 }
 - (BOOL) isInitialized {
+  if (self.hasContent) {
+    if (!self.content.isInitialized) {
+      return NO;
+    }
+  }
   if (self.hasVote) {
     if (!self.vote.isInitialized) {
       return NO;
@@ -10688,14 +10693,23 @@ static ZMPoll* defaultZMPollInstance = nil;
 
 @interface ZMPollContent ()
 @property (strong) NSMutableArray * optionsArray;
+@property (strong) NSString* question;
 @end
 
 @implementation ZMPollContent
 
 @synthesize optionsArray;
 @dynamic options;
+- (BOOL) hasQuestion {
+  return !!hasQuestion_;
+}
+- (void) setHasQuestion:(BOOL) _value_ {
+  hasQuestion_ = !!_value_;
+}
+@synthesize question;
 - (instancetype) init {
   if ((self = [super init])) {
+    self.question = @"";
   }
   return self;
 }
@@ -10718,12 +10732,18 @@ static ZMPollContent* defaultZMPollContentInstance = nil;
   return [optionsArray objectAtIndex:index];
 }
 - (BOOL) isInitialized {
+  if (!self.hasQuestion) {
+    return NO;
+  }
   return YES;
 }
 - (void) writeToCodedOutputStream:(PBCodedOutputStream*) output {
   [self.optionsArray enumerateObjectsUsingBlock:^(NSString *element, NSUInteger idx, BOOL *stop) {
     [output writeString:1 value:element];
   }];
+  if (self.hasQuestion) {
+    [output writeString:2 value:self.question];
+  }
   [self.unknownFields writeToCodedOutputStream:output];
 }
 - (SInt32) serializedSize {
@@ -10741,6 +10761,9 @@ static ZMPollContent* defaultZMPollContentInstance = nil;
     }];
     size_ += dataSize;
     size_ += (SInt32)(1 * count);
+  }
+  if (self.hasQuestion) {
+    size_ += computeStringSize(2, self.question);
   }
   size_ += self.unknownFields.serializedSize;
   memoizedSerializedSize = size_;
@@ -10780,10 +10803,16 @@ static ZMPollContent* defaultZMPollContentInstance = nil;
   [self.optionsArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
     [output appendFormat:@"%@%@: %@\n", indent, @"options", obj];
   }];
+  if (self.hasQuestion) {
+    [output appendFormat:@"%@%@: %@\n", indent, @"question", self.question];
+  }
   [self.unknownFields writeDescriptionTo:output withIndent:indent];
 }
 - (void) storeInDictionary:(NSMutableDictionary *)dictionary {
   [dictionary setObject:self.options forKey: @"options"];
+  if (self.hasQuestion) {
+    [dictionary setObject: self.question forKey: @"question"];
+  }
   [self.unknownFields storeInDictionary:dictionary];
 }
 - (BOOL) isEqual:(id)other {
@@ -10796,6 +10825,8 @@ static ZMPollContent* defaultZMPollContentInstance = nil;
   ZMPollContent *otherMessage = other;
   return
       [self.optionsArray isEqualToArray:otherMessage.optionsArray] &&
+      self.hasQuestion == otherMessage.hasQuestion &&
+      (!self.hasQuestion || [self.question isEqual:otherMessage.question]) &&
       (self.unknownFields == otherMessage.unknownFields || (self.unknownFields != nil && [self.unknownFields isEqual:otherMessage.unknownFields]));
 }
 - (NSUInteger) hash {
@@ -10803,6 +10834,9 @@ static ZMPollContent* defaultZMPollContentInstance = nil;
   [self.optionsArray enumerateObjectsUsingBlock:^(NSString *element, NSUInteger idx, BOOL *stop) {
     hashCode = hashCode * 31 + [element hash];
   }];
+  if (self.hasQuestion) {
+    hashCode = hashCode * 31 + [self.question hash];
+  }
   hashCode = hashCode * 31 + [self.unknownFields hash];
   return hashCode;
 }
@@ -10853,6 +10887,9 @@ static ZMPollContent* defaultZMPollContentInstance = nil;
       [resultPollContent.optionsArray addObjectsFromArray:other.optionsArray];
     }
   }
+  if (other.hasQuestion) {
+    [self setQuestion:other.question];
+  }
   [self mergeUnknownFields:other.unknownFields];
   return self;
 }
@@ -10878,6 +10915,10 @@ static ZMPollContent* defaultZMPollContentInstance = nil;
         [self addOptions:[input readString]];
         break;
       }
+      case 18: {
+        [self setQuestion:[input readString]];
+        break;
+      }
     }
   }
 }
@@ -10900,6 +10941,22 @@ static ZMPollContent* defaultZMPollContentInstance = nil;
 }
 - (ZMPollContentBuilder *)clearOptions {
   resultPollContent.optionsArray = nil;
+  return self;
+}
+- (BOOL) hasQuestion {
+  return resultPollContent.hasQuestion;
+}
+- (NSString*) question {
+  return resultPollContent.question;
+}
+- (ZMPollContentBuilder*) setQuestion:(NSString*) value {
+  resultPollContent.hasQuestion = YES;
+  resultPollContent.question = value;
+  return self;
+}
+- (ZMPollContentBuilder*) clearQuestion {
+  resultPollContent.hasQuestion = NO;
+  resultPollContent.question = @"";
   return self;
 }
 @end

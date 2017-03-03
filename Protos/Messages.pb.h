@@ -2357,11 +2357,16 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 @end
 
 #define PollContent_options @"options"
+#define PollContent_question @"question"
 @interface ZMPollContent : PBGeneratedMessage<GeneratedMessageProtocol> {
 @private
+  BOOL hasQuestion_:1;
+  NSString* question;
   NSMutableArray * optionsArray;
 }
+- (BOOL) hasQuestion;
 @property (readonly, strong) NSArray * options;
+@property (readonly, strong) NSString* question;
 - (NSString*)optionsAtIndex:(NSUInteger)index;
 
 + (instancetype) defaultInstance;
@@ -2404,6 +2409,11 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 - (ZMPollContentBuilder *)addOptions:(NSString*)value;
 - (ZMPollContentBuilder *)setOptionsArray:(NSArray *)array;
 - (ZMPollContentBuilder *)clearOptions;
+
+- (BOOL) hasQuestion;
+- (NSString*) question;
+- (ZMPollContentBuilder*) setQuestion:(NSString*) value;
+- (ZMPollContentBuilder*) clearQuestion;
 @end
 
 #define PollVote_voted_option @"votedOption"
