@@ -110,6 +110,12 @@
 @class ZMMessageEditBuilder;
 @class ZMMessageHide;
 @class ZMMessageHideBuilder;
+@class ZMPoll;
+@class ZMPollBuilder;
+@class ZMPollContent;
+@class ZMPollContentBuilder;
+@class ZMPollVote;
+@class ZMPollVoteBuilder;
 @class ZMReaction;
 @class ZMReactionBuilder;
 @class ZMText;
@@ -165,6 +171,7 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 #define GenericMessage_confirmation @"confirmation"
 #define GenericMessage_reaction @"reaction"
 #define GenericMessage_ephemeral @"ephemeral"
+#define GenericMessage_poll @"poll"
 @interface ZMGenericMessage : PBGeneratedMessage<GeneratedMessageProtocol> {
 @private
   BOOL hasMessageId_:1;
@@ -183,6 +190,7 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
   BOOL hasConfirmation_:1;
   BOOL hasReaction_:1;
   BOOL hasEphemeral_:1;
+  BOOL hasPoll_:1;
   BOOL hasClientAction_:1;
   NSString* messageId;
   ZMText* text;
@@ -200,6 +208,7 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
   ZMConfirmation* confirmation;
   ZMReaction* reaction;
   ZMEphemeral* ephemeral;
+  ZMPoll* poll;
   ZMClientAction clientAction;
 }
 - (BOOL) hasMessageId;
@@ -219,6 +228,7 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 - (BOOL) hasConfirmation;
 - (BOOL) hasReaction;
 - (BOOL) hasEphemeral;
+- (BOOL) hasPoll;
 @property (readonly, strong) NSString* messageId;
 @property (readonly, strong) ZMText* text;
 @property (readonly, strong) ZMImageAsset* image;
@@ -236,6 +246,7 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 @property (readonly, strong) ZMConfirmation* confirmation;
 @property (readonly, strong) ZMReaction* reaction;
 @property (readonly, strong) ZMEphemeral* ephemeral;
+@property (readonly, strong) ZMPoll* poll;
 
 + (instancetype) defaultInstance;
 - (instancetype) defaultInstance;
@@ -386,6 +397,13 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 - (ZMGenericMessageBuilder*) setEphemeralBuilder:(ZMEphemeralBuilder*) builderForValue;
 - (ZMGenericMessageBuilder*) mergeEphemeral:(ZMEphemeral*) value;
 - (ZMGenericMessageBuilder*) clearEphemeral;
+
+- (BOOL) hasPoll;
+- (ZMPoll*) poll;
+- (ZMGenericMessageBuilder*) setPoll:(ZMPoll*) value;
+- (ZMGenericMessageBuilder*) setPollBuilder:(ZMPollBuilder*) builderForValue;
+- (ZMGenericMessageBuilder*) mergePoll:(ZMPoll*) value;
+- (ZMGenericMessageBuilder*) clearPoll;
 @end
 
 #define Ephemeral_expire_after_millis @"expireAfterMillis"
@@ -1576,17 +1594,23 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 #define Original_image @"image"
 #define Original_video @"video"
 #define Original_audio @"audio"
+#define Original_source @"source"
+#define Original_caption @"caption"
 @interface ZMAssetOriginal : PBGeneratedMessage<GeneratedMessageProtocol> {
 @private
   BOOL hasSize_:1;
   BOOL hasMimeType_:1;
   BOOL hasName_:1;
+  BOOL hasSource_:1;
+  BOOL hasCaption_:1;
   BOOL hasImage_:1;
   BOOL hasVideo_:1;
   BOOL hasAudio_:1;
   UInt64 size;
   NSString* mimeType;
   NSString* name;
+  NSString* source;
+  NSString* caption;
   ZMAssetImageMetaData* image;
   ZMAssetVideoMetaData* video;
   ZMAssetAudioMetaData* audio;
@@ -1597,12 +1621,16 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 - (BOOL) hasImage;
 - (BOOL) hasVideo;
 - (BOOL) hasAudio;
+- (BOOL) hasSource;
+- (BOOL) hasCaption;
 @property (readonly, strong) NSString* mimeType;
 @property (readonly) UInt64 size;
 @property (readonly, strong) NSString* name;
 @property (readonly, strong) ZMAssetImageMetaData* image;
 @property (readonly, strong) ZMAssetVideoMetaData* video;
 @property (readonly, strong) ZMAssetAudioMetaData* audio;
+@property (readonly, strong) NSString* source;
+@property (readonly, strong) NSString* caption;
 
 + (instancetype) defaultInstance;
 - (instancetype) defaultInstance;
@@ -1674,6 +1702,16 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 - (ZMAssetOriginalBuilder*) setAudioBuilder:(ZMAssetAudioMetaDataBuilder*) builderForValue;
 - (ZMAssetOriginalBuilder*) mergeAudio:(ZMAssetAudioMetaData*) value;
 - (ZMAssetOriginalBuilder*) clearAudio;
+
+- (BOOL) hasSource;
+- (NSString*) source;
+- (ZMAssetOriginalBuilder*) setSource:(NSString*) value;
+- (ZMAssetOriginalBuilder*) clearSource;
+
+- (BOOL) hasCaption;
+- (NSString*) caption;
+- (ZMAssetOriginalBuilder*) setCaption:(NSString*) value;
+- (ZMAssetOriginalBuilder*) clearCaption;
 @end
 
 #define Preview_mime_type @"mimeType"
@@ -2252,6 +2290,190 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 - (NSString*) content;
 - (ZMCallingBuilder*) setContent:(NSString*) value;
 - (ZMCallingBuilder*) clearContent;
+@end
+
+#define Poll_content @"content"
+#define Poll_vote @"vote"
+@interface ZMPoll : PBGeneratedMessage<GeneratedMessageProtocol> {
+@private
+  BOOL hasContent_:1;
+  BOOL hasVote_:1;
+  ZMPollContent* content;
+  ZMPollVote* vote;
+}
+- (BOOL) hasContent;
+- (BOOL) hasVote;
+@property (readonly, strong) ZMPollContent* content;
+@property (readonly, strong) ZMPollVote* vote;
+
++ (instancetype) defaultInstance;
+- (instancetype) defaultInstance;
+
+- (BOOL) isInitialized;
+- (void) writeToCodedOutputStream:(PBCodedOutputStream*) output;
+- (ZMPollBuilder*) builder;
++ (ZMPollBuilder*) builder;
++ (ZMPollBuilder*) builderWithPrototype:(ZMPoll*) prototype;
+- (ZMPollBuilder*) toBuilder;
+
++ (ZMPoll*) parseFromData:(NSData*) data;
++ (ZMPoll*) parseFromData:(NSData*) data extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
++ (ZMPoll*) parseFromInputStream:(NSInputStream*) input;
++ (ZMPoll*) parseFromInputStream:(NSInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
++ (ZMPoll*) parseFromCodedInputStream:(PBCodedInputStream*) input;
++ (ZMPoll*) parseFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
+@end
+
+@interface ZMPollBuilder : PBGeneratedMessageBuilder {
+@private
+  ZMPoll* resultPoll;
+}
+
+- (ZMPoll*) defaultInstance;
+
+- (ZMPollBuilder*) clear;
+- (ZMPollBuilder*) clone;
+
+- (ZMPoll*) build;
+- (ZMPoll*) buildPartial;
+
+- (ZMPollBuilder*) mergeFrom:(ZMPoll*) other;
+- (ZMPollBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input;
+- (ZMPollBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
+
+- (BOOL) hasContent;
+- (ZMPollContent*) content;
+- (ZMPollBuilder*) setContent:(ZMPollContent*) value;
+- (ZMPollBuilder*) setContentBuilder:(ZMPollContentBuilder*) builderForValue;
+- (ZMPollBuilder*) mergeContent:(ZMPollContent*) value;
+- (ZMPollBuilder*) clearContent;
+
+- (BOOL) hasVote;
+- (ZMPollVote*) vote;
+- (ZMPollBuilder*) setVote:(ZMPollVote*) value;
+- (ZMPollBuilder*) setVoteBuilder:(ZMPollVoteBuilder*) builderForValue;
+- (ZMPollBuilder*) mergeVote:(ZMPollVote*) value;
+- (ZMPollBuilder*) clearVote;
+@end
+
+#define PollContent_options @"options"
+@interface ZMPollContent : PBGeneratedMessage<GeneratedMessageProtocol> {
+@private
+  NSMutableArray * optionsArray;
+}
+@property (readonly, strong) NSArray * options;
+- (NSString*)optionsAtIndex:(NSUInteger)index;
+
++ (instancetype) defaultInstance;
+- (instancetype) defaultInstance;
+
+- (BOOL) isInitialized;
+- (void) writeToCodedOutputStream:(PBCodedOutputStream*) output;
+- (ZMPollContentBuilder*) builder;
++ (ZMPollContentBuilder*) builder;
++ (ZMPollContentBuilder*) builderWithPrototype:(ZMPollContent*) prototype;
+- (ZMPollContentBuilder*) toBuilder;
+
++ (ZMPollContent*) parseFromData:(NSData*) data;
++ (ZMPollContent*) parseFromData:(NSData*) data extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
++ (ZMPollContent*) parseFromInputStream:(NSInputStream*) input;
++ (ZMPollContent*) parseFromInputStream:(NSInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
++ (ZMPollContent*) parseFromCodedInputStream:(PBCodedInputStream*) input;
++ (ZMPollContent*) parseFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
+@end
+
+@interface ZMPollContentBuilder : PBGeneratedMessageBuilder {
+@private
+  ZMPollContent* resultPollContent;
+}
+
+- (ZMPollContent*) defaultInstance;
+
+- (ZMPollContentBuilder*) clear;
+- (ZMPollContentBuilder*) clone;
+
+- (ZMPollContent*) build;
+- (ZMPollContent*) buildPartial;
+
+- (ZMPollContentBuilder*) mergeFrom:(ZMPollContent*) other;
+- (ZMPollContentBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input;
+- (ZMPollContentBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
+
+- (NSMutableArray *)options;
+- (NSString*)optionsAtIndex:(NSUInteger)index;
+- (ZMPollContentBuilder *)addOptions:(NSString*)value;
+- (ZMPollContentBuilder *)setOptionsArray:(NSArray *)array;
+- (ZMPollContentBuilder *)clearOptions;
+@end
+
+#define PollVote_voted_option @"votedOption"
+#define PollVote_sequence @"sequence"
+#define PollVote_tie_breaker @"tieBreaker"
+@interface ZMPollVote : PBGeneratedMessage<GeneratedMessageProtocol> {
+@private
+  BOOL hasSequence_:1;
+  BOOL hasTieBreaker_:1;
+  BOOL hasVotedOption_:1;
+  SInt64 sequence;
+  SInt64 tieBreaker;
+  SInt32 votedOption;
+}
+- (BOOL) hasVotedOption;
+- (BOOL) hasSequence;
+- (BOOL) hasTieBreaker;
+@property (readonly) SInt32 votedOption;
+@property (readonly) SInt64 sequence;
+@property (readonly) SInt64 tieBreaker;
+
++ (instancetype) defaultInstance;
+- (instancetype) defaultInstance;
+
+- (BOOL) isInitialized;
+- (void) writeToCodedOutputStream:(PBCodedOutputStream*) output;
+- (ZMPollVoteBuilder*) builder;
++ (ZMPollVoteBuilder*) builder;
++ (ZMPollVoteBuilder*) builderWithPrototype:(ZMPollVote*) prototype;
+- (ZMPollVoteBuilder*) toBuilder;
+
++ (ZMPollVote*) parseFromData:(NSData*) data;
++ (ZMPollVote*) parseFromData:(NSData*) data extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
++ (ZMPollVote*) parseFromInputStream:(NSInputStream*) input;
++ (ZMPollVote*) parseFromInputStream:(NSInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
++ (ZMPollVote*) parseFromCodedInputStream:(PBCodedInputStream*) input;
++ (ZMPollVote*) parseFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
+@end
+
+@interface ZMPollVoteBuilder : PBGeneratedMessageBuilder {
+@private
+  ZMPollVote* resultPollVote;
+}
+
+- (ZMPollVote*) defaultInstance;
+
+- (ZMPollVoteBuilder*) clear;
+- (ZMPollVoteBuilder*) clone;
+
+- (ZMPollVote*) build;
+- (ZMPollVote*) buildPartial;
+
+- (ZMPollVoteBuilder*) mergeFrom:(ZMPollVote*) other;
+- (ZMPollVoteBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input;
+- (ZMPollVoteBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
+
+- (BOOL) hasVotedOption;
+- (SInt32) votedOption;
+- (ZMPollVoteBuilder*) setVotedOption:(SInt32) value;
+- (ZMPollVoteBuilder*) clearVotedOption;
+
+- (BOOL) hasSequence;
+- (SInt64) sequence;
+- (ZMPollVoteBuilder*) setSequence:(SInt64) value;
+- (ZMPollVoteBuilder*) clearSequence;
+
+- (BOOL) hasTieBreaker;
+- (SInt64) tieBreaker;
+- (ZMPollVoteBuilder*) setTieBreaker:(SInt64) value;
+- (ZMPollVoteBuilder*) clearTieBreaker;
 @end
 
 

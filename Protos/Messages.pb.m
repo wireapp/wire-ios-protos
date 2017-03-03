@@ -73,6 +73,7 @@ NSString *NSStringFromZMClientAction(ZMClientAction value) {
 @property (strong) ZMConfirmation* confirmation;
 @property (strong) ZMReaction* reaction;
 @property (strong) ZMEphemeral* ephemeral;
+@property (strong) ZMPoll* poll;
 @end
 
 @implementation ZMGenericMessage
@@ -196,6 +197,13 @@ NSString *NSStringFromZMClientAction(ZMClientAction value) {
   hasEphemeral_ = !!_value_;
 }
 @synthesize ephemeral;
+- (BOOL) hasPoll {
+  return !!hasPoll_;
+}
+- (void) setHasPoll:(BOOL) _value_ {
+  hasPoll_ = !!_value_;
+}
+@synthesize poll;
 - (instancetype) init {
   if ((self = [super init])) {
     self.messageId = @"";
@@ -215,6 +223,7 @@ NSString *NSStringFromZMClientAction(ZMClientAction value) {
     self.confirmation = [ZMConfirmation defaultInstance];
     self.reaction = [ZMReaction defaultInstance];
     self.ephemeral = [ZMEphemeral defaultInstance];
+    self.poll = [ZMPoll defaultInstance];
   }
   return self;
 }
@@ -309,6 +318,11 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
       return NO;
     }
   }
+  if (self.hasPoll) {
+    if (!self.poll.isInitialized) {
+      return NO;
+    }
+  }
   return YES;
 }
 - (void) writeToCodedOutputStream:(PBCodedOutputStream*) output {
@@ -362,6 +376,9 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
   }
   if (self.hasEphemeral) {
     [output writeMessage:18 value:self.ephemeral];
+  }
+  if (self.hasPoll) {
+    [output writeMessage:19 value:self.poll];
   }
   [self.unknownFields writeToCodedOutputStream:output];
 }
@@ -422,6 +439,9 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
   }
   if (self.hasEphemeral) {
     size_ += computeMessageSize(18, self.ephemeral);
+  }
+  if (self.hasPoll) {
+    size_ += computeMessageSize(19, self.poll);
   }
   size_ += self.unknownFields.serializedSize;
   memoizedSerializedSize = size_;
@@ -554,6 +574,12 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
                          withIndent:[NSString stringWithFormat:@"%@  ", indent]];
     [output appendFormat:@"%@}\n", indent];
   }
+  if (self.hasPoll) {
+    [output appendFormat:@"%@%@ {\n", indent, @"poll"];
+    [self.poll writeDescriptionTo:output
+                         withIndent:[NSString stringWithFormat:@"%@  ", indent]];
+    [output appendFormat:@"%@}\n", indent];
+  }
   [self.unknownFields writeDescriptionTo:output withIndent:indent];
 }
 - (void) storeInDictionary:(NSMutableDictionary *)dictionary {
@@ -638,6 +664,11 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
    [self.ephemeral storeInDictionary:messageDictionary];
    [dictionary setObject:[NSDictionary dictionaryWithDictionary:messageDictionary] forKey:@"ephemeral"];
   }
+  if (self.hasPoll) {
+   NSMutableDictionary *messageDictionary = [NSMutableDictionary dictionary]; 
+   [self.poll storeInDictionary:messageDictionary];
+   [dictionary setObject:[NSDictionary dictionaryWithDictionary:messageDictionary] forKey:@"poll"];
+  }
   [self.unknownFields storeInDictionary:dictionary];
 }
 - (BOOL) isEqual:(id)other {
@@ -683,6 +714,8 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
       (!self.hasReaction || [self.reaction isEqual:otherMessage.reaction]) &&
       self.hasEphemeral == otherMessage.hasEphemeral &&
       (!self.hasEphemeral || [self.ephemeral isEqual:otherMessage.ephemeral]) &&
+      self.hasPoll == otherMessage.hasPoll &&
+      (!self.hasPoll || [self.poll isEqual:otherMessage.poll]) &&
       (self.unknownFields == otherMessage.unknownFields || (self.unknownFields != nil && [self.unknownFields isEqual:otherMessage.unknownFields]));
 }
 - (NSUInteger) hash {
@@ -737,6 +770,9 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
   }
   if (self.hasEphemeral) {
     hashCode = hashCode * 31 + [self.ephemeral hash];
+  }
+  if (self.hasPoll) {
+    hashCode = hashCode * 31 + [self.poll hash];
   }
   hashCode = hashCode * 31 + [self.unknownFields hash];
   return hashCode;
@@ -831,6 +867,9 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
   }
   if (other.hasEphemeral) {
     [self mergeEphemeral:other.ephemeral];
+  }
+  if (other.hasPoll) {
+    [self mergePoll:other.poll];
   }
   [self mergeUnknownFields:other.unknownFields];
   return self;
@@ -999,6 +1038,15 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
         }
         [input readMessage:subBuilder extensionRegistry:extensionRegistry];
         [self setEphemeral:[subBuilder buildPartial]];
+        break;
+      }
+      case 154: {
+        ZMPollBuilder* subBuilder = [ZMPoll builder];
+        if (self.hasPoll) {
+          [subBuilder mergeFrom:self.poll];
+        }
+        [input readMessage:subBuilder extensionRegistry:extensionRegistry];
+        [self setPoll:[subBuilder buildPartial]];
         break;
       }
     }
@@ -1484,6 +1532,36 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
 - (ZMGenericMessageBuilder*) clearEphemeral {
   resultGenericMessage.hasEphemeral = NO;
   resultGenericMessage.ephemeral = [ZMEphemeral defaultInstance];
+  return self;
+}
+- (BOOL) hasPoll {
+  return resultGenericMessage.hasPoll;
+}
+- (ZMPoll*) poll {
+  return resultGenericMessage.poll;
+}
+- (ZMGenericMessageBuilder*) setPoll:(ZMPoll*) value {
+  resultGenericMessage.hasPoll = YES;
+  resultGenericMessage.poll = value;
+  return self;
+}
+- (ZMGenericMessageBuilder*) setPollBuilder:(ZMPollBuilder*) builderForValue {
+  return [self setPoll:[builderForValue build]];
+}
+- (ZMGenericMessageBuilder*) mergePoll:(ZMPoll*) value {
+  if (resultGenericMessage.hasPoll &&
+      resultGenericMessage.poll != [ZMPoll defaultInstance]) {
+    resultGenericMessage.poll =
+      [[[ZMPoll builderWithPrototype:resultGenericMessage.poll] mergeFrom:value] buildPartial];
+  } else {
+    resultGenericMessage.poll = value;
+  }
+  resultGenericMessage.hasPoll = YES;
+  return self;
+}
+- (ZMGenericMessageBuilder*) clearPoll {
+  resultGenericMessage.hasPoll = NO;
+  resultGenericMessage.poll = [ZMPoll defaultInstance];
   return self;
 }
 @end
@@ -7087,6 +7165,8 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value) {
 @property (strong) ZMAssetImageMetaData* image;
 @property (strong) ZMAssetVideoMetaData* video;
 @property (strong) ZMAssetAudioMetaData* audio;
+@property (strong) NSString* source;
+@property (strong) NSString* caption;
 @end
 
 @implementation ZMAssetOriginal
@@ -7133,6 +7213,20 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value) {
   hasAudio_ = !!_value_;
 }
 @synthesize audio;
+- (BOOL) hasSource {
+  return !!hasSource_;
+}
+- (void) setHasSource:(BOOL) _value_ {
+  hasSource_ = !!_value_;
+}
+@synthesize source;
+- (BOOL) hasCaption {
+  return !!hasCaption_;
+}
+- (void) setHasCaption:(BOOL) _value_ {
+  hasCaption_ = !!_value_;
+}
+@synthesize caption;
 - (instancetype) init {
   if ((self = [super init])) {
     self.mimeType = @"";
@@ -7141,6 +7235,8 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value) {
     self.image = [ZMAssetImageMetaData defaultInstance];
     self.video = [ZMAssetVideoMetaData defaultInstance];
     self.audio = [ZMAssetAudioMetaData defaultInstance];
+    self.source = @"";
+    self.caption = @"";
   }
   return self;
 }
@@ -7189,6 +7285,12 @@ static ZMAssetOriginal* defaultZMAssetOriginalInstance = nil;
   if (self.hasAudio) {
     [output writeMessage:6 value:self.audio];
   }
+  if (self.hasSource) {
+    [output writeString:7 value:self.source];
+  }
+  if (self.hasCaption) {
+    [output writeString:8 value:self.caption];
+  }
   [self.unknownFields writeToCodedOutputStream:output];
 }
 - (SInt32) serializedSize {
@@ -7215,6 +7317,12 @@ static ZMAssetOriginal* defaultZMAssetOriginalInstance = nil;
   }
   if (self.hasAudio) {
     size_ += computeMessageSize(6, self.audio);
+  }
+  if (self.hasSource) {
+    size_ += computeStringSize(7, self.source);
+  }
+  if (self.hasCaption) {
+    size_ += computeStringSize(8, self.caption);
   }
   size_ += self.unknownFields.serializedSize;
   memoizedSerializedSize = size_;
@@ -7278,6 +7386,12 @@ static ZMAssetOriginal* defaultZMAssetOriginalInstance = nil;
                          withIndent:[NSString stringWithFormat:@"%@  ", indent]];
     [output appendFormat:@"%@}\n", indent];
   }
+  if (self.hasSource) {
+    [output appendFormat:@"%@%@: %@\n", indent, @"source", self.source];
+  }
+  if (self.hasCaption) {
+    [output appendFormat:@"%@%@: %@\n", indent, @"caption", self.caption];
+  }
   [self.unknownFields writeDescriptionTo:output withIndent:indent];
 }
 - (void) storeInDictionary:(NSMutableDictionary *)dictionary {
@@ -7305,6 +7419,12 @@ static ZMAssetOriginal* defaultZMAssetOriginalInstance = nil;
    [self.audio storeInDictionary:messageDictionary];
    [dictionary setObject:[NSDictionary dictionaryWithDictionary:messageDictionary] forKey:@"audio"];
   }
+  if (self.hasSource) {
+    [dictionary setObject: self.source forKey: @"source"];
+  }
+  if (self.hasCaption) {
+    [dictionary setObject: self.caption forKey: @"caption"];
+  }
   [self.unknownFields storeInDictionary:dictionary];
 }
 - (BOOL) isEqual:(id)other {
@@ -7328,6 +7448,10 @@ static ZMAssetOriginal* defaultZMAssetOriginalInstance = nil;
       (!self.hasVideo || [self.video isEqual:otherMessage.video]) &&
       self.hasAudio == otherMessage.hasAudio &&
       (!self.hasAudio || [self.audio isEqual:otherMessage.audio]) &&
+      self.hasSource == otherMessage.hasSource &&
+      (!self.hasSource || [self.source isEqual:otherMessage.source]) &&
+      self.hasCaption == otherMessage.hasCaption &&
+      (!self.hasCaption || [self.caption isEqual:otherMessage.caption]) &&
       (self.unknownFields == otherMessage.unknownFields || (self.unknownFields != nil && [self.unknownFields isEqual:otherMessage.unknownFields]));
 }
 - (NSUInteger) hash {
@@ -7349,6 +7473,12 @@ static ZMAssetOriginal* defaultZMAssetOriginalInstance = nil;
   }
   if (self.hasAudio) {
     hashCode = hashCode * 31 + [self.audio hash];
+  }
+  if (self.hasSource) {
+    hashCode = hashCode * 31 + [self.source hash];
+  }
+  if (self.hasCaption) {
+    hashCode = hashCode * 31 + [self.caption hash];
   }
   hashCode = hashCode * 31 + [self.unknownFields hash];
   return hashCode;
@@ -7411,6 +7541,12 @@ static ZMAssetOriginal* defaultZMAssetOriginalInstance = nil;
   if (other.hasAudio) {
     [self mergeAudio:other.audio];
   }
+  if (other.hasSource) {
+    [self setSource:other.source];
+  }
+  if (other.hasCaption) {
+    [self setCaption:other.caption];
+  }
   [self mergeUnknownFields:other.unknownFields];
   return self;
 }
@@ -7469,6 +7605,14 @@ static ZMAssetOriginal* defaultZMAssetOriginalInstance = nil;
         }
         [input readMessage:subBuilder extensionRegistry:extensionRegistry];
         [self setAudio:[subBuilder buildPartial]];
+        break;
+      }
+      case 58: {
+        [self setSource:[input readString]];
+        break;
+      }
+      case 66: {
+        [self setCaption:[input readString]];
         break;
       }
     }
@@ -7610,6 +7754,38 @@ static ZMAssetOriginal* defaultZMAssetOriginalInstance = nil;
 - (ZMAssetOriginalBuilder*) clearAudio {
   resultOriginal.hasAudio = NO;
   resultOriginal.audio = [ZMAssetAudioMetaData defaultInstance];
+  return self;
+}
+- (BOOL) hasSource {
+  return resultOriginal.hasSource;
+}
+- (NSString*) source {
+  return resultOriginal.source;
+}
+- (ZMAssetOriginalBuilder*) setSource:(NSString*) value {
+  resultOriginal.hasSource = YES;
+  resultOriginal.source = value;
+  return self;
+}
+- (ZMAssetOriginalBuilder*) clearSource {
+  resultOriginal.hasSource = NO;
+  resultOriginal.source = @"";
+  return self;
+}
+- (BOOL) hasCaption {
+  return resultOriginal.hasCaption;
+}
+- (NSString*) caption {
+  return resultOriginal.caption;
+}
+- (ZMAssetOriginalBuilder*) setCaption:(NSString*) value {
+  resultOriginal.hasCaption = YES;
+  resultOriginal.caption = value;
+  return self;
+}
+- (ZMAssetOriginalBuilder*) clearCaption {
+  resultOriginal.hasCaption = NO;
+  resultOriginal.caption = @"";
   return self;
 }
 @end
@@ -10198,6 +10374,845 @@ static ZMCalling* defaultZMCallingInstance = nil;
 - (ZMCallingBuilder*) clearContent {
   resultCalling.hasContent = NO;
   resultCalling.content = @"";
+  return self;
+}
+@end
+
+@interface ZMPoll ()
+@property (strong) ZMPollContent* content;
+@property (strong) ZMPollVote* vote;
+@end
+
+@implementation ZMPoll
+
+- (BOOL) hasContent {
+  return !!hasContent_;
+}
+- (void) setHasContent:(BOOL) _value_ {
+  hasContent_ = !!_value_;
+}
+@synthesize content;
+- (BOOL) hasVote {
+  return !!hasVote_;
+}
+- (void) setHasVote:(BOOL) _value_ {
+  hasVote_ = !!_value_;
+}
+@synthesize vote;
+- (instancetype) init {
+  if ((self = [super init])) {
+    self.content = [ZMPollContent defaultInstance];
+    self.vote = [ZMPollVote defaultInstance];
+  }
+  return self;
+}
+static ZMPoll* defaultZMPollInstance = nil;
++ (void) initialize {
+  if (self == [ZMPoll class]) {
+    defaultZMPollInstance = [[ZMPoll alloc] init];
+  }
+}
++ (instancetype) defaultInstance {
+  return defaultZMPollInstance;
+}
+- (instancetype) defaultInstance {
+  return defaultZMPollInstance;
+}
+- (BOOL) isInitialized {
+  if (self.hasVote) {
+    if (!self.vote.isInitialized) {
+      return NO;
+    }
+  }
+  return YES;
+}
+- (void) writeToCodedOutputStream:(PBCodedOutputStream*) output {
+  if (self.hasContent) {
+    [output writeMessage:1 value:self.content];
+  }
+  if (self.hasVote) {
+    [output writeMessage:2 value:self.vote];
+  }
+  [self.unknownFields writeToCodedOutputStream:output];
+}
+- (SInt32) serializedSize {
+  __block SInt32 size_ = memoizedSerializedSize;
+  if (size_ != -1) {
+    return size_;
+  }
+
+  size_ = 0;
+  if (self.hasContent) {
+    size_ += computeMessageSize(1, self.content);
+  }
+  if (self.hasVote) {
+    size_ += computeMessageSize(2, self.vote);
+  }
+  size_ += self.unknownFields.serializedSize;
+  memoizedSerializedSize = size_;
+  return size_;
+}
++ (ZMPoll*) parseFromData:(NSData*) data {
+  return (ZMPoll*)[[[ZMPoll builder] mergeFromData:data] build];
+}
++ (ZMPoll*) parseFromData:(NSData*) data extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  return (ZMPoll*)[[[ZMPoll builder] mergeFromData:data extensionRegistry:extensionRegistry] build];
+}
++ (ZMPoll*) parseFromInputStream:(NSInputStream*) input {
+  return (ZMPoll*)[[[ZMPoll builder] mergeFromInputStream:input] build];
+}
++ (ZMPoll*) parseFromInputStream:(NSInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  return (ZMPoll*)[[[ZMPoll builder] mergeFromInputStream:input extensionRegistry:extensionRegistry] build];
+}
++ (ZMPoll*) parseFromCodedInputStream:(PBCodedInputStream*) input {
+  return (ZMPoll*)[[[ZMPoll builder] mergeFromCodedInputStream:input] build];
+}
++ (ZMPoll*) parseFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  return (ZMPoll*)[[[ZMPoll builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
+}
++ (ZMPollBuilder*) builder {
+  return [[ZMPollBuilder alloc] init];
+}
++ (ZMPollBuilder*) builderWithPrototype:(ZMPoll*) prototype {
+  return [[ZMPoll builder] mergeFrom:prototype];
+}
+- (ZMPollBuilder*) builder {
+  return [ZMPoll builder];
+}
+- (ZMPollBuilder*) toBuilder {
+  return [ZMPoll builderWithPrototype:self];
+}
+- (void) writeDescriptionTo:(NSMutableString*) output withIndent:(NSString*) indent {
+  if (self.hasContent) {
+    [output appendFormat:@"%@%@ {\n", indent, @"content"];
+    [self.content writeDescriptionTo:output
+                         withIndent:[NSString stringWithFormat:@"%@  ", indent]];
+    [output appendFormat:@"%@}\n", indent];
+  }
+  if (self.hasVote) {
+    [output appendFormat:@"%@%@ {\n", indent, @"vote"];
+    [self.vote writeDescriptionTo:output
+                         withIndent:[NSString stringWithFormat:@"%@  ", indent]];
+    [output appendFormat:@"%@}\n", indent];
+  }
+  [self.unknownFields writeDescriptionTo:output withIndent:indent];
+}
+- (void) storeInDictionary:(NSMutableDictionary *)dictionary {
+  if (self.hasContent) {
+   NSMutableDictionary *messageDictionary = [NSMutableDictionary dictionary]; 
+   [self.content storeInDictionary:messageDictionary];
+   [dictionary setObject:[NSDictionary dictionaryWithDictionary:messageDictionary] forKey:@"content"];
+  }
+  if (self.hasVote) {
+   NSMutableDictionary *messageDictionary = [NSMutableDictionary dictionary]; 
+   [self.vote storeInDictionary:messageDictionary];
+   [dictionary setObject:[NSDictionary dictionaryWithDictionary:messageDictionary] forKey:@"vote"];
+  }
+  [self.unknownFields storeInDictionary:dictionary];
+}
+- (BOOL) isEqual:(id)other {
+  if (other == self) {
+    return YES;
+  }
+  if (![other isKindOfClass:[ZMPoll class]]) {
+    return NO;
+  }
+  ZMPoll *otherMessage = other;
+  return
+      self.hasContent == otherMessage.hasContent &&
+      (!self.hasContent || [self.content isEqual:otherMessage.content]) &&
+      self.hasVote == otherMessage.hasVote &&
+      (!self.hasVote || [self.vote isEqual:otherMessage.vote]) &&
+      (self.unknownFields == otherMessage.unknownFields || (self.unknownFields != nil && [self.unknownFields isEqual:otherMessage.unknownFields]));
+}
+- (NSUInteger) hash {
+  __block NSUInteger hashCode = 7;
+  if (self.hasContent) {
+    hashCode = hashCode * 31 + [self.content hash];
+  }
+  if (self.hasVote) {
+    hashCode = hashCode * 31 + [self.vote hash];
+  }
+  hashCode = hashCode * 31 + [self.unknownFields hash];
+  return hashCode;
+}
+@end
+
+@interface ZMPollBuilder()
+@property (strong) ZMPoll* resultPoll;
+@end
+
+@implementation ZMPollBuilder
+@synthesize resultPoll;
+- (instancetype) init {
+  if ((self = [super init])) {
+    self.resultPoll = [[ZMPoll alloc] init];
+  }
+  return self;
+}
+- (PBGeneratedMessage*) internalGetResult {
+  return resultPoll;
+}
+- (ZMPollBuilder*) clear {
+  self.resultPoll = [[ZMPoll alloc] init];
+  return self;
+}
+- (ZMPollBuilder*) clone {
+  return [ZMPoll builderWithPrototype:resultPoll];
+}
+- (ZMPoll*) defaultInstance {
+  return [ZMPoll defaultInstance];
+}
+- (ZMPoll*) build {
+  [self checkInitialized];
+  return [self buildPartial];
+}
+- (ZMPoll*) buildPartial {
+  ZMPoll* returnMe = resultPoll;
+  self.resultPoll = nil;
+  return returnMe;
+}
+- (ZMPollBuilder*) mergeFrom:(ZMPoll*) other {
+  if (other == [ZMPoll defaultInstance]) {
+    return self;
+  }
+  if (other.hasContent) {
+    [self mergeContent:other.content];
+  }
+  if (other.hasVote) {
+    [self mergeVote:other.vote];
+  }
+  [self mergeUnknownFields:other.unknownFields];
+  return self;
+}
+- (ZMPollBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input {
+  return [self mergeFromCodedInputStream:input extensionRegistry:[PBExtensionRegistry emptyRegistry]];
+}
+- (ZMPollBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  PBUnknownFieldSetBuilder* unknownFields = [PBUnknownFieldSet builderWithUnknownFields:self.unknownFields];
+  while (YES) {
+    SInt32 tag = [input readTag];
+    switch (tag) {
+      case 0:
+        [self setUnknownFields:[unknownFields build]];
+        return self;
+      default: {
+        if (![self parseUnknownField:input unknownFields:unknownFields extensionRegistry:extensionRegistry tag:tag]) {
+          [self setUnknownFields:[unknownFields build]];
+          return self;
+        }
+        break;
+      }
+      case 10: {
+        ZMPollContentBuilder* subBuilder = [ZMPollContent builder];
+        if (self.hasContent) {
+          [subBuilder mergeFrom:self.content];
+        }
+        [input readMessage:subBuilder extensionRegistry:extensionRegistry];
+        [self setContent:[subBuilder buildPartial]];
+        break;
+      }
+      case 18: {
+        ZMPollVoteBuilder* subBuilder = [ZMPollVote builder];
+        if (self.hasVote) {
+          [subBuilder mergeFrom:self.vote];
+        }
+        [input readMessage:subBuilder extensionRegistry:extensionRegistry];
+        [self setVote:[subBuilder buildPartial]];
+        break;
+      }
+    }
+  }
+}
+- (BOOL) hasContent {
+  return resultPoll.hasContent;
+}
+- (ZMPollContent*) content {
+  return resultPoll.content;
+}
+- (ZMPollBuilder*) setContent:(ZMPollContent*) value {
+  resultPoll.hasContent = YES;
+  resultPoll.content = value;
+  return self;
+}
+- (ZMPollBuilder*) setContentBuilder:(ZMPollContentBuilder*) builderForValue {
+  return [self setContent:[builderForValue build]];
+}
+- (ZMPollBuilder*) mergeContent:(ZMPollContent*) value {
+  if (resultPoll.hasContent &&
+      resultPoll.content != [ZMPollContent defaultInstance]) {
+    resultPoll.content =
+      [[[ZMPollContent builderWithPrototype:resultPoll.content] mergeFrom:value] buildPartial];
+  } else {
+    resultPoll.content = value;
+  }
+  resultPoll.hasContent = YES;
+  return self;
+}
+- (ZMPollBuilder*) clearContent {
+  resultPoll.hasContent = NO;
+  resultPoll.content = [ZMPollContent defaultInstance];
+  return self;
+}
+- (BOOL) hasVote {
+  return resultPoll.hasVote;
+}
+- (ZMPollVote*) vote {
+  return resultPoll.vote;
+}
+- (ZMPollBuilder*) setVote:(ZMPollVote*) value {
+  resultPoll.hasVote = YES;
+  resultPoll.vote = value;
+  return self;
+}
+- (ZMPollBuilder*) setVoteBuilder:(ZMPollVoteBuilder*) builderForValue {
+  return [self setVote:[builderForValue build]];
+}
+- (ZMPollBuilder*) mergeVote:(ZMPollVote*) value {
+  if (resultPoll.hasVote &&
+      resultPoll.vote != [ZMPollVote defaultInstance]) {
+    resultPoll.vote =
+      [[[ZMPollVote builderWithPrototype:resultPoll.vote] mergeFrom:value] buildPartial];
+  } else {
+    resultPoll.vote = value;
+  }
+  resultPoll.hasVote = YES;
+  return self;
+}
+- (ZMPollBuilder*) clearVote {
+  resultPoll.hasVote = NO;
+  resultPoll.vote = [ZMPollVote defaultInstance];
+  return self;
+}
+@end
+
+@interface ZMPollContent ()
+@property (strong) NSMutableArray * optionsArray;
+@end
+
+@implementation ZMPollContent
+
+@synthesize optionsArray;
+@dynamic options;
+- (instancetype) init {
+  if ((self = [super init])) {
+  }
+  return self;
+}
+static ZMPollContent* defaultZMPollContentInstance = nil;
++ (void) initialize {
+  if (self == [ZMPollContent class]) {
+    defaultZMPollContentInstance = [[ZMPollContent alloc] init];
+  }
+}
++ (instancetype) defaultInstance {
+  return defaultZMPollContentInstance;
+}
+- (instancetype) defaultInstance {
+  return defaultZMPollContentInstance;
+}
+- (NSArray *)options {
+  return optionsArray;
+}
+- (NSString*)optionsAtIndex:(NSUInteger)index {
+  return [optionsArray objectAtIndex:index];
+}
+- (BOOL) isInitialized {
+  return YES;
+}
+- (void) writeToCodedOutputStream:(PBCodedOutputStream*) output {
+  [self.optionsArray enumerateObjectsUsingBlock:^(NSString *element, NSUInteger idx, BOOL *stop) {
+    [output writeString:1 value:element];
+  }];
+  [self.unknownFields writeToCodedOutputStream:output];
+}
+- (SInt32) serializedSize {
+  __block SInt32 size_ = memoizedSerializedSize;
+  if (size_ != -1) {
+    return size_;
+  }
+
+  size_ = 0;
+  {
+    __block SInt32 dataSize = 0;
+    const NSUInteger count = self.optionsArray.count;
+    [self.optionsArray enumerateObjectsUsingBlock:^(NSString *element, NSUInteger idx, BOOL *stop) {
+      dataSize += computeStringSizeNoTag(element);
+    }];
+    size_ += dataSize;
+    size_ += (SInt32)(1 * count);
+  }
+  size_ += self.unknownFields.serializedSize;
+  memoizedSerializedSize = size_;
+  return size_;
+}
++ (ZMPollContent*) parseFromData:(NSData*) data {
+  return (ZMPollContent*)[[[ZMPollContent builder] mergeFromData:data] build];
+}
++ (ZMPollContent*) parseFromData:(NSData*) data extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  return (ZMPollContent*)[[[ZMPollContent builder] mergeFromData:data extensionRegistry:extensionRegistry] build];
+}
++ (ZMPollContent*) parseFromInputStream:(NSInputStream*) input {
+  return (ZMPollContent*)[[[ZMPollContent builder] mergeFromInputStream:input] build];
+}
++ (ZMPollContent*) parseFromInputStream:(NSInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  return (ZMPollContent*)[[[ZMPollContent builder] mergeFromInputStream:input extensionRegistry:extensionRegistry] build];
+}
++ (ZMPollContent*) parseFromCodedInputStream:(PBCodedInputStream*) input {
+  return (ZMPollContent*)[[[ZMPollContent builder] mergeFromCodedInputStream:input] build];
+}
++ (ZMPollContent*) parseFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  return (ZMPollContent*)[[[ZMPollContent builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
+}
++ (ZMPollContentBuilder*) builder {
+  return [[ZMPollContentBuilder alloc] init];
+}
++ (ZMPollContentBuilder*) builderWithPrototype:(ZMPollContent*) prototype {
+  return [[ZMPollContent builder] mergeFrom:prototype];
+}
+- (ZMPollContentBuilder*) builder {
+  return [ZMPollContent builder];
+}
+- (ZMPollContentBuilder*) toBuilder {
+  return [ZMPollContent builderWithPrototype:self];
+}
+- (void) writeDescriptionTo:(NSMutableString*) output withIndent:(NSString*) indent {
+  [self.optionsArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+    [output appendFormat:@"%@%@: %@\n", indent, @"options", obj];
+  }];
+  [self.unknownFields writeDescriptionTo:output withIndent:indent];
+}
+- (void) storeInDictionary:(NSMutableDictionary *)dictionary {
+  [dictionary setObject:self.options forKey: @"options"];
+  [self.unknownFields storeInDictionary:dictionary];
+}
+- (BOOL) isEqual:(id)other {
+  if (other == self) {
+    return YES;
+  }
+  if (![other isKindOfClass:[ZMPollContent class]]) {
+    return NO;
+  }
+  ZMPollContent *otherMessage = other;
+  return
+      [self.optionsArray isEqualToArray:otherMessage.optionsArray] &&
+      (self.unknownFields == otherMessage.unknownFields || (self.unknownFields != nil && [self.unknownFields isEqual:otherMessage.unknownFields]));
+}
+- (NSUInteger) hash {
+  __block NSUInteger hashCode = 7;
+  [self.optionsArray enumerateObjectsUsingBlock:^(NSString *element, NSUInteger idx, BOOL *stop) {
+    hashCode = hashCode * 31 + [element hash];
+  }];
+  hashCode = hashCode * 31 + [self.unknownFields hash];
+  return hashCode;
+}
+@end
+
+@interface ZMPollContentBuilder()
+@property (strong) ZMPollContent* resultPollContent;
+@end
+
+@implementation ZMPollContentBuilder
+@synthesize resultPollContent;
+- (instancetype) init {
+  if ((self = [super init])) {
+    self.resultPollContent = [[ZMPollContent alloc] init];
+  }
+  return self;
+}
+- (PBGeneratedMessage*) internalGetResult {
+  return resultPollContent;
+}
+- (ZMPollContentBuilder*) clear {
+  self.resultPollContent = [[ZMPollContent alloc] init];
+  return self;
+}
+- (ZMPollContentBuilder*) clone {
+  return [ZMPollContent builderWithPrototype:resultPollContent];
+}
+- (ZMPollContent*) defaultInstance {
+  return [ZMPollContent defaultInstance];
+}
+- (ZMPollContent*) build {
+  [self checkInitialized];
+  return [self buildPartial];
+}
+- (ZMPollContent*) buildPartial {
+  ZMPollContent* returnMe = resultPollContent;
+  self.resultPollContent = nil;
+  return returnMe;
+}
+- (ZMPollContentBuilder*) mergeFrom:(ZMPollContent*) other {
+  if (other == [ZMPollContent defaultInstance]) {
+    return self;
+  }
+  if (other.optionsArray.count > 0) {
+    if (resultPollContent.optionsArray == nil) {
+      resultPollContent.optionsArray = [[NSMutableArray alloc] initWithArray:other.optionsArray];
+    } else {
+      [resultPollContent.optionsArray addObjectsFromArray:other.optionsArray];
+    }
+  }
+  [self mergeUnknownFields:other.unknownFields];
+  return self;
+}
+- (ZMPollContentBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input {
+  return [self mergeFromCodedInputStream:input extensionRegistry:[PBExtensionRegistry emptyRegistry]];
+}
+- (ZMPollContentBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  PBUnknownFieldSetBuilder* unknownFields = [PBUnknownFieldSet builderWithUnknownFields:self.unknownFields];
+  while (YES) {
+    SInt32 tag = [input readTag];
+    switch (tag) {
+      case 0:
+        [self setUnknownFields:[unknownFields build]];
+        return self;
+      default: {
+        if (![self parseUnknownField:input unknownFields:unknownFields extensionRegistry:extensionRegistry tag:tag]) {
+          [self setUnknownFields:[unknownFields build]];
+          return self;
+        }
+        break;
+      }
+      case 10: {
+        [self addOptions:[input readString]];
+        break;
+      }
+    }
+  }
+}
+- (NSMutableArray *)options {
+  return resultPollContent.optionsArray;
+}
+- (NSString*)optionsAtIndex:(NSUInteger)index {
+  return [resultPollContent optionsAtIndex:index];
+}
+- (ZMPollContentBuilder *)addOptions:(NSString*)value {
+  if (resultPollContent.optionsArray == nil) {
+    resultPollContent.optionsArray = [[NSMutableArray alloc]init];
+  }
+  [resultPollContent.optionsArray addObject:value];
+  return self;
+}
+- (ZMPollContentBuilder *)setOptionsArray:(NSArray *)array {
+  resultPollContent.optionsArray = [[NSMutableArray alloc] initWithArray:array];
+  return self;
+}
+- (ZMPollContentBuilder *)clearOptions {
+  resultPollContent.optionsArray = nil;
+  return self;
+}
+@end
+
+@interface ZMPollVote ()
+@property SInt32 votedOption;
+@property SInt64 sequence;
+@property SInt64 tieBreaker;
+@end
+
+@implementation ZMPollVote
+
+- (BOOL) hasVotedOption {
+  return !!hasVotedOption_;
+}
+- (void) setHasVotedOption:(BOOL) _value_ {
+  hasVotedOption_ = !!_value_;
+}
+@synthesize votedOption;
+- (BOOL) hasSequence {
+  return !!hasSequence_;
+}
+- (void) setHasSequence:(BOOL) _value_ {
+  hasSequence_ = !!_value_;
+}
+@synthesize sequence;
+- (BOOL) hasTieBreaker {
+  return !!hasTieBreaker_;
+}
+- (void) setHasTieBreaker:(BOOL) _value_ {
+  hasTieBreaker_ = !!_value_;
+}
+@synthesize tieBreaker;
+- (instancetype) init {
+  if ((self = [super init])) {
+    self.votedOption = 0;
+    self.sequence = 0L;
+    self.tieBreaker = 0L;
+  }
+  return self;
+}
+static ZMPollVote* defaultZMPollVoteInstance = nil;
++ (void) initialize {
+  if (self == [ZMPollVote class]) {
+    defaultZMPollVoteInstance = [[ZMPollVote alloc] init];
+  }
+}
++ (instancetype) defaultInstance {
+  return defaultZMPollVoteInstance;
+}
+- (instancetype) defaultInstance {
+  return defaultZMPollVoteInstance;
+}
+- (BOOL) isInitialized {
+  if (!self.hasVotedOption) {
+    return NO;
+  }
+  if (!self.hasSequence) {
+    return NO;
+  }
+  if (!self.hasTieBreaker) {
+    return NO;
+  }
+  return YES;
+}
+- (void) writeToCodedOutputStream:(PBCodedOutputStream*) output {
+  if (self.hasVotedOption) {
+    [output writeInt32:1 value:self.votedOption];
+  }
+  if (self.hasSequence) {
+    [output writeInt64:2 value:self.sequence];
+  }
+  if (self.hasTieBreaker) {
+    [output writeInt64:3 value:self.tieBreaker];
+  }
+  [self.unknownFields writeToCodedOutputStream:output];
+}
+- (SInt32) serializedSize {
+  __block SInt32 size_ = memoizedSerializedSize;
+  if (size_ != -1) {
+    return size_;
+  }
+
+  size_ = 0;
+  if (self.hasVotedOption) {
+    size_ += computeInt32Size(1, self.votedOption);
+  }
+  if (self.hasSequence) {
+    size_ += computeInt64Size(2, self.sequence);
+  }
+  if (self.hasTieBreaker) {
+    size_ += computeInt64Size(3, self.tieBreaker);
+  }
+  size_ += self.unknownFields.serializedSize;
+  memoizedSerializedSize = size_;
+  return size_;
+}
++ (ZMPollVote*) parseFromData:(NSData*) data {
+  return (ZMPollVote*)[[[ZMPollVote builder] mergeFromData:data] build];
+}
++ (ZMPollVote*) parseFromData:(NSData*) data extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  return (ZMPollVote*)[[[ZMPollVote builder] mergeFromData:data extensionRegistry:extensionRegistry] build];
+}
++ (ZMPollVote*) parseFromInputStream:(NSInputStream*) input {
+  return (ZMPollVote*)[[[ZMPollVote builder] mergeFromInputStream:input] build];
+}
++ (ZMPollVote*) parseFromInputStream:(NSInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  return (ZMPollVote*)[[[ZMPollVote builder] mergeFromInputStream:input extensionRegistry:extensionRegistry] build];
+}
++ (ZMPollVote*) parseFromCodedInputStream:(PBCodedInputStream*) input {
+  return (ZMPollVote*)[[[ZMPollVote builder] mergeFromCodedInputStream:input] build];
+}
++ (ZMPollVote*) parseFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  return (ZMPollVote*)[[[ZMPollVote builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
+}
++ (ZMPollVoteBuilder*) builder {
+  return [[ZMPollVoteBuilder alloc] init];
+}
++ (ZMPollVoteBuilder*) builderWithPrototype:(ZMPollVote*) prototype {
+  return [[ZMPollVote builder] mergeFrom:prototype];
+}
+- (ZMPollVoteBuilder*) builder {
+  return [ZMPollVote builder];
+}
+- (ZMPollVoteBuilder*) toBuilder {
+  return [ZMPollVote builderWithPrototype:self];
+}
+- (void) writeDescriptionTo:(NSMutableString*) output withIndent:(NSString*) indent {
+  if (self.hasVotedOption) {
+    [output appendFormat:@"%@%@: %@\n", indent, @"votedOption", [NSNumber numberWithInteger:self.votedOption]];
+  }
+  if (self.hasSequence) {
+    [output appendFormat:@"%@%@: %@\n", indent, @"sequence", [NSNumber numberWithLongLong:self.sequence]];
+  }
+  if (self.hasTieBreaker) {
+    [output appendFormat:@"%@%@: %@\n", indent, @"tieBreaker", [NSNumber numberWithLongLong:self.tieBreaker]];
+  }
+  [self.unknownFields writeDescriptionTo:output withIndent:indent];
+}
+- (void) storeInDictionary:(NSMutableDictionary *)dictionary {
+  if (self.hasVotedOption) {
+    [dictionary setObject: [NSNumber numberWithInteger:self.votedOption] forKey: @"votedOption"];
+  }
+  if (self.hasSequence) {
+    [dictionary setObject: [NSNumber numberWithLongLong:self.sequence] forKey: @"sequence"];
+  }
+  if (self.hasTieBreaker) {
+    [dictionary setObject: [NSNumber numberWithLongLong:self.tieBreaker] forKey: @"tieBreaker"];
+  }
+  [self.unknownFields storeInDictionary:dictionary];
+}
+- (BOOL) isEqual:(id)other {
+  if (other == self) {
+    return YES;
+  }
+  if (![other isKindOfClass:[ZMPollVote class]]) {
+    return NO;
+  }
+  ZMPollVote *otherMessage = other;
+  return
+      self.hasVotedOption == otherMessage.hasVotedOption &&
+      (!self.hasVotedOption || self.votedOption == otherMessage.votedOption) &&
+      self.hasSequence == otherMessage.hasSequence &&
+      (!self.hasSequence || self.sequence == otherMessage.sequence) &&
+      self.hasTieBreaker == otherMessage.hasTieBreaker &&
+      (!self.hasTieBreaker || self.tieBreaker == otherMessage.tieBreaker) &&
+      (self.unknownFields == otherMessage.unknownFields || (self.unknownFields != nil && [self.unknownFields isEqual:otherMessage.unknownFields]));
+}
+- (NSUInteger) hash {
+  __block NSUInteger hashCode = 7;
+  if (self.hasVotedOption) {
+    hashCode = hashCode * 31 + [[NSNumber numberWithInteger:self.votedOption] hash];
+  }
+  if (self.hasSequence) {
+    hashCode = hashCode * 31 + [[NSNumber numberWithLongLong:self.sequence] hash];
+  }
+  if (self.hasTieBreaker) {
+    hashCode = hashCode * 31 + [[NSNumber numberWithLongLong:self.tieBreaker] hash];
+  }
+  hashCode = hashCode * 31 + [self.unknownFields hash];
+  return hashCode;
+}
+@end
+
+@interface ZMPollVoteBuilder()
+@property (strong) ZMPollVote* resultPollVote;
+@end
+
+@implementation ZMPollVoteBuilder
+@synthesize resultPollVote;
+- (instancetype) init {
+  if ((self = [super init])) {
+    self.resultPollVote = [[ZMPollVote alloc] init];
+  }
+  return self;
+}
+- (PBGeneratedMessage*) internalGetResult {
+  return resultPollVote;
+}
+- (ZMPollVoteBuilder*) clear {
+  self.resultPollVote = [[ZMPollVote alloc] init];
+  return self;
+}
+- (ZMPollVoteBuilder*) clone {
+  return [ZMPollVote builderWithPrototype:resultPollVote];
+}
+- (ZMPollVote*) defaultInstance {
+  return [ZMPollVote defaultInstance];
+}
+- (ZMPollVote*) build {
+  [self checkInitialized];
+  return [self buildPartial];
+}
+- (ZMPollVote*) buildPartial {
+  ZMPollVote* returnMe = resultPollVote;
+  self.resultPollVote = nil;
+  return returnMe;
+}
+- (ZMPollVoteBuilder*) mergeFrom:(ZMPollVote*) other {
+  if (other == [ZMPollVote defaultInstance]) {
+    return self;
+  }
+  if (other.hasVotedOption) {
+    [self setVotedOption:other.votedOption];
+  }
+  if (other.hasSequence) {
+    [self setSequence:other.sequence];
+  }
+  if (other.hasTieBreaker) {
+    [self setTieBreaker:other.tieBreaker];
+  }
+  [self mergeUnknownFields:other.unknownFields];
+  return self;
+}
+- (ZMPollVoteBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input {
+  return [self mergeFromCodedInputStream:input extensionRegistry:[PBExtensionRegistry emptyRegistry]];
+}
+- (ZMPollVoteBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  PBUnknownFieldSetBuilder* unknownFields = [PBUnknownFieldSet builderWithUnknownFields:self.unknownFields];
+  while (YES) {
+    SInt32 tag = [input readTag];
+    switch (tag) {
+      case 0:
+        [self setUnknownFields:[unknownFields build]];
+        return self;
+      default: {
+        if (![self parseUnknownField:input unknownFields:unknownFields extensionRegistry:extensionRegistry tag:tag]) {
+          [self setUnknownFields:[unknownFields build]];
+          return self;
+        }
+        break;
+      }
+      case 8: {
+        [self setVotedOption:[input readInt32]];
+        break;
+      }
+      case 16: {
+        [self setSequence:[input readInt64]];
+        break;
+      }
+      case 24: {
+        [self setTieBreaker:[input readInt64]];
+        break;
+      }
+    }
+  }
+}
+- (BOOL) hasVotedOption {
+  return resultPollVote.hasVotedOption;
+}
+- (SInt32) votedOption {
+  return resultPollVote.votedOption;
+}
+- (ZMPollVoteBuilder*) setVotedOption:(SInt32) value {
+  resultPollVote.hasVotedOption = YES;
+  resultPollVote.votedOption = value;
+  return self;
+}
+- (ZMPollVoteBuilder*) clearVotedOption {
+  resultPollVote.hasVotedOption = NO;
+  resultPollVote.votedOption = 0;
+  return self;
+}
+- (BOOL) hasSequence {
+  return resultPollVote.hasSequence;
+}
+- (SInt64) sequence {
+  return resultPollVote.sequence;
+}
+- (ZMPollVoteBuilder*) setSequence:(SInt64) value {
+  resultPollVote.hasSequence = YES;
+  resultPollVote.sequence = value;
+  return self;
+}
+- (ZMPollVoteBuilder*) clearSequence {
+  resultPollVote.hasSequence = NO;
+  resultPollVote.sequence = 0L;
+  return self;
+}
+- (BOOL) hasTieBreaker {
+  return resultPollVote.hasTieBreaker;
+}
+- (SInt64) tieBreaker {
+  return resultPollVote.tieBreaker;
+}
+- (ZMPollVoteBuilder*) setTieBreaker:(SInt64) value {
+  resultPollVote.hasTieBreaker = YES;
+  resultPollVote.tieBreaker = value;
+  return self;
+}
+- (ZMPollVoteBuilder*) clearTieBreaker {
+  resultPollVote.hasTieBreaker = NO;
+  resultPollVote.tieBreaker = 0L;
   return self;
 }
 @end
