@@ -64,6 +64,8 @@
 @class UninterpretedOptionBuilder;
 @class UninterpretedOptionNamePart;
 @class UninterpretedOptionNamePartBuilder;
+@class ZMActivityStatus;
+@class ZMActivityStatusBuilder;
 @class ZMArticle;
 @class ZMArticleBuilder;
 @class ZMAsset;
@@ -125,6 +127,26 @@ typedef NS_ENUM(SInt32, ZMClientAction) {
 BOOL ZMClientActionIsValidValue(ZMClientAction value);
 NSString *NSStringFromZMClientAction(ZMClientAction value);
 
+typedef NS_ENUM(SInt32, ZMEncryptionAlgorithm) {
+  ZMEncryptionAlgorithmAESCBC = 0,
+  ZMEncryptionAlgorithmAESGCM = 1,
+};
+
+BOOL ZMEncryptionAlgorithmIsValidValue(ZMEncryptionAlgorithm value);
+NSString *NSStringFromZMEncryptionAlgorithm(ZMEncryptionAlgorithm value);
+
+typedef NS_ENUM(SInt32, ZMActivityStatusType) {
+  ZMActivityStatusTypeBREAK = 1,
+  ZMActivityStatusTypeNONE = 0,
+  ZMActivityStatusTypeREMOTE = 2,
+  ZMActivityStatusTypeSICK = 3,
+  ZMActivityStatusTypeUNAVAILABLE = 4,
+  ZMActivityStatusTypeVACATION = 5,
+};
+
+BOOL ZMActivityStatusTypeIsValidValue(ZMActivityStatusType value);
+NSString *NSStringFromZMActivityStatusType(ZMActivityStatusType value);
+
 typedef NS_ENUM(SInt32, ZMConfirmationType) {
   ZMConfirmationTypeDELIVERED = 0,
   ZMConfirmationTypeREAD = 1,
@@ -165,6 +187,7 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 #define GenericMessage_confirmation @"confirmation"
 #define GenericMessage_reaction @"reaction"
 #define GenericMessage_ephemeral @"ephemeral"
+#define GenericMessage_activityStatus @"activityStatus"
 @interface ZMGenericMessage : PBGeneratedMessage<GeneratedMessageProtocol> {
 @private
   BOOL hasMessageId_:1;
@@ -183,6 +206,7 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
   BOOL hasConfirmation_:1;
   BOOL hasReaction_:1;
   BOOL hasEphemeral_:1;
+  BOOL hasActivityStatus_:1;
   BOOL hasClientAction_:1;
   NSString* messageId;
   ZMText* text;
@@ -200,6 +224,7 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
   ZMConfirmation* confirmation;
   ZMReaction* reaction;
   ZMEphemeral* ephemeral;
+  ZMActivityStatus* activityStatus;
   ZMClientAction clientAction;
 }
 - (BOOL) hasMessageId;
@@ -219,6 +244,7 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 - (BOOL) hasConfirmation;
 - (BOOL) hasReaction;
 - (BOOL) hasEphemeral;
+- (BOOL) hasActivityStatus;
 @property (readonly, strong) NSString* messageId;
 @property (readonly, strong) ZMText* text;
 @property (readonly, strong) ZMImageAsset* image;
@@ -236,6 +262,7 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 @property (readonly, strong) ZMConfirmation* confirmation;
 @property (readonly, strong) ZMReaction* reaction;
 @property (readonly, strong) ZMEphemeral* ephemeral;
+@property (readonly, strong) ZMActivityStatus* activityStatus;
 
 + (instancetype) defaultInstance;
 - (instancetype) defaultInstance;
@@ -386,6 +413,63 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 - (ZMGenericMessageBuilder*) setEphemeralBuilder:(ZMEphemeralBuilder*) builderForValue;
 - (ZMGenericMessageBuilder*) mergeEphemeral:(ZMEphemeral*) value;
 - (ZMGenericMessageBuilder*) clearEphemeral;
+
+- (BOOL) hasActivityStatus;
+- (ZMActivityStatus*) activityStatus;
+- (ZMGenericMessageBuilder*) setActivityStatus:(ZMActivityStatus*) value;
+- (ZMGenericMessageBuilder*) setActivityStatusBuilder:(ZMActivityStatusBuilder*) builderForValue;
+- (ZMGenericMessageBuilder*) mergeActivityStatus:(ZMActivityStatus*) value;
+- (ZMGenericMessageBuilder*) clearActivityStatus;
+@end
+
+#define ActivityStatus_type @"type"
+@interface ZMActivityStatus : PBGeneratedMessage<GeneratedMessageProtocol> {
+@private
+  BOOL hasType_:1;
+  ZMActivityStatusType type;
+}
+- (BOOL) hasType;
+@property (readonly) ZMActivityStatusType type;
+
++ (instancetype) defaultInstance;
+- (instancetype) defaultInstance;
+
+- (BOOL) isInitialized;
+- (void) writeToCodedOutputStream:(PBCodedOutputStream*) output;
+- (ZMActivityStatusBuilder*) builder;
++ (ZMActivityStatusBuilder*) builder;
++ (ZMActivityStatusBuilder*) builderWithPrototype:(ZMActivityStatus*) prototype;
+- (ZMActivityStatusBuilder*) toBuilder;
+
++ (ZMActivityStatus*) parseFromData:(NSData*) data;
++ (ZMActivityStatus*) parseFromData:(NSData*) data extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
++ (ZMActivityStatus*) parseFromInputStream:(NSInputStream*) input;
++ (ZMActivityStatus*) parseFromInputStream:(NSInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
++ (ZMActivityStatus*) parseFromCodedInputStream:(PBCodedInputStream*) input;
++ (ZMActivityStatus*) parseFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
+@end
+
+@interface ZMActivityStatusBuilder : PBGeneratedMessageBuilder {
+@private
+  ZMActivityStatus* resultActivityStatus;
+}
+
+- (ZMActivityStatus*) defaultInstance;
+
+- (ZMActivityStatusBuilder*) clear;
+- (ZMActivityStatusBuilder*) clone;
+
+- (ZMActivityStatus*) build;
+- (ZMActivityStatus*) buildPartial;
+
+- (ZMActivityStatusBuilder*) mergeFrom:(ZMActivityStatus*) other;
+- (ZMActivityStatusBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input;
+- (ZMActivityStatusBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
+
+- (BOOL) hasType;
+- (ZMActivityStatusType) type;
+- (ZMActivityStatusBuilder*) setType:(ZMActivityStatusType) value;
+- (ZMActivityStatusBuilder*) clearType;
 @end
 
 #define Ephemeral_expire_after_millis @"expireAfterMillis"
@@ -1238,19 +1322,23 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 - (ZMMessageEditBuilder*) clearText;
 @end
 
-#define Confirmation_message_id @"messageId"
 #define Confirmation_type @"type"
+#define Confirmation_first_message_id @"firstMessageId"
+#define Confirmation_more_message_ids @"moreMessageIds"
 @interface ZMConfirmation : PBGeneratedMessage<GeneratedMessageProtocol> {
 @private
-  BOOL hasMessageId_:1;
+  BOOL hasFirstMessageId_:1;
   BOOL hasType_:1;
-  NSString* messageId;
+  NSString* firstMessageId;
   ZMConfirmationType type;
+  NSMutableArray * moreMessageIdsArray;
 }
-- (BOOL) hasMessageId;
 - (BOOL) hasType;
-@property (readonly, strong) NSString* messageId;
+- (BOOL) hasFirstMessageId;
 @property (readonly) ZMConfirmationType type;
+@property (readonly, strong) NSString* firstMessageId;
+@property (readonly, strong) NSArray * moreMessageIds;
+- (NSString*)moreMessageIdsAtIndex:(NSUInteger)index;
 
 + (instancetype) defaultInstance;
 - (instancetype) defaultInstance;
@@ -1287,15 +1375,21 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 - (ZMConfirmationBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input;
 - (ZMConfirmationBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
 
-- (BOOL) hasMessageId;
-- (NSString*) messageId;
-- (ZMConfirmationBuilder*) setMessageId:(NSString*) value;
-- (ZMConfirmationBuilder*) clearMessageId;
-
 - (BOOL) hasType;
 - (ZMConfirmationType) type;
 - (ZMConfirmationBuilder*) setType:(ZMConfirmationType) value;
 - (ZMConfirmationBuilder*) clearType;
+
+- (BOOL) hasFirstMessageId;
+- (NSString*) firstMessageId;
+- (ZMConfirmationBuilder*) setFirstMessageId:(NSString*) value;
+- (ZMConfirmationBuilder*) clearFirstMessageId;
+
+- (NSMutableArray *)moreMessageIds;
+- (NSString*)moreMessageIdsAtIndex:(NSUInteger)index;
+- (ZMConfirmationBuilder *)addMoreMessageIds:(NSString*)value;
+- (ZMConfirmationBuilder *)setMoreMessageIdsArray:(NSArray *)array;
+- (ZMConfirmationBuilder *)clearMoreMessageIds;
 @end
 
 #define Location_longitude @"longitude"
@@ -1576,17 +1670,23 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 #define Original_image @"image"
 #define Original_video @"video"
 #define Original_audio @"audio"
+#define Original_source @"source"
+#define Original_caption @"caption"
 @interface ZMAssetOriginal : PBGeneratedMessage<GeneratedMessageProtocol> {
 @private
   BOOL hasSize_:1;
   BOOL hasMimeType_:1;
   BOOL hasName_:1;
+  BOOL hasSource_:1;
+  BOOL hasCaption_:1;
   BOOL hasImage_:1;
   BOOL hasVideo_:1;
   BOOL hasAudio_:1;
   UInt64 size;
   NSString* mimeType;
   NSString* name;
+  NSString* source;
+  NSString* caption;
   ZMAssetImageMetaData* image;
   ZMAssetVideoMetaData* video;
   ZMAssetAudioMetaData* audio;
@@ -1597,12 +1697,16 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 - (BOOL) hasImage;
 - (BOOL) hasVideo;
 - (BOOL) hasAudio;
+- (BOOL) hasSource;
+- (BOOL) hasCaption;
 @property (readonly, strong) NSString* mimeType;
 @property (readonly) UInt64 size;
 @property (readonly, strong) NSString* name;
 @property (readonly, strong) ZMAssetImageMetaData* image;
 @property (readonly, strong) ZMAssetVideoMetaData* video;
 @property (readonly, strong) ZMAssetAudioMetaData* audio;
+@property (readonly, strong) NSString* source;
+@property (readonly, strong) NSString* caption;
 
 + (instancetype) defaultInstance;
 - (instancetype) defaultInstance;
@@ -1674,6 +1778,16 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 - (ZMAssetOriginalBuilder*) setAudioBuilder:(ZMAssetAudioMetaDataBuilder*) builderForValue;
 - (ZMAssetOriginalBuilder*) mergeAudio:(ZMAssetAudioMetaData*) value;
 - (ZMAssetOriginalBuilder*) clearAudio;
+
+- (BOOL) hasSource;
+- (NSString*) source;
+- (ZMAssetOriginalBuilder*) setSource:(NSString*) value;
+- (ZMAssetOriginalBuilder*) clearSource;
+
+- (BOOL) hasCaption;
+- (NSString*) caption;
+- (ZMAssetOriginalBuilder*) setCaption:(NSString*) value;
+- (ZMAssetOriginalBuilder*) clearCaption;
 @end
 
 #define Preview_mime_type @"mimeType"
@@ -1964,25 +2078,30 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 #define RemoteData_sha256 @"sha256"
 #define RemoteData_asset_id @"assetId"
 #define RemoteData_asset_token @"assetToken"
+#define RemoteData_encryption @"encryption"
 @interface ZMAssetRemoteData : PBGeneratedMessage<GeneratedMessageProtocol> {
 @private
   BOOL hasAssetId_:1;
   BOOL hasAssetToken_:1;
   BOOL hasOtrKey_:1;
   BOOL hasSha256_:1;
+  BOOL hasEncryption_:1;
   NSString* assetId;
   NSString* assetToken;
   NSData* otrKey;
   NSData* sha256;
+  ZMEncryptionAlgorithm encryption;
 }
 - (BOOL) hasOtrKey;
 - (BOOL) hasSha256;
 - (BOOL) hasAssetId;
 - (BOOL) hasAssetToken;
+- (BOOL) hasEncryption;
 @property (readonly, strong) NSData* otrKey;
 @property (readonly, strong) NSData* sha256;
 @property (readonly, strong) NSString* assetId;
 @property (readonly, strong) NSString* assetToken;
+@property (readonly) ZMEncryptionAlgorithm encryption;
 
 + (instancetype) defaultInstance;
 - (instancetype) defaultInstance;
@@ -2038,6 +2157,11 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 - (NSString*) assetToken;
 - (ZMAssetRemoteDataBuilder*) setAssetToken:(NSString*) value;
 - (ZMAssetRemoteDataBuilder*) clearAssetToken;
+
+- (BOOL) hasEncryption;
+- (ZMEncryptionAlgorithm) encryption;
+- (ZMAssetRemoteDataBuilder*) setEncryption:(ZMEncryptionAlgorithm) value;
+- (ZMAssetRemoteDataBuilder*) clearEncryption;
 @end
 
 @interface ZMAssetBuilder : PBGeneratedMessageBuilder {
@@ -2086,17 +2210,22 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 
 #define External_otr_key @"otrKey"
 #define External_sha256 @"sha256"
+#define External_encryption @"encryption"
 @interface ZMExternal : PBGeneratedMessage<GeneratedMessageProtocol> {
 @private
   BOOL hasOtrKey_:1;
   BOOL hasSha256_:1;
+  BOOL hasEncryption_:1;
   NSData* otrKey;
   NSData* sha256;
+  ZMEncryptionAlgorithm encryption;
 }
 - (BOOL) hasOtrKey;
 - (BOOL) hasSha256;
+- (BOOL) hasEncryption;
 @property (readonly, strong) NSData* otrKey;
 @property (readonly, strong) NSData* sha256;
+@property (readonly) ZMEncryptionAlgorithm encryption;
 
 + (instancetype) defaultInstance;
 - (instancetype) defaultInstance;
@@ -2142,6 +2271,11 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 - (NSData*) sha256;
 - (ZMExternalBuilder*) setSha256:(NSData*) value;
 - (ZMExternalBuilder*) clearSha256;
+
+- (BOOL) hasEncryption;
+- (ZMEncryptionAlgorithm) encryption;
+- (ZMExternalBuilder*) setEncryption:(ZMEncryptionAlgorithm) value;
+- (ZMExternalBuilder*) clearEncryption;
 @end
 
 #define Reaction_emoji @"emoji"
