@@ -92,7 +92,7 @@ NSString *NSStringFromZMEncryptionAlgorithm(ZMEncryptionAlgorithm value) {
 @property (strong) ZMConfirmation* confirmation;
 @property (strong) ZMReaction* reaction;
 @property (strong) ZMEphemeral* ephemeral;
-@property (strong) ZMActivityStatus* activityStatus;
+@property (strong) ZMAvailability* availability;
 @end
 
 @implementation ZMGenericMessage
@@ -216,13 +216,13 @@ NSString *NSStringFromZMEncryptionAlgorithm(ZMEncryptionAlgorithm value) {
   hasEphemeral_ = !!_value_;
 }
 @synthesize ephemeral;
-- (BOOL) hasActivityStatus {
-  return !!hasActivityStatus_;
+- (BOOL) hasAvailability {
+  return !!hasAvailability_;
 }
-- (void) setHasActivityStatus:(BOOL) _value_ {
-  hasActivityStatus_ = !!_value_;
+- (void) setHasAvailability:(BOOL) _value_ {
+  hasAvailability_ = !!_value_;
 }
-@synthesize activityStatus;
+@synthesize availability;
 - (instancetype) init {
   if ((self = [super init])) {
     self.messageId = @"";
@@ -242,7 +242,7 @@ NSString *NSStringFromZMEncryptionAlgorithm(ZMEncryptionAlgorithm value) {
     self.confirmation = [ZMConfirmation defaultInstance];
     self.reaction = [ZMReaction defaultInstance];
     self.ephemeral = [ZMEphemeral defaultInstance];
-    self.activityStatus = [ZMActivityStatus defaultInstance];
+    self.availability = [ZMAvailability defaultInstance];
   }
   return self;
 }
@@ -337,8 +337,8 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
       return NO;
     }
   }
-  if (self.hasActivityStatus) {
-    if (!self.activityStatus.isInitialized) {
+  if (self.hasAvailability) {
+    if (!self.availability.isInitialized) {
       return NO;
     }
   }
@@ -396,8 +396,8 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
   if (self.hasEphemeral) {
     [output writeMessage:18 value:self.ephemeral];
   }
-  if (self.hasActivityStatus) {
-    [output writeMessage:19 value:self.activityStatus];
+  if (self.hasAvailability) {
+    [output writeMessage:19 value:self.availability];
   }
   [self.unknownFields writeToCodedOutputStream:output];
 }
@@ -459,8 +459,8 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
   if (self.hasEphemeral) {
     size_ += computeMessageSize(18, self.ephemeral);
   }
-  if (self.hasActivityStatus) {
-    size_ += computeMessageSize(19, self.activityStatus);
+  if (self.hasAvailability) {
+    size_ += computeMessageSize(19, self.availability);
   }
   size_ += self.unknownFields.serializedSize;
   memoizedSerializedSize = size_;
@@ -593,9 +593,9 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
                          withIndent:[NSString stringWithFormat:@"%@  ", indent]];
     [output appendFormat:@"%@}\n", indent];
   }
-  if (self.hasActivityStatus) {
-    [output appendFormat:@"%@%@ {\n", indent, @"activityStatus"];
-    [self.activityStatus writeDescriptionTo:output
+  if (self.hasAvailability) {
+    [output appendFormat:@"%@%@ {\n", indent, @"availability"];
+    [self.availability writeDescriptionTo:output
                          withIndent:[NSString stringWithFormat:@"%@  ", indent]];
     [output appendFormat:@"%@}\n", indent];
   }
@@ -683,10 +683,10 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
    [self.ephemeral storeInDictionary:messageDictionary];
    [dictionary setObject:[NSDictionary dictionaryWithDictionary:messageDictionary] forKey:@"ephemeral"];
   }
-  if (self.hasActivityStatus) {
+  if (self.hasAvailability) {
    NSMutableDictionary *messageDictionary = [NSMutableDictionary dictionary]; 
-   [self.activityStatus storeInDictionary:messageDictionary];
-   [dictionary setObject:[NSDictionary dictionaryWithDictionary:messageDictionary] forKey:@"activityStatus"];
+   [self.availability storeInDictionary:messageDictionary];
+   [dictionary setObject:[NSDictionary dictionaryWithDictionary:messageDictionary] forKey:@"availability"];
   }
   [self.unknownFields storeInDictionary:dictionary];
 }
@@ -733,8 +733,8 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
       (!self.hasReaction || [self.reaction isEqual:otherMessage.reaction]) &&
       self.hasEphemeral == otherMessage.hasEphemeral &&
       (!self.hasEphemeral || [self.ephemeral isEqual:otherMessage.ephemeral]) &&
-      self.hasActivityStatus == otherMessage.hasActivityStatus &&
-      (!self.hasActivityStatus || [self.activityStatus isEqual:otherMessage.activityStatus]) &&
+      self.hasAvailability == otherMessage.hasAvailability &&
+      (!self.hasAvailability || [self.availability isEqual:otherMessage.availability]) &&
       (self.unknownFields == otherMessage.unknownFields || (self.unknownFields != nil && [self.unknownFields isEqual:otherMessage.unknownFields]));
 }
 - (NSUInteger) hash {
@@ -790,8 +790,8 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
   if (self.hasEphemeral) {
     hashCode = hashCode * 31 + [self.ephemeral hash];
   }
-  if (self.hasActivityStatus) {
-    hashCode = hashCode * 31 + [self.activityStatus hash];
+  if (self.hasAvailability) {
+    hashCode = hashCode * 31 + [self.availability hash];
   }
   hashCode = hashCode * 31 + [self.unknownFields hash];
   return hashCode;
@@ -887,8 +887,8 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
   if (other.hasEphemeral) {
     [self mergeEphemeral:other.ephemeral];
   }
-  if (other.hasActivityStatus) {
-    [self mergeActivityStatus:other.activityStatus];
+  if (other.hasAvailability) {
+    [self mergeAvailability:other.availability];
   }
   [self mergeUnknownFields:other.unknownFields];
   return self;
@@ -1060,12 +1060,12 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
         break;
       }
       case 154: {
-        ZMActivityStatusBuilder* subBuilder = [ZMActivityStatus builder];
-        if (self.hasActivityStatus) {
-          [subBuilder mergeFrom:self.activityStatus];
+        ZMAvailabilityBuilder* subBuilder = [ZMAvailability builder];
+        if (self.hasAvailability) {
+          [subBuilder mergeFrom:self.availability];
         }
         [input readMessage:subBuilder extensionRegistry:extensionRegistry];
-        [self setActivityStatus:[subBuilder buildPartial]];
+        [self setAvailability:[subBuilder buildPartial]];
         break;
       }
     }
@@ -1553,43 +1553,43 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
   resultGenericMessage.ephemeral = [ZMEphemeral defaultInstance];
   return self;
 }
-- (BOOL) hasActivityStatus {
-  return resultGenericMessage.hasActivityStatus;
+- (BOOL) hasAvailability {
+  return resultGenericMessage.hasAvailability;
 }
-- (ZMActivityStatus*) activityStatus {
-  return resultGenericMessage.activityStatus;
+- (ZMAvailability*) availability {
+  return resultGenericMessage.availability;
 }
-- (ZMGenericMessageBuilder*) setActivityStatus:(ZMActivityStatus*) value {
-  resultGenericMessage.hasActivityStatus = YES;
-  resultGenericMessage.activityStatus = value;
+- (ZMGenericMessageBuilder*) setAvailability:(ZMAvailability*) value {
+  resultGenericMessage.hasAvailability = YES;
+  resultGenericMessage.availability = value;
   return self;
 }
-- (ZMGenericMessageBuilder*) setActivityStatusBuilder:(ZMActivityStatusBuilder*) builderForValue {
-  return [self setActivityStatus:[builderForValue build]];
+- (ZMGenericMessageBuilder*) setAvailabilityBuilder:(ZMAvailabilityBuilder*) builderForValue {
+  return [self setAvailability:[builderForValue build]];
 }
-- (ZMGenericMessageBuilder*) mergeActivityStatus:(ZMActivityStatus*) value {
-  if (resultGenericMessage.hasActivityStatus &&
-      resultGenericMessage.activityStatus != [ZMActivityStatus defaultInstance]) {
-    resultGenericMessage.activityStatus =
-      [[[ZMActivityStatus builderWithPrototype:resultGenericMessage.activityStatus] mergeFrom:value] buildPartial];
+- (ZMGenericMessageBuilder*) mergeAvailability:(ZMAvailability*) value {
+  if (resultGenericMessage.hasAvailability &&
+      resultGenericMessage.availability != [ZMAvailability defaultInstance]) {
+    resultGenericMessage.availability =
+      [[[ZMAvailability builderWithPrototype:resultGenericMessage.availability] mergeFrom:value] buildPartial];
   } else {
-    resultGenericMessage.activityStatus = value;
+    resultGenericMessage.availability = value;
   }
-  resultGenericMessage.hasActivityStatus = YES;
+  resultGenericMessage.hasAvailability = YES;
   return self;
 }
-- (ZMGenericMessageBuilder*) clearActivityStatus {
-  resultGenericMessage.hasActivityStatus = NO;
-  resultGenericMessage.activityStatus = [ZMActivityStatus defaultInstance];
+- (ZMGenericMessageBuilder*) clearAvailability {
+  resultGenericMessage.hasAvailability = NO;
+  resultGenericMessage.availability = [ZMAvailability defaultInstance];
   return self;
 }
 @end
 
-@interface ZMActivityStatus ()
-@property ZMActivityStatusType type;
+@interface ZMAvailability ()
+@property ZMAvailabilityType type;
 @end
 
-@implementation ZMActivityStatus
+@implementation ZMAvailability
 
 - (BOOL) hasType {
   return !!hasType_;
@@ -1600,21 +1600,21 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
 @synthesize type;
 - (instancetype) init {
   if ((self = [super init])) {
-    self.type = ZMActivityStatusTypeBREAK;
+    self.type = ZMAvailabilityTypeNONE;
   }
   return self;
 }
-static ZMActivityStatus* defaultZMActivityStatusInstance = nil;
+static ZMAvailability* defaultZMAvailabilityInstance = nil;
 + (void) initialize {
-  if (self == [ZMActivityStatus class]) {
-    defaultZMActivityStatusInstance = [[ZMActivityStatus alloc] init];
+  if (self == [ZMAvailability class]) {
+    defaultZMAvailabilityInstance = [[ZMAvailability alloc] init];
   }
 }
 + (instancetype) defaultInstance {
-  return defaultZMActivityStatusInstance;
+  return defaultZMAvailabilityInstance;
 }
 - (instancetype) defaultInstance {
-  return defaultZMActivityStatusInstance;
+  return defaultZMAvailabilityInstance;
 }
 - (BOOL) isInitialized {
   if (!self.hasType) {
@@ -1642,39 +1642,39 @@ static ZMActivityStatus* defaultZMActivityStatusInstance = nil;
   memoizedSerializedSize = size_;
   return size_;
 }
-+ (ZMActivityStatus*) parseFromData:(NSData*) data {
-  return (ZMActivityStatus*)[[[ZMActivityStatus builder] mergeFromData:data] build];
++ (ZMAvailability*) parseFromData:(NSData*) data {
+  return (ZMAvailability*)[[[ZMAvailability builder] mergeFromData:data] build];
 }
-+ (ZMActivityStatus*) parseFromData:(NSData*) data extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
-  return (ZMActivityStatus*)[[[ZMActivityStatus builder] mergeFromData:data extensionRegistry:extensionRegistry] build];
++ (ZMAvailability*) parseFromData:(NSData*) data extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  return (ZMAvailability*)[[[ZMAvailability builder] mergeFromData:data extensionRegistry:extensionRegistry] build];
 }
-+ (ZMActivityStatus*) parseFromInputStream:(NSInputStream*) input {
-  return (ZMActivityStatus*)[[[ZMActivityStatus builder] mergeFromInputStream:input] build];
++ (ZMAvailability*) parseFromInputStream:(NSInputStream*) input {
+  return (ZMAvailability*)[[[ZMAvailability builder] mergeFromInputStream:input] build];
 }
-+ (ZMActivityStatus*) parseFromInputStream:(NSInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
-  return (ZMActivityStatus*)[[[ZMActivityStatus builder] mergeFromInputStream:input extensionRegistry:extensionRegistry] build];
++ (ZMAvailability*) parseFromInputStream:(NSInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  return (ZMAvailability*)[[[ZMAvailability builder] mergeFromInputStream:input extensionRegistry:extensionRegistry] build];
 }
-+ (ZMActivityStatus*) parseFromCodedInputStream:(PBCodedInputStream*) input {
-  return (ZMActivityStatus*)[[[ZMActivityStatus builder] mergeFromCodedInputStream:input] build];
++ (ZMAvailability*) parseFromCodedInputStream:(PBCodedInputStream*) input {
+  return (ZMAvailability*)[[[ZMAvailability builder] mergeFromCodedInputStream:input] build];
 }
-+ (ZMActivityStatus*) parseFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
-  return (ZMActivityStatus*)[[[ZMActivityStatus builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
++ (ZMAvailability*) parseFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  return (ZMAvailability*)[[[ZMAvailability builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
 }
-+ (ZMActivityStatusBuilder*) builder {
-  return [[ZMActivityStatusBuilder alloc] init];
++ (ZMAvailabilityBuilder*) builder {
+  return [[ZMAvailabilityBuilder alloc] init];
 }
-+ (ZMActivityStatusBuilder*) builderWithPrototype:(ZMActivityStatus*) prototype {
-  return [[ZMActivityStatus builder] mergeFrom:prototype];
++ (ZMAvailabilityBuilder*) builderWithPrototype:(ZMAvailability*) prototype {
+  return [[ZMAvailability builder] mergeFrom:prototype];
 }
-- (ZMActivityStatusBuilder*) builder {
-  return [ZMActivityStatus builder];
+- (ZMAvailabilityBuilder*) builder {
+  return [ZMAvailability builder];
 }
-- (ZMActivityStatusBuilder*) toBuilder {
-  return [ZMActivityStatus builderWithPrototype:self];
+- (ZMAvailabilityBuilder*) toBuilder {
+  return [ZMAvailability builderWithPrototype:self];
 }
 - (void) writeDescriptionTo:(NSMutableString*) output withIndent:(NSString*) indent {
   if (self.hasType) {
-    [output appendFormat:@"%@%@: %@\n", indent, @"type", NSStringFromZMActivityStatusType(self.type)];
+    [output appendFormat:@"%@%@: %@\n", indent, @"type", NSStringFromZMAvailabilityType(self.type)];
   }
   [self.unknownFields writeDescriptionTo:output withIndent:indent];
 }
@@ -1688,10 +1688,10 @@ static ZMActivityStatus* defaultZMActivityStatusInstance = nil;
   if (other == self) {
     return YES;
   }
-  if (![other isKindOfClass:[ZMActivityStatus class]]) {
+  if (![other isKindOfClass:[ZMAvailability class]]) {
     return NO;
   }
-  ZMActivityStatus *otherMessage = other;
+  ZMAvailability *otherMessage = other;
   return
       self.hasType == otherMessage.hasType &&
       (!self.hasType || self.type == otherMessage.type) &&
@@ -1707,74 +1707,68 @@ static ZMActivityStatus* defaultZMActivityStatusInstance = nil;
 }
 @end
 
-BOOL ZMActivityStatusTypeIsValidValue(ZMActivityStatusType value) {
+BOOL ZMAvailabilityTypeIsValidValue(ZMAvailabilityType value) {
   switch (value) {
-    case ZMActivityStatusTypeBREAK:
-    case ZMActivityStatusTypeNONE:
-    case ZMActivityStatusTypeREMOTE:
-    case ZMActivityStatusTypeSICK:
-    case ZMActivityStatusTypeUNAVAILABLE:
-    case ZMActivityStatusTypeVACATION:
+    case ZMAvailabilityTypeNONE:
+    case ZMAvailabilityTypeAVAILABLE:
+    case ZMAvailabilityTypeAWAY:
+    case ZMAvailabilityTypeBUSY:
       return YES;
     default:
       return NO;
   }
 }
-NSString *NSStringFromZMActivityStatusType(ZMActivityStatusType value) {
+NSString *NSStringFromZMAvailabilityType(ZMAvailabilityType value) {
   switch (value) {
-    case ZMActivityStatusTypeBREAK:
-      return @"ZMActivityStatusTypeBREAK";
-    case ZMActivityStatusTypeNONE:
-      return @"ZMActivityStatusTypeNONE";
-    case ZMActivityStatusTypeREMOTE:
-      return @"ZMActivityStatusTypeREMOTE";
-    case ZMActivityStatusTypeSICK:
-      return @"ZMActivityStatusTypeSICK";
-    case ZMActivityStatusTypeUNAVAILABLE:
-      return @"ZMActivityStatusTypeUNAVAILABLE";
-    case ZMActivityStatusTypeVACATION:
-      return @"ZMActivityStatusTypeVACATION";
+    case ZMAvailabilityTypeNONE:
+      return @"ZMAvailabilityTypeNONE";
+    case ZMAvailabilityTypeAVAILABLE:
+      return @"ZMAvailabilityTypeAVAILABLE";
+    case ZMAvailabilityTypeAWAY:
+      return @"ZMAvailabilityTypeAWAY";
+    case ZMAvailabilityTypeBUSY:
+      return @"ZMAvailabilityTypeBUSY";
     default:
       return nil;
   }
 }
 
-@interface ZMActivityStatusBuilder()
-@property (strong) ZMActivityStatus* resultActivityStatus;
+@interface ZMAvailabilityBuilder()
+@property (strong) ZMAvailability* resultAvailability;
 @end
 
-@implementation ZMActivityStatusBuilder
-@synthesize resultActivityStatus;
+@implementation ZMAvailabilityBuilder
+@synthesize resultAvailability;
 - (instancetype) init {
   if ((self = [super init])) {
-    self.resultActivityStatus = [[ZMActivityStatus alloc] init];
+    self.resultAvailability = [[ZMAvailability alloc] init];
   }
   return self;
 }
 - (PBGeneratedMessage*) internalGetResult {
-  return resultActivityStatus;
+  return resultAvailability;
 }
-- (ZMActivityStatusBuilder*) clear {
-  self.resultActivityStatus = [[ZMActivityStatus alloc] init];
+- (ZMAvailabilityBuilder*) clear {
+  self.resultAvailability = [[ZMAvailability alloc] init];
   return self;
 }
-- (ZMActivityStatusBuilder*) clone {
-  return [ZMActivityStatus builderWithPrototype:resultActivityStatus];
+- (ZMAvailabilityBuilder*) clone {
+  return [ZMAvailability builderWithPrototype:resultAvailability];
 }
-- (ZMActivityStatus*) defaultInstance {
-  return [ZMActivityStatus defaultInstance];
+- (ZMAvailability*) defaultInstance {
+  return [ZMAvailability defaultInstance];
 }
-- (ZMActivityStatus*) build {
+- (ZMAvailability*) build {
   [self checkInitialized];
   return [self buildPartial];
 }
-- (ZMActivityStatus*) buildPartial {
-  ZMActivityStatus* returnMe = resultActivityStatus;
-  self.resultActivityStatus = nil;
+- (ZMAvailability*) buildPartial {
+  ZMAvailability* returnMe = resultAvailability;
+  self.resultAvailability = nil;
   return returnMe;
 }
-- (ZMActivityStatusBuilder*) mergeFrom:(ZMActivityStatus*) other {
-  if (other == [ZMActivityStatus defaultInstance]) {
+- (ZMAvailabilityBuilder*) mergeFrom:(ZMAvailability*) other {
+  if (other == [ZMAvailability defaultInstance]) {
     return self;
   }
   if (other.hasType) {
@@ -1783,10 +1777,10 @@ NSString *NSStringFromZMActivityStatusType(ZMActivityStatusType value) {
   [self mergeUnknownFields:other.unknownFields];
   return self;
 }
-- (ZMActivityStatusBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input {
+- (ZMAvailabilityBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input {
   return [self mergeFromCodedInputStream:input extensionRegistry:[PBExtensionRegistry emptyRegistry]];
 }
-- (ZMActivityStatusBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+- (ZMAvailabilityBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
   PBUnknownFieldSetBuilder* unknownFields = [PBUnknownFieldSet builderWithUnknownFields:self.unknownFields];
   while (YES) {
     SInt32 tag = [input readTag];
@@ -1802,8 +1796,8 @@ NSString *NSStringFromZMActivityStatusType(ZMActivityStatusType value) {
         break;
       }
       case 8: {
-        ZMActivityStatusType value = (ZMActivityStatusType)[input readEnum];
-        if (ZMActivityStatusTypeIsValidValue(value)) {
+        ZMAvailabilityType value = (ZMAvailabilityType)[input readEnum];
+        if (ZMAvailabilityTypeIsValidValue(value)) {
           [self setType:value];
         } else {
           [unknownFields mergeVarintField:1 value:value];
@@ -1814,19 +1808,19 @@ NSString *NSStringFromZMActivityStatusType(ZMActivityStatusType value) {
   }
 }
 - (BOOL) hasType {
-  return resultActivityStatus.hasType;
+  return resultAvailability.hasType;
 }
-- (ZMActivityStatusType) type {
-  return resultActivityStatus.type;
+- (ZMAvailabilityType) type {
+  return resultAvailability.type;
 }
-- (ZMActivityStatusBuilder*) setType:(ZMActivityStatusType) value {
-  resultActivityStatus.hasType = YES;
-  resultActivityStatus.type = value;
+- (ZMAvailabilityBuilder*) setType:(ZMAvailabilityType) value {
+  resultAvailability.hasType = YES;
+  resultAvailability.type = value;
   return self;
 }
-- (ZMActivityStatusBuilder*) clearType {
-  resultActivityStatus.hasType = NO;
-  resultActivityStatus.type = ZMActivityStatusTypeBREAK;
+- (ZMAvailabilityBuilder*) clearType {
+  resultAvailability.hasType = NO;
+  resultAvailability.type = ZMAvailabilityTypeNONE;
   return self;
 }
 @end

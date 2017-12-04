@@ -64,8 +64,6 @@
 @class UninterpretedOptionBuilder;
 @class UninterpretedOptionNamePart;
 @class UninterpretedOptionNamePartBuilder;
-@class ZMActivityStatus;
-@class ZMActivityStatusBuilder;
 @class ZMArticle;
 @class ZMArticleBuilder;
 @class ZMAsset;
@@ -82,6 +80,8 @@
 @class ZMAssetRemoteDataBuilder;
 @class ZMAssetVideoMetaData;
 @class ZMAssetVideoMetaDataBuilder;
+@class ZMAvailability;
+@class ZMAvailabilityBuilder;
 @class ZMCalling;
 @class ZMCallingBuilder;
 @class ZMCleared;
@@ -135,17 +135,15 @@ typedef NS_ENUM(SInt32, ZMEncryptionAlgorithm) {
 BOOL ZMEncryptionAlgorithmIsValidValue(ZMEncryptionAlgorithm value);
 NSString *NSStringFromZMEncryptionAlgorithm(ZMEncryptionAlgorithm value);
 
-typedef NS_ENUM(SInt32, ZMActivityStatusType) {
-  ZMActivityStatusTypeBREAK = 1,
-  ZMActivityStatusTypeNONE = 0,
-  ZMActivityStatusTypeREMOTE = 2,
-  ZMActivityStatusTypeSICK = 3,
-  ZMActivityStatusTypeUNAVAILABLE = 4,
-  ZMActivityStatusTypeVACATION = 5,
+typedef NS_ENUM(SInt32, ZMAvailabilityType) {
+  ZMAvailabilityTypeNONE = 0,
+  ZMAvailabilityTypeAVAILABLE = 1,
+  ZMAvailabilityTypeAWAY = 2,
+  ZMAvailabilityTypeBUSY = 3,
 };
 
-BOOL ZMActivityStatusTypeIsValidValue(ZMActivityStatusType value);
-NSString *NSStringFromZMActivityStatusType(ZMActivityStatusType value);
+BOOL ZMAvailabilityTypeIsValidValue(ZMAvailabilityType value);
+NSString *NSStringFromZMAvailabilityType(ZMAvailabilityType value);
 
 typedef NS_ENUM(SInt32, ZMConfirmationType) {
   ZMConfirmationTypeDELIVERED = 0,
@@ -187,7 +185,7 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 #define GenericMessage_confirmation @"confirmation"
 #define GenericMessage_reaction @"reaction"
 #define GenericMessage_ephemeral @"ephemeral"
-#define GenericMessage_activityStatus @"activityStatus"
+#define GenericMessage_availability @"availability"
 @interface ZMGenericMessage : PBGeneratedMessage<GeneratedMessageProtocol> {
 @private
   BOOL hasMessageId_:1;
@@ -206,7 +204,7 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
   BOOL hasConfirmation_:1;
   BOOL hasReaction_:1;
   BOOL hasEphemeral_:1;
-  BOOL hasActivityStatus_:1;
+  BOOL hasAvailability_:1;
   BOOL hasClientAction_:1;
   NSString* messageId;
   ZMText* text;
@@ -224,7 +222,7 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
   ZMConfirmation* confirmation;
   ZMReaction* reaction;
   ZMEphemeral* ephemeral;
-  ZMActivityStatus* activityStatus;
+  ZMAvailability* availability;
   ZMClientAction clientAction;
 }
 - (BOOL) hasMessageId;
@@ -244,7 +242,7 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 - (BOOL) hasConfirmation;
 - (BOOL) hasReaction;
 - (BOOL) hasEphemeral;
-- (BOOL) hasActivityStatus;
+- (BOOL) hasAvailability;
 @property (readonly, strong) NSString* messageId;
 @property (readonly, strong) ZMText* text;
 @property (readonly, strong) ZMImageAsset* image;
@@ -262,7 +260,7 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 @property (readonly, strong) ZMConfirmation* confirmation;
 @property (readonly, strong) ZMReaction* reaction;
 @property (readonly, strong) ZMEphemeral* ephemeral;
-@property (readonly, strong) ZMActivityStatus* activityStatus;
+@property (readonly, strong) ZMAvailability* availability;
 
 + (instancetype) defaultInstance;
 - (instancetype) defaultInstance;
@@ -414,62 +412,62 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 - (ZMGenericMessageBuilder*) mergeEphemeral:(ZMEphemeral*) value;
 - (ZMGenericMessageBuilder*) clearEphemeral;
 
-- (BOOL) hasActivityStatus;
-- (ZMActivityStatus*) activityStatus;
-- (ZMGenericMessageBuilder*) setActivityStatus:(ZMActivityStatus*) value;
-- (ZMGenericMessageBuilder*) setActivityStatusBuilder:(ZMActivityStatusBuilder*) builderForValue;
-- (ZMGenericMessageBuilder*) mergeActivityStatus:(ZMActivityStatus*) value;
-- (ZMGenericMessageBuilder*) clearActivityStatus;
+- (BOOL) hasAvailability;
+- (ZMAvailability*) availability;
+- (ZMGenericMessageBuilder*) setAvailability:(ZMAvailability*) value;
+- (ZMGenericMessageBuilder*) setAvailabilityBuilder:(ZMAvailabilityBuilder*) builderForValue;
+- (ZMGenericMessageBuilder*) mergeAvailability:(ZMAvailability*) value;
+- (ZMGenericMessageBuilder*) clearAvailability;
 @end
 
-#define ActivityStatus_type @"type"
-@interface ZMActivityStatus : PBGeneratedMessage<GeneratedMessageProtocol> {
+#define Availability_type @"type"
+@interface ZMAvailability : PBGeneratedMessage<GeneratedMessageProtocol> {
 @private
   BOOL hasType_:1;
-  ZMActivityStatusType type;
+  ZMAvailabilityType type;
 }
 - (BOOL) hasType;
-@property (readonly) ZMActivityStatusType type;
+@property (readonly) ZMAvailabilityType type;
 
 + (instancetype) defaultInstance;
 - (instancetype) defaultInstance;
 
 - (BOOL) isInitialized;
 - (void) writeToCodedOutputStream:(PBCodedOutputStream*) output;
-- (ZMActivityStatusBuilder*) builder;
-+ (ZMActivityStatusBuilder*) builder;
-+ (ZMActivityStatusBuilder*) builderWithPrototype:(ZMActivityStatus*) prototype;
-- (ZMActivityStatusBuilder*) toBuilder;
+- (ZMAvailabilityBuilder*) builder;
++ (ZMAvailabilityBuilder*) builder;
++ (ZMAvailabilityBuilder*) builderWithPrototype:(ZMAvailability*) prototype;
+- (ZMAvailabilityBuilder*) toBuilder;
 
-+ (ZMActivityStatus*) parseFromData:(NSData*) data;
-+ (ZMActivityStatus*) parseFromData:(NSData*) data extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
-+ (ZMActivityStatus*) parseFromInputStream:(NSInputStream*) input;
-+ (ZMActivityStatus*) parseFromInputStream:(NSInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
-+ (ZMActivityStatus*) parseFromCodedInputStream:(PBCodedInputStream*) input;
-+ (ZMActivityStatus*) parseFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
++ (ZMAvailability*) parseFromData:(NSData*) data;
++ (ZMAvailability*) parseFromData:(NSData*) data extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
++ (ZMAvailability*) parseFromInputStream:(NSInputStream*) input;
++ (ZMAvailability*) parseFromInputStream:(NSInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
++ (ZMAvailability*) parseFromCodedInputStream:(PBCodedInputStream*) input;
++ (ZMAvailability*) parseFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
 @end
 
-@interface ZMActivityStatusBuilder : PBGeneratedMessageBuilder {
+@interface ZMAvailabilityBuilder : PBGeneratedMessageBuilder {
 @private
-  ZMActivityStatus* resultActivityStatus;
+  ZMAvailability* resultAvailability;
 }
 
-- (ZMActivityStatus*) defaultInstance;
+- (ZMAvailability*) defaultInstance;
 
-- (ZMActivityStatusBuilder*) clear;
-- (ZMActivityStatusBuilder*) clone;
+- (ZMAvailabilityBuilder*) clear;
+- (ZMAvailabilityBuilder*) clone;
 
-- (ZMActivityStatus*) build;
-- (ZMActivityStatus*) buildPartial;
+- (ZMAvailability*) build;
+- (ZMAvailability*) buildPartial;
 
-- (ZMActivityStatusBuilder*) mergeFrom:(ZMActivityStatus*) other;
-- (ZMActivityStatusBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input;
-- (ZMActivityStatusBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
+- (ZMAvailabilityBuilder*) mergeFrom:(ZMAvailability*) other;
+- (ZMAvailabilityBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input;
+- (ZMAvailabilityBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
 
 - (BOOL) hasType;
-- (ZMActivityStatusType) type;
-- (ZMActivityStatusBuilder*) setType:(ZMActivityStatusType) value;
-- (ZMActivityStatusBuilder*) clearType;
+- (ZMAvailabilityType) type;
+- (ZMAvailabilityBuilder*) setType:(ZMAvailabilityType) value;
+- (ZMAvailabilityBuilder*) clearType;
 @end
 
 #define Ephemeral_expire_after_millis @"expireAfterMillis"
