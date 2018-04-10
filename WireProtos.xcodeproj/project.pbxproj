@@ -175,9 +175,9 @@
 		09B70B4C1B874390002667A6 /* Configurations */ = {
 			isa = PBXGroup;
 			children = (
-				09B70B4D1B874390002667A6 /* version.xcconfig */,
 				09B70B4E1B874390002667A6 /* zmc-config */,
 				09B70B601B874390002667A6 /* WireProtos.xcconfig */,
+				09B70B4D1B874390002667A6 /* version.xcconfig */,
 			);
 			path = Configurations;
 			sourceTree = "<group>";
@@ -366,10 +366,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 09B70B601B874390002667A6 /* WireProtos.xcconfig */;
 			buildSettings = {
-				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = NO;
-				CLANG_WARN_OBJC_IMPLICIT_ATOMIC_PROPERTIES = NO;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				GCC_WARN_UNUSED_PARAMETER = NO;
 				INFOPLIST_FILE = Protos/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.wire.$(PRODUCT_NAME:rfc1034identifier)";
 			};
@@ -379,10 +375,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 09B70B601B874390002667A6 /* WireProtos.xcconfig */;
 			buildSettings = {
-				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = NO;
-				CLANG_WARN_OBJC_IMPLICIT_ATOMIC_PROPERTIES = NO;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				GCC_WARN_UNUSED_PARAMETER = NO;
 				INFOPLIST_FILE = Protos/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.wire.$(PRODUCT_NAME:rfc1034identifier)";
 			};
@@ -392,11 +384,9 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 54B5E1F61F0A6B77001F43A6 /* test-target.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
 				INFOPLIST_FILE = ProtosTests/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.wire.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = WireProtosTests;
-				SWIFT_OBJC_BRIDGING_HEADER = "ProtosTests/ProtosTests-Bridging-Header.h";
 			};
 			name = Debug;
 		};
@@ -404,11 +394,9 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 54B5E1F61F0A6B77001F43A6 /* test-target.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
 				INFOPLIST_FILE = ProtosTests/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.wire.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = WireProtosTests;
-				SWIFT_OBJC_BRIDGING_HEADER = "ProtosTests/ProtosTests-Bridging-Header.h";
 			};
 			name = Release;
 		};
