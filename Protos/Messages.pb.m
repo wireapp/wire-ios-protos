@@ -4253,20 +4253,13 @@ static ZMArticle* defaultZMArticleInstance = nil;
 @end
 
 @interface ZMMention ()
-@property (strong) NSString* userId;
 @property SInt32 start;
 @property SInt32 end;
+@property (strong) NSString* userId;
 @end
 
 @implementation ZMMention
 
-- (BOOL) hasUserId {
-  return !!hasUserId_;
-}
-- (void) setHasUserId:(BOOL) _value_ {
-  hasUserId_ = !!_value_;
-}
-@synthesize userId;
 - (BOOL) hasStart {
   return !!hasStart_;
 }
@@ -4281,11 +4274,18 @@ static ZMArticle* defaultZMArticleInstance = nil;
   hasEnd_ = !!_value_;
 }
 @synthesize end;
+- (BOOL) hasUserId {
+  return !!hasUserId_;
+}
+- (void) setHasUserId:(BOOL) _value_ {
+  hasUserId_ = !!_value_;
+}
+@synthesize userId;
 - (instancetype) init {
   if ((self = [super init])) {
-    self.userId = @"";
     self.start = 0;
     self.end = 0;
+    self.userId = @"";
   }
   return self;
 }
@@ -4311,14 +4311,14 @@ static ZMMention* defaultZMMentionInstance = nil;
   return YES;
 }
 - (void) writeToCodedOutputStream:(PBCodedOutputStream*) output {
-  if (self.hasUserId) {
-    [output writeString:1 value:self.userId];
-  }
   if (self.hasStart) {
-    [output writeInt32:2 value:self.start];
+    [output writeInt32:1 value:self.start];
   }
   if (self.hasEnd) {
-    [output writeInt32:3 value:self.end];
+    [output writeInt32:2 value:self.end];
+  }
+  if (self.hasUserId) {
+    [output writeString:3 value:self.userId];
   }
   [self.unknownFields writeToCodedOutputStream:output];
 }
@@ -4329,14 +4329,14 @@ static ZMMention* defaultZMMentionInstance = nil;
   }
 
   size_ = 0;
-  if (self.hasUserId) {
-    size_ += computeStringSize(1, self.userId);
-  }
   if (self.hasStart) {
-    size_ += computeInt32Size(2, self.start);
+    size_ += computeInt32Size(1, self.start);
   }
   if (self.hasEnd) {
-    size_ += computeInt32Size(3, self.end);
+    size_ += computeInt32Size(2, self.end);
+  }
+  if (self.hasUserId) {
+    size_ += computeStringSize(3, self.userId);
   }
   size_ += self.unknownFields.serializedSize;
   memoizedSerializedSize = size_;
@@ -4373,26 +4373,26 @@ static ZMMention* defaultZMMentionInstance = nil;
   return [ZMMention builderWithPrototype:self];
 }
 - (void) writeDescriptionTo:(NSMutableString*) output withIndent:(NSString*) indent {
-  if (self.hasUserId) {
-    [output appendFormat:@"%@%@: %@\n", indent, @"userId", self.userId];
-  }
   if (self.hasStart) {
     [output appendFormat:@"%@%@: %@\n", indent, @"start", [NSNumber numberWithInteger:self.start]];
   }
   if (self.hasEnd) {
     [output appendFormat:@"%@%@: %@\n", indent, @"end", [NSNumber numberWithInteger:self.end]];
   }
+  if (self.hasUserId) {
+    [output appendFormat:@"%@%@: %@\n", indent, @"userId", self.userId];
+  }
   [self.unknownFields writeDescriptionTo:output withIndent:indent];
 }
 - (void) storeInDictionary:(NSMutableDictionary *)dictionary {
-  if (self.hasUserId) {
-    [dictionary setObject: self.userId forKey: @"userId"];
-  }
   if (self.hasStart) {
     [dictionary setObject: [NSNumber numberWithInteger:self.start] forKey: @"start"];
   }
   if (self.hasEnd) {
     [dictionary setObject: [NSNumber numberWithInteger:self.end] forKey: @"end"];
+  }
+  if (self.hasUserId) {
+    [dictionary setObject: self.userId forKey: @"userId"];
   }
   [self.unknownFields storeInDictionary:dictionary];
 }
@@ -4405,24 +4405,24 @@ static ZMMention* defaultZMMentionInstance = nil;
   }
   ZMMention *otherMessage = other;
   return
-      self.hasUserId == otherMessage.hasUserId &&
-      (!self.hasUserId || [self.userId isEqual:otherMessage.userId]) &&
       self.hasStart == otherMessage.hasStart &&
       (!self.hasStart || self.start == otherMessage.start) &&
       self.hasEnd == otherMessage.hasEnd &&
       (!self.hasEnd || self.end == otherMessage.end) &&
+      self.hasUserId == otherMessage.hasUserId &&
+      (!self.hasUserId || [self.userId isEqual:otherMessage.userId]) &&
       (self.unknownFields == otherMessage.unknownFields || (self.unknownFields != nil && [self.unknownFields isEqual:otherMessage.unknownFields]));
 }
 - (NSUInteger) hash {
   __block NSUInteger hashCode = 7;
-  if (self.hasUserId) {
-    hashCode = hashCode * 31 + [self.userId hash];
-  }
   if (self.hasStart) {
     hashCode = hashCode * 31 + [[NSNumber numberWithInteger:self.start] hash];
   }
   if (self.hasEnd) {
     hashCode = hashCode * 31 + [[NSNumber numberWithInteger:self.end] hash];
+  }
+  if (self.hasUserId) {
+    hashCode = hashCode * 31 + [self.userId hash];
   }
   hashCode = hashCode * 31 + [self.unknownFields hash];
   return hashCode;
@@ -4467,14 +4467,14 @@ static ZMMention* defaultZMMentionInstance = nil;
   if (other == [ZMMention defaultInstance]) {
     return self;
   }
-  if (other.hasUserId) {
-    [self setUserId:other.userId];
-  }
   if (other.hasStart) {
     [self setStart:other.start];
   }
   if (other.hasEnd) {
     [self setEnd:other.end];
+  }
+  if (other.hasUserId) {
+    [self setUserId:other.userId];
   }
   [self mergeUnknownFields:other.unknownFields];
   return self;
@@ -4497,36 +4497,20 @@ static ZMMention* defaultZMMentionInstance = nil;
         }
         break;
       }
-      case 10: {
-        [self setUserId:[input readString]];
-        break;
-      }
-      case 16: {
+      case 8: {
         [self setStart:[input readInt32]];
         break;
       }
-      case 24: {
+      case 16: {
         [self setEnd:[input readInt32]];
+        break;
+      }
+      case 26: {
+        [self setUserId:[input readString]];
         break;
       }
     }
   }
-}
-- (BOOL) hasUserId {
-  return resultMention.hasUserId;
-}
-- (NSString*) userId {
-  return resultMention.userId;
-}
-- (ZMMentionBuilder*) setUserId:(NSString*) value {
-  resultMention.hasUserId = YES;
-  resultMention.userId = value;
-  return self;
-}
-- (ZMMentionBuilder*) clearUserId {
-  resultMention.hasUserId = NO;
-  resultMention.userId = @"";
-  return self;
 }
 - (BOOL) hasStart {
   return resultMention.hasStart;
@@ -4558,6 +4542,22 @@ static ZMMention* defaultZMMentionInstance = nil;
 - (ZMMentionBuilder*) clearEnd {
   resultMention.hasEnd = NO;
   resultMention.end = 0;
+  return self;
+}
+- (BOOL) hasUserId {
+  return resultMention.hasUserId;
+}
+- (NSString*) userId {
+  return resultMention.userId;
+}
+- (ZMMentionBuilder*) setUserId:(NSString*) value {
+  resultMention.hasUserId = YES;
+  resultMention.userId = value;
+  return self;
+}
+- (ZMMentionBuilder*) clearUserId {
+  resultMention.hasUserId = NO;
+  resultMention.userId = @"";
   return self;
 }
 @end

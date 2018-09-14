@@ -952,9 +952,9 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 - (ZMArticleBuilder*) clearImage;
 @end
 
-#define Mention_user_id @"userId"
 #define Mention_start @"start"
 #define Mention_end @"end"
+#define Mention_user_id @"userId"
 @interface ZMMention : PBGeneratedMessage<GeneratedMessageProtocol> {
 @private
   BOOL hasStart_:1;
@@ -964,12 +964,12 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
   SInt32 end;
   NSString* userId;
 }
-- (BOOL) hasUserId;
 - (BOOL) hasStart;
 - (BOOL) hasEnd;
-@property (readonly, strong) NSString* userId;
+- (BOOL) hasUserId;
 @property (readonly) SInt32 start;
 @property (readonly) SInt32 end;
+@property (readonly, strong) NSString* userId;
 
 + (instancetype) defaultInstance;
 - (instancetype) defaultInstance;
@@ -1006,11 +1006,6 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 - (ZMMentionBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input;
 - (ZMMentionBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
 
-- (BOOL) hasUserId;
-- (NSString*) userId;
-- (ZMMentionBuilder*) setUserId:(NSString*) value;
-- (ZMMentionBuilder*) clearUserId;
-
 - (BOOL) hasStart;
 - (SInt32) start;
 - (ZMMentionBuilder*) setStart:(SInt32) value;
@@ -1020,6 +1015,11 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 - (SInt32) end;
 - (ZMMentionBuilder*) setEnd:(SInt32) value;
 - (ZMMentionBuilder*) clearEnd;
+
+- (BOOL) hasUserId;
+- (NSString*) userId;
+- (ZMMentionBuilder*) setUserId:(NSString*) value;
+- (ZMMentionBuilder*) clearUserId;
 @end
 
 #define LastRead_conversation_id @"conversationId"
