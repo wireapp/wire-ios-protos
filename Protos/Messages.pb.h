@@ -88,8 +88,6 @@
 @class ZMLinkPreviewBuilder;
 @class ZMLocation;
 @class ZMLocationBuilder;
-@class ZMMention;
-@class ZMMentionBuilder;
 @class ZMMessageDelete;
 @class ZMMessageDeleteBuilder;
 @class ZMMessageEdit;
@@ -102,6 +100,8 @@
 @class ZMTextBuilder;
 @class ZMTweet;
 @class ZMTweetBuilder;
+@class ZMUserMention;
+@class ZMUserMentionBuilder;
 
 
 typedef NS_ENUM(SInt32, ZMClientAction) {
@@ -577,9 +577,9 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 - (BOOL) hasContent;
 @property (readonly, strong) NSString* content;
 @property (readonly, strong) NSArray<ZMLinkPreview*> * linkPreview;
-@property (readonly, strong) NSArray<ZMMention*> * mention;
+@property (readonly, strong) NSArray<ZMUserMention*> * mention;
 - (ZMLinkPreview*)linkPreviewAtIndex:(NSUInteger)index;
-- (ZMMention*)mentionAtIndex:(NSUInteger)index;
+- (ZMUserMention*)mentionAtIndex:(NSUInteger)index;
 
 + (instancetype) defaultInstance;
 - (instancetype) defaultInstance;
@@ -627,10 +627,10 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 - (ZMTextBuilder *)setLinkPreviewArray:(NSArray<ZMLinkPreview*> *)array;
 - (ZMTextBuilder *)clearLinkPreview;
 
-- (NSMutableArray<ZMMention*> *)mention;
-- (ZMMention*)mentionAtIndex:(NSUInteger)index;
-- (ZMTextBuilder *)addMention:(ZMMention*)value;
-- (ZMTextBuilder *)setMentionArray:(NSArray<ZMMention*> *)array;
+- (NSMutableArray<ZMUserMention*> *)mention;
+- (ZMUserMention*)mentionAtIndex:(NSUInteger)index;
+- (ZMTextBuilder *)addMention:(ZMUserMention*)value;
+- (ZMTextBuilder *)setMentionArray:(NSArray<ZMUserMention*> *)array;
 - (ZMTextBuilder *)clearMention;
 @end
 
@@ -952,10 +952,10 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 - (ZMArticleBuilder*) clearImage;
 @end
 
-#define Mention_start @"start"
-#define Mention_end @"end"
-#define Mention_user_id @"userId"
-@interface ZMMention : PBGeneratedMessage<GeneratedMessageProtocol> {
+#define UserMention_start @"start"
+#define UserMention_end @"end"
+#define UserMention_user_id @"userId"
+@interface ZMUserMention : PBGeneratedMessage<GeneratedMessageProtocol> {
 @private
   BOOL hasStart_:1;
   BOOL hasEnd_:1;
@@ -976,50 +976,50 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 
 - (BOOL) isInitialized;
 - (void) writeToCodedOutputStream:(PBCodedOutputStream*) output;
-- (ZMMentionBuilder*) builder;
-+ (ZMMentionBuilder*) builder;
-+ (ZMMentionBuilder*) builderWithPrototype:(ZMMention*) prototype;
-- (ZMMentionBuilder*) toBuilder;
+- (ZMUserMentionBuilder*) builder;
++ (ZMUserMentionBuilder*) builder;
++ (ZMUserMentionBuilder*) builderWithPrototype:(ZMUserMention*) prototype;
+- (ZMUserMentionBuilder*) toBuilder;
 
-+ (ZMMention*) parseFromData:(NSData*) data;
-+ (ZMMention*) parseFromData:(NSData*) data extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
-+ (ZMMention*) parseFromInputStream:(NSInputStream*) input;
-+ (ZMMention*) parseFromInputStream:(NSInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
-+ (ZMMention*) parseFromCodedInputStream:(PBCodedInputStream*) input;
-+ (ZMMention*) parseFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
++ (ZMUserMention*) parseFromData:(NSData*) data;
++ (ZMUserMention*) parseFromData:(NSData*) data extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
++ (ZMUserMention*) parseFromInputStream:(NSInputStream*) input;
++ (ZMUserMention*) parseFromInputStream:(NSInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
++ (ZMUserMention*) parseFromCodedInputStream:(PBCodedInputStream*) input;
++ (ZMUserMention*) parseFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
 @end
 
-@interface ZMMentionBuilder : PBGeneratedMessageBuilder {
+@interface ZMUserMentionBuilder : PBGeneratedMessageBuilder {
 @private
-  ZMMention* resultMention;
+  ZMUserMention* resultUserMention;
 }
 
-- (ZMMention*) defaultInstance;
+- (ZMUserMention*) defaultInstance;
 
-- (ZMMentionBuilder*) clear;
-- (ZMMentionBuilder*) clone;
+- (ZMUserMentionBuilder*) clear;
+- (ZMUserMentionBuilder*) clone;
 
-- (ZMMention*) build;
-- (ZMMention*) buildPartial;
+- (ZMUserMention*) build;
+- (ZMUserMention*) buildPartial;
 
-- (ZMMentionBuilder*) mergeFrom:(ZMMention*) other;
-- (ZMMentionBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input;
-- (ZMMentionBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
+- (ZMUserMentionBuilder*) mergeFrom:(ZMUserMention*) other;
+- (ZMUserMentionBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input;
+- (ZMUserMentionBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
 
 - (BOOL) hasStart;
 - (SInt32) start;
-- (ZMMentionBuilder*) setStart:(SInt32) value;
-- (ZMMentionBuilder*) clearStart;
+- (ZMUserMentionBuilder*) setStart:(SInt32) value;
+- (ZMUserMentionBuilder*) clearStart;
 
 - (BOOL) hasEnd;
 - (SInt32) end;
-- (ZMMentionBuilder*) setEnd:(SInt32) value;
-- (ZMMentionBuilder*) clearEnd;
+- (ZMUserMentionBuilder*) setEnd:(SInt32) value;
+- (ZMUserMentionBuilder*) clearEnd;
 
 - (BOOL) hasUserId;
 - (NSString*) userId;
-- (ZMMentionBuilder*) setUserId:(NSString*) value;
-- (ZMMentionBuilder*) clearUserId;
+- (ZMUserMentionBuilder*) setUserId:(NSString*) value;
+- (ZMUserMentionBuilder*) clearUserId;
 @end
 
 #define LastRead_conversation_id @"conversationId"

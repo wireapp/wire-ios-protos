@@ -2411,7 +2411,7 @@ static ZMEphemeral* defaultZMEphemeralInstance = nil;
 @interface ZMText ()
 @property (strong) NSString* content;
 @property (strong) NSMutableArray<ZMLinkPreview*> * linkPreviewArray;
-@property (strong) NSMutableArray<ZMMention*> * mentionArray;
+@property (strong) NSMutableArray<ZMUserMention*> * mentionArray;
 @end
 
 @implementation ZMText
@@ -2451,10 +2451,10 @@ static ZMText* defaultZMTextInstance = nil;
 - (ZMLinkPreview*)linkPreviewAtIndex:(NSUInteger)index {
   return [linkPreviewArray objectAtIndex:index];
 }
-- (NSArray<ZMMention*> *)mention {
+- (NSArray<ZMUserMention*> *)mention {
   return mentionArray;
 }
-- (ZMMention*)mentionAtIndex:(NSUInteger)index {
+- (ZMUserMention*)mentionAtIndex:(NSUInteger)index {
   return [mentionArray objectAtIndex:index];
 }
 - (BOOL) isInitialized {
@@ -2470,7 +2470,7 @@ static ZMText* defaultZMTextInstance = nil;
   }];
   if (!isInitlinkPreview) return isInitlinkPreview;
   __block BOOL isInitmention = YES;
-   [self.mention enumerateObjectsUsingBlock:^(ZMMention *element, NSUInteger idx, BOOL *stop) {
+   [self.mention enumerateObjectsUsingBlock:^(ZMUserMention *element, NSUInteger idx, BOOL *stop) {
     if (!element.isInitialized) {
       isInitmention = NO;
       *stop = YES;
@@ -2486,7 +2486,7 @@ static ZMText* defaultZMTextInstance = nil;
   [self.linkPreviewArray enumerateObjectsUsingBlock:^(ZMLinkPreview *element, NSUInteger idx, BOOL *stop) {
     [output writeMessage:3 value:element];
   }];
-  [self.mentionArray enumerateObjectsUsingBlock:^(ZMMention *element, NSUInteger idx, BOOL *stop) {
+  [self.mentionArray enumerateObjectsUsingBlock:^(ZMUserMention *element, NSUInteger idx, BOOL *stop) {
     [output writeMessage:4 value:element];
   }];
   [self.unknownFields writeToCodedOutputStream:output];
@@ -2504,7 +2504,7 @@ static ZMText* defaultZMTextInstance = nil;
   [self.linkPreviewArray enumerateObjectsUsingBlock:^(ZMLinkPreview *element, NSUInteger idx, BOOL *stop) {
     size_ += computeMessageSize(3, element);
   }];
-  [self.mentionArray enumerateObjectsUsingBlock:^(ZMMention *element, NSUInteger idx, BOOL *stop) {
+  [self.mentionArray enumerateObjectsUsingBlock:^(ZMUserMention *element, NSUInteger idx, BOOL *stop) {
     size_ += computeMessageSize(4, element);
   }];
   size_ += self.unknownFields.serializedSize;
@@ -2551,7 +2551,7 @@ static ZMText* defaultZMTextInstance = nil;
                      withIndent:[NSString stringWithFormat:@"%@  ", indent]];
     [output appendFormat:@"%@}\n", indent];
   }];
-  [self.mentionArray enumerateObjectsUsingBlock:^(ZMMention *element, NSUInteger idx, BOOL *stop) {
+  [self.mentionArray enumerateObjectsUsingBlock:^(ZMUserMention *element, NSUInteger idx, BOOL *stop) {
     [output appendFormat:@"%@%@ {\n", indent, @"mention"];
     [element writeDescriptionTo:output
                      withIndent:[NSString stringWithFormat:@"%@  ", indent]];
@@ -2568,7 +2568,7 @@ static ZMText* defaultZMTextInstance = nil;
     [element storeInDictionary:elementDictionary];
     [dictionary setObject:[NSDictionary dictionaryWithDictionary:elementDictionary] forKey:@"linkPreview"];
   }
-  for (ZMMention* element in self.mentionArray) {
+  for (ZMUserMention* element in self.mentionArray) {
     NSMutableDictionary *elementDictionary = [NSMutableDictionary dictionary];
     [element storeInDictionary:elementDictionary];
     [dictionary setObject:[NSDictionary dictionaryWithDictionary:elementDictionary] forKey:@"mention"];
@@ -2598,7 +2598,7 @@ static ZMText* defaultZMTextInstance = nil;
   [self.linkPreviewArray enumerateObjectsUsingBlock:^(ZMLinkPreview *element, NSUInteger idx, BOOL *stop) {
     hashCode = hashCode * 31 + [element hash];
   }];
-  [self.mentionArray enumerateObjectsUsingBlock:^(ZMMention *element, NSUInteger idx, BOOL *stop) {
+  [self.mentionArray enumerateObjectsUsingBlock:^(ZMUserMention *element, NSUInteger idx, BOOL *stop) {
     hashCode = hashCode * 31 + [element hash];
   }];
   hashCode = hashCode * 31 + [self.unknownFields hash];
@@ -2693,7 +2693,7 @@ static ZMText* defaultZMTextInstance = nil;
         break;
       }
       case 34: {
-        ZMMentionBuilder* subBuilder = [ZMMention builder];
+        ZMUserMentionBuilder* subBuilder = [ZMUserMention builder];
         [input readMessage:subBuilder extensionRegistry:extensionRegistry];
         [self addMention:[subBuilder buildPartial]];
         break;
@@ -2738,20 +2738,20 @@ static ZMText* defaultZMTextInstance = nil;
   resultText.linkPreviewArray = nil;
   return self;
 }
-- (NSMutableArray<ZMMention*> *)mention {
+- (NSMutableArray<ZMUserMention*> *)mention {
   return resultText.mentionArray;
 }
-- (ZMMention*)mentionAtIndex:(NSUInteger)index {
+- (ZMUserMention*)mentionAtIndex:(NSUInteger)index {
   return [resultText mentionAtIndex:index];
 }
-- (ZMTextBuilder *)addMention:(ZMMention*)value {
+- (ZMTextBuilder *)addMention:(ZMUserMention*)value {
   if (resultText.mentionArray == nil) {
     resultText.mentionArray = [[NSMutableArray alloc]init];
   }
   [resultText.mentionArray addObject:value];
   return self;
 }
-- (ZMTextBuilder *)setMentionArray:(NSArray<ZMMention*> *)array {
+- (ZMTextBuilder *)setMentionArray:(NSArray<ZMUserMention*> *)array {
   resultText.mentionArray = [[NSMutableArray alloc]initWithArray:array];
   return self;
 }
@@ -4252,13 +4252,13 @@ static ZMArticle* defaultZMArticleInstance = nil;
 }
 @end
 
-@interface ZMMention ()
+@interface ZMUserMention ()
 @property SInt32 start;
 @property SInt32 end;
 @property (strong) NSString* userId;
 @end
 
-@implementation ZMMention
+@implementation ZMUserMention
 
 - (BOOL) hasStart {
   return !!hasStart_;
@@ -4289,17 +4289,17 @@ static ZMArticle* defaultZMArticleInstance = nil;
   }
   return self;
 }
-static ZMMention* defaultZMMentionInstance = nil;
+static ZMUserMention* defaultZMUserMentionInstance = nil;
 + (void) initialize {
-  if (self == [ZMMention class]) {
-    defaultZMMentionInstance = [[ZMMention alloc] init];
+  if (self == [ZMUserMention class]) {
+    defaultZMUserMentionInstance = [[ZMUserMention alloc] init];
   }
 }
 + (instancetype) defaultInstance {
-  return defaultZMMentionInstance;
+  return defaultZMUserMentionInstance;
 }
 - (instancetype) defaultInstance {
-  return defaultZMMentionInstance;
+  return defaultZMUserMentionInstance;
 }
 - (BOOL) isInitialized {
   if (!self.hasStart) {
@@ -4342,35 +4342,35 @@ static ZMMention* defaultZMMentionInstance = nil;
   memoizedSerializedSize = size_;
   return size_;
 }
-+ (ZMMention*) parseFromData:(NSData*) data {
-  return (ZMMention*)[[[ZMMention builder] mergeFromData:data] build];
++ (ZMUserMention*) parseFromData:(NSData*) data {
+  return (ZMUserMention*)[[[ZMUserMention builder] mergeFromData:data] build];
 }
-+ (ZMMention*) parseFromData:(NSData*) data extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
-  return (ZMMention*)[[[ZMMention builder] mergeFromData:data extensionRegistry:extensionRegistry] build];
++ (ZMUserMention*) parseFromData:(NSData*) data extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  return (ZMUserMention*)[[[ZMUserMention builder] mergeFromData:data extensionRegistry:extensionRegistry] build];
 }
-+ (ZMMention*) parseFromInputStream:(NSInputStream*) input {
-  return (ZMMention*)[[[ZMMention builder] mergeFromInputStream:input] build];
++ (ZMUserMention*) parseFromInputStream:(NSInputStream*) input {
+  return (ZMUserMention*)[[[ZMUserMention builder] mergeFromInputStream:input] build];
 }
-+ (ZMMention*) parseFromInputStream:(NSInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
-  return (ZMMention*)[[[ZMMention builder] mergeFromInputStream:input extensionRegistry:extensionRegistry] build];
++ (ZMUserMention*) parseFromInputStream:(NSInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  return (ZMUserMention*)[[[ZMUserMention builder] mergeFromInputStream:input extensionRegistry:extensionRegistry] build];
 }
-+ (ZMMention*) parseFromCodedInputStream:(PBCodedInputStream*) input {
-  return (ZMMention*)[[[ZMMention builder] mergeFromCodedInputStream:input] build];
++ (ZMUserMention*) parseFromCodedInputStream:(PBCodedInputStream*) input {
+  return (ZMUserMention*)[[[ZMUserMention builder] mergeFromCodedInputStream:input] build];
 }
-+ (ZMMention*) parseFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
-  return (ZMMention*)[[[ZMMention builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
++ (ZMUserMention*) parseFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  return (ZMUserMention*)[[[ZMUserMention builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
 }
-+ (ZMMentionBuilder*) builder {
-  return [[ZMMentionBuilder alloc] init];
++ (ZMUserMentionBuilder*) builder {
+  return [[ZMUserMentionBuilder alloc] init];
 }
-+ (ZMMentionBuilder*) builderWithPrototype:(ZMMention*) prototype {
-  return [[ZMMention builder] mergeFrom:prototype];
++ (ZMUserMentionBuilder*) builderWithPrototype:(ZMUserMention*) prototype {
+  return [[ZMUserMention builder] mergeFrom:prototype];
 }
-- (ZMMentionBuilder*) builder {
-  return [ZMMention builder];
+- (ZMUserMentionBuilder*) builder {
+  return [ZMUserMention builder];
 }
-- (ZMMentionBuilder*) toBuilder {
-  return [ZMMention builderWithPrototype:self];
+- (ZMUserMentionBuilder*) toBuilder {
+  return [ZMUserMention builderWithPrototype:self];
 }
 - (void) writeDescriptionTo:(NSMutableString*) output withIndent:(NSString*) indent {
   if (self.hasStart) {
@@ -4400,10 +4400,10 @@ static ZMMention* defaultZMMentionInstance = nil;
   if (other == self) {
     return YES;
   }
-  if (![other isKindOfClass:[ZMMention class]]) {
+  if (![other isKindOfClass:[ZMUserMention class]]) {
     return NO;
   }
-  ZMMention *otherMessage = other;
+  ZMUserMention *otherMessage = other;
   return
       self.hasStart == otherMessage.hasStart &&
       (!self.hasStart || self.start == otherMessage.start) &&
@@ -4429,42 +4429,42 @@ static ZMMention* defaultZMMentionInstance = nil;
 }
 @end
 
-@interface ZMMentionBuilder()
-@property (strong) ZMMention* resultMention;
+@interface ZMUserMentionBuilder()
+@property (strong) ZMUserMention* resultUserMention;
 @end
 
-@implementation ZMMentionBuilder
-@synthesize resultMention;
+@implementation ZMUserMentionBuilder
+@synthesize resultUserMention;
 - (instancetype) init {
   if ((self = [super init])) {
-    self.resultMention = [[ZMMention alloc] init];
+    self.resultUserMention = [[ZMUserMention alloc] init];
   }
   return self;
 }
 - (PBGeneratedMessage*) internalGetResult {
-  return resultMention;
+  return resultUserMention;
 }
-- (ZMMentionBuilder*) clear {
-  self.resultMention = [[ZMMention alloc] init];
+- (ZMUserMentionBuilder*) clear {
+  self.resultUserMention = [[ZMUserMention alloc] init];
   return self;
 }
-- (ZMMentionBuilder*) clone {
-  return [ZMMention builderWithPrototype:resultMention];
+- (ZMUserMentionBuilder*) clone {
+  return [ZMUserMention builderWithPrototype:resultUserMention];
 }
-- (ZMMention*) defaultInstance {
-  return [ZMMention defaultInstance];
+- (ZMUserMention*) defaultInstance {
+  return [ZMUserMention defaultInstance];
 }
-- (ZMMention*) build {
+- (ZMUserMention*) build {
   [self checkInitialized];
   return [self buildPartial];
 }
-- (ZMMention*) buildPartial {
-  ZMMention* returnMe = resultMention;
-  self.resultMention = nil;
+- (ZMUserMention*) buildPartial {
+  ZMUserMention* returnMe = resultUserMention;
+  self.resultUserMention = nil;
   return returnMe;
 }
-- (ZMMentionBuilder*) mergeFrom:(ZMMention*) other {
-  if (other == [ZMMention defaultInstance]) {
+- (ZMUserMentionBuilder*) mergeFrom:(ZMUserMention*) other {
+  if (other == [ZMUserMention defaultInstance]) {
     return self;
   }
   if (other.hasStart) {
@@ -4479,10 +4479,10 @@ static ZMMention* defaultZMMentionInstance = nil;
   [self mergeUnknownFields:other.unknownFields];
   return self;
 }
-- (ZMMentionBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input {
+- (ZMUserMentionBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input {
   return [self mergeFromCodedInputStream:input extensionRegistry:[PBExtensionRegistry emptyRegistry]];
 }
-- (ZMMentionBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+- (ZMUserMentionBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
   PBUnknownFieldSetBuilder* unknownFields = [PBUnknownFieldSet builderWithUnknownFields:self.unknownFields];
   while (YES) {
     SInt32 tag = [input readTag];
@@ -4513,51 +4513,51 @@ static ZMMention* defaultZMMentionInstance = nil;
   }
 }
 - (BOOL) hasStart {
-  return resultMention.hasStart;
+  return resultUserMention.hasStart;
 }
 - (SInt32) start {
-  return resultMention.start;
+  return resultUserMention.start;
 }
-- (ZMMentionBuilder*) setStart:(SInt32) value {
-  resultMention.hasStart = YES;
-  resultMention.start = value;
+- (ZMUserMentionBuilder*) setStart:(SInt32) value {
+  resultUserMention.hasStart = YES;
+  resultUserMention.start = value;
   return self;
 }
-- (ZMMentionBuilder*) clearStart {
-  resultMention.hasStart = NO;
-  resultMention.start = 0;
+- (ZMUserMentionBuilder*) clearStart {
+  resultUserMention.hasStart = NO;
+  resultUserMention.start = 0;
   return self;
 }
 - (BOOL) hasEnd {
-  return resultMention.hasEnd;
+  return resultUserMention.hasEnd;
 }
 - (SInt32) end {
-  return resultMention.end;
+  return resultUserMention.end;
 }
-- (ZMMentionBuilder*) setEnd:(SInt32) value {
-  resultMention.hasEnd = YES;
-  resultMention.end = value;
+- (ZMUserMentionBuilder*) setEnd:(SInt32) value {
+  resultUserMention.hasEnd = YES;
+  resultUserMention.end = value;
   return self;
 }
-- (ZMMentionBuilder*) clearEnd {
-  resultMention.hasEnd = NO;
-  resultMention.end = 0;
+- (ZMUserMentionBuilder*) clearEnd {
+  resultUserMention.hasEnd = NO;
+  resultUserMention.end = 0;
   return self;
 }
 - (BOOL) hasUserId {
-  return resultMention.hasUserId;
+  return resultUserMention.hasUserId;
 }
 - (NSString*) userId {
-  return resultMention.userId;
+  return resultUserMention.userId;
 }
-- (ZMMentionBuilder*) setUserId:(NSString*) value {
-  resultMention.hasUserId = YES;
-  resultMention.userId = value;
+- (ZMUserMentionBuilder*) setUserId:(NSString*) value {
+  resultUserMention.hasUserId = YES;
+  resultUserMention.userId = value;
   return self;
 }
-- (ZMMentionBuilder*) clearUserId {
-  resultMention.hasUserId = NO;
-  resultMention.userId = @"";
+- (ZMUserMentionBuilder*) clearUserId {
+  resultUserMention.hasUserId = NO;
+  resultUserMention.userId = @"";
   return self;
 }
 @end
