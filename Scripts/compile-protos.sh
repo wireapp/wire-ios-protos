@@ -21,4 +21,13 @@ protoc "$1/$2" \
 compile_proto $MESSAGES_PROTO_DIR "messages.proto"
 compile_proto $OTR_PROTO_DIR "otr.proto"
 
+# 3) Insert Wire Header
+cd Protos
+HEADER="Hello
+World"
+
+for filename in ./*.swift; do
+    swift "$BASE_FOLDER/Scripts/generate_header.swift" "$BASE_FOLDER/Protos/$filename"
+done
+
 echo "✅ Done!"
