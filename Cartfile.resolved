@@ -1,4 +1,3 @@
 github "apple/swift-protobuf" "1.2.0"
 github "wireapp/backend-api-protobuf" "2.2"
 github "wireapp/generic-message-proto" "eaf8625985f235915ae4db7925576d8e2dd4bb08"
-github "wireapp/protobuf-objc" "1.9.14"
