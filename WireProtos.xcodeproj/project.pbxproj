@@ -21,6 +21,7 @@
 		F1FDF2E821B04C1200E037A1 /* Otr.pb.h in Headers */ = {isa = PBXBuildFile; fileRef = F1FDF2E421B04C1100E037A1 /* Otr.pb.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F1FDF2E921B04C1200E037A1 /* Messages.pb.m in Sources */ = {isa = PBXBuildFile; fileRef = F1FDF2E521B04C1100E037A1 /* Messages.pb.m */; };
 		F1FDF2EA21B04C1200E037A1 /* Messages.pb.h in Headers */ = {isa = PBXBuildFile; fileRef = F1FDF2E621B04C1100E037A1 /* Messages.pb.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F1FDF2EB21B0547200E037A1 /* ProtocolBuffers.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = F1FDF2E121B0443600E037A1 /* ProtocolBuffers.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +41,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				F1FDF2EB21B0547200E037A1 /* ProtocolBuffers.framework in CopyFiles */,
 				5EAC172E21A30C390014E671 /* WireProtos.framework in CopyFiles */,
 				5EAC172F21A30C390014E671 /* SwiftProtobuf.framework in CopyFiles */,
 			);
