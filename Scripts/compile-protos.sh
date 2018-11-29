@@ -1,31 +1,25 @@
 #!/bin/bash
+
 set -e
 
-# 1) Find Carthage
-BASE_FOLDER=`pwd`
 CARTHAGE=`Scripts/find-carthage.py`
-MESSAGES_PROTO_DIR="${CARTHAGE}/Checkouts/generic-message-proto/proto"
-OTR_PROTO_DIR="${CARTHAGE}/Checkouts/backend-api-protobuf/proto"
-
+BASE_FOLDER=`pwd`
 echo "Found carthage folder in ${CARTHAGE}"
+cd ${CARTHAGE}/Checkouts/generic-message-proto/ios/
+cp ./../proto/messages.proto ./
+mkdir -p ./tmp
+cat ios.proto messages.proto > ./tmp/messages.proto
+protoc ./tmp/messages.proto --objc_out="${BASE_FOLDER}/Protos/" 
+rm -rf ./tmp
+rm messages.proto
 
-# 2) Compile Protos
-function compile_proto() {
-protoc "$1/$2" \
-    --proto_path="$1" \
-    --swift_out="${BASE_FOLDER}/Protos/" \
-    --swift_opt=FileNaming=DropPath \
-    --swift_opt=Visibility=Public
-}
 
-compile_proto $MESSAGES_PROTO_DIR "messages.proto"
-compile_proto $OTR_PROTO_DIR "otr.proto"
-
-# 3) Insert Wire Header
-cd Protos
-
-for filename in ./*.swift; do
-    swift ./Scripts/generate_header.swift "Protos/$filename"
-done
+cd ${CARTHAGE}/Checkouts/backend-api-protobuf/ios/
+cp ./../proto/otr.proto ./
+mkdir -p ./tmp
+cat ios.proto otr.proto > ./tmp/otr.proto
+protoc ./tmp/otr.proto --objc_out="${BASE_FOLDER}/Protos/" 
+rm -rf ./tmp
+rm otr.proto
 
 echo "✅ Done!"
