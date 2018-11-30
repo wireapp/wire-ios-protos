@@ -25,7 +25,7 @@ compile_proto $OTR_PROTO_DIR "otr.proto"
 cd Protos
 
 for filename in ./*.swift; do
-    swift ./Scripts/generate_header.swift "Protos/$filename"
+    swift ../Scripts/generate_header.swift "$filename"
 done
 
 echo "✅ Done!"
