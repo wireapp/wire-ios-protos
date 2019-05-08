@@ -1,2 +1,2 @@
-github "wireapp/swift-protobuf" "092a8f3c458ccf453b55a7fce65fdabd21b9a30c"
+github "wireapp/swift-protobuf" ~> 1.5
 github "wireapp/protobuf-objc" ~> 1.9
