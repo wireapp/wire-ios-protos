@@ -1,4 +1,4 @@
-github "alexaubry/protobuf" "27389058fee2b00607cbee3a7e965f78546fcc5f"
+github "alexaubry/protobuf" "fd277a1b1352243442a597cbf0e5167cbaf6ff4f"
 github "wireapp/backend-api-protobuf" "2.2"
 github "wireapp/generic-message-proto" "v1.24.0"
 github "wireapp/swift-protobuf" "1.5.0"
