@@ -31,7 +31,7 @@ guard CommandLine.arguments.count >= 2 else {
     exit(-1)
 }
 
-let fileURL = URL(fileURLWithPath: CommandLine.arguments[1])
+let fileURL = URL(fileURLWithPath: CommandLine.arguments[1], isDirectory: false)
 
 let headerData = Data(header.utf8)
 var fileData = try Data(contentsOf: fileURL)

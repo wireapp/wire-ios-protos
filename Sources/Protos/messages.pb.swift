@@ -1,6 +1,6 @@
 //
 // Wire
-// Copyright (C) 2018 Wire Swiss GmbH
+// Copyright (C) 2019 Wire Swiss GmbH
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -507,6 +507,16 @@ public struct Text {
   /// Clears the value of `expectsReadConfirmation`. Subsequent reads from it will return its default value.
   public mutating func clearExpectsReadConfirmation() {_uniqueStorage()._expectsReadConfirmation = nil}
 
+  /// whether a user in the conversation is under legal hold
+  public var sentToLegalHold: Bool {
+    get {return _storage._sentToLegalHold ?? false}
+    set {_uniqueStorage()._sentToLegalHold = newValue}
+  }
+  /// Returns true if `sentToLegalHold` has been explicitly set.
+  public var hasSentToLegalHold: Bool {return _storage._sentToLegalHold != nil}
+  /// Clears the value of `sentToLegalHold`. Subsequent reads from it will return its default value.
+  public mutating func clearSentToLegalHold() {_uniqueStorage()._sentToLegalHold = nil}
+
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
   public init() {}
@@ -538,12 +548,23 @@ public struct Knock {
   /// Clears the value of `expectsReadConfirmation`. Subsequent reads from it will return its default value.
   public mutating func clearExpectsReadConfirmation() {self._expectsReadConfirmation = nil}
 
+  /// whether a user in the conversation is under legal hold
+  public var sentToLegalHold: Bool {
+    get {return _sentToLegalHold ?? false}
+    set {_sentToLegalHold = newValue}
+  }
+  /// Returns true if `sentToLegalHold` has been explicitly set.
+  public var hasSentToLegalHold: Bool {return self._sentToLegalHold != nil}
+  /// Clears the value of `sentToLegalHold`. Subsequent reads from it will return its default value.
+  public mutating func clearSentToLegalHold() {self._sentToLegalHold = nil}
+
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
   public init() {}
 
   fileprivate var _hotKnock: Bool? = nil
   fileprivate var _expectsReadConfirmation: Bool? = nil
+  fileprivate var _sentToLegalHold: Bool? = nil
 }
 
 public struct LinkPreview {
@@ -1112,6 +1133,16 @@ public struct Location {
   /// Clears the value of `expectsReadConfirmation`. Subsequent reads from it will return its default value.
   public mutating func clearExpectsReadConfirmation() {self._expectsReadConfirmation = nil}
 
+  /// whether a user in the conversation is under legal hold
+  public var sentToLegalHold: Bool {
+    get {return _sentToLegalHold ?? false}
+    set {_sentToLegalHold = newValue}
+  }
+  /// Returns true if `sentToLegalHold` has been explicitly set.
+  public var hasSentToLegalHold: Bool {return self._sentToLegalHold != nil}
+  /// Clears the value of `sentToLegalHold`. Subsequent reads from it will return its default value.
+  public mutating func clearSentToLegalHold() {self._sentToLegalHold = nil}
+
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
   public init() {}
@@ -1121,6 +1152,7 @@ public struct Location {
   fileprivate var _name: String? = nil
   fileprivate var _zoom: Int32? = nil
   fileprivate var _expectsReadConfirmation: Bool? = nil
+  fileprivate var _sentToLegalHold: Bool? = nil
 }
 
 /// deprecated in favour of Asset.Original.ImageMetaData
@@ -1262,7 +1294,7 @@ public struct Asset {
   /// Clears the value of `original`. Subsequent reads from it will return its default value.
   public mutating func clearOriginal() {_uniqueStorage()._original = nil}
 
-  ///  optional Preview preview = 2;  // deprecated - preview was completely replaced
+  /// optional Preview preview = 2;  // deprecated - preview was completely replaced
   public var status: OneOf_Status? {
     get {return _storage._status}
     set {_uniqueStorage()._status = newValue}
@@ -1303,9 +1335,19 @@ public struct Asset {
   /// Clears the value of `expectsReadConfirmation`. Subsequent reads from it will return its default value.
   public mutating func clearExpectsReadConfirmation() {_uniqueStorage()._expectsReadConfirmation = nil}
 
+  /// whether a user in the conversation is under legal hold
+  public var sentToLegalHold: Bool {
+    get {return _storage._sentToLegalHold ?? false}
+    set {_uniqueStorage()._sentToLegalHold = newValue}
+  }
+  /// Returns true if `sentToLegalHold` has been explicitly set.
+  public var hasSentToLegalHold: Bool {return _storage._sentToLegalHold != nil}
+  /// Clears the value of `sentToLegalHold`. Subsequent reads from it will return its default value.
+  public mutating func clearSentToLegalHold() {_uniqueStorage()._sentToLegalHold = nil}
+
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
-  ///  optional Preview preview = 2;  // deprecated - preview was completely replaced
+  /// optional Preview preview = 2;  // deprecated - preview was completely replaced
   public enum OneOf_Status: Equatable {
     case notUploaded(Asset.NotUploaded)
     case uploaded(Asset.RemoteData)
@@ -1663,7 +1705,7 @@ public struct Asset {
     /// Clears the value of `assetID`. Subsequent reads from it will return its default value.
     public mutating func clearAssetID() {self._assetID = nil}
 
-    ///    optional bytes asset_token = 4; // deprecated - changed type to string
+    /// optional bytes asset_token = 4; // deprecated - changed type to string
     public var assetToken: String {
       get {return _assetToken ?? String()}
       set {_assetToken = newValue}
@@ -2282,6 +2324,7 @@ extension Text: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase,
     4: .same(proto: "mentions"),
     5: .same(proto: "quote"),
     6: .standard(proto: "expects_read_confirmation"),
+    7: .standard(proto: "sent_to_legal_hold"),
   ]
 
   fileprivate class _StorageClass {
@@ -2290,6 +2333,7 @@ extension Text: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase,
     var _mentions: [Mention] = []
     var _quote: Quote? = nil
     var _expectsReadConfirmation: Bool? = nil
+    var _sentToLegalHold: Bool? = nil
 
     static let defaultInstance = _StorageClass()
 
@@ -2301,6 +2345,7 @@ extension Text: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase,
       _mentions = source._mentions
       _quote = source._quote
       _expectsReadConfirmation = source._expectsReadConfirmation
+      _sentToLegalHold = source._sentToLegalHold
     }
   }
 
@@ -2331,6 +2376,7 @@ extension Text: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase,
         case 4: try decoder.decodeRepeatedMessageField(value: &_storage._mentions)
         case 5: try decoder.decodeSingularMessageField(value: &_storage._quote)
         case 6: try decoder.decodeSingularBoolField(value: &_storage._expectsReadConfirmation)
+        case 7: try decoder.decodeSingularBoolField(value: &_storage._sentToLegalHold)
         default: break
         }
       }
@@ -2354,6 +2400,9 @@ extension Text: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase,
       if let v = _storage._expectsReadConfirmation {
         try visitor.visitSingularBoolField(value: v, fieldNumber: 6)
       }
+      if let v = _storage._sentToLegalHold {
+        try visitor.visitSingularBoolField(value: v, fieldNumber: 7)
+      }
     }
     try unknownFields.traverse(visitor: &visitor)
   }
@@ -2368,6 +2417,7 @@ extension Text: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase,
         if _storage._mentions != rhs_storage._mentions {return false}
         if _storage._quote != rhs_storage._quote {return false}
         if _storage._expectsReadConfirmation != rhs_storage._expectsReadConfirmation {return false}
+        if _storage._sentToLegalHold != rhs_storage._sentToLegalHold {return false}
         return true
       }
       if !storagesAreEqual {return false}
@@ -2382,6 +2432,7 @@ extension Knock: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase
   public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .standard(proto: "hot_knock"),
     2: .standard(proto: "expects_read_confirmation"),
+    3: .standard(proto: "sent_to_legal_hold"),
   ]
 
   public var isInitialized: Bool {
@@ -2394,6 +2445,7 @@ extension Knock: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase
       switch fieldNumber {
       case 1: try decoder.decodeSingularBoolField(value: &self._hotKnock)
       case 2: try decoder.decodeSingularBoolField(value: &self._expectsReadConfirmation)
+      case 3: try decoder.decodeSingularBoolField(value: &self._sentToLegalHold)
       default: break
       }
     }
@@ -2406,12 +2458,16 @@ extension Knock: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase
     if let v = self._expectsReadConfirmation {
       try visitor.visitSingularBoolField(value: v, fieldNumber: 2)
     }
+    if let v = self._sentToLegalHold {
+      try visitor.visitSingularBoolField(value: v, fieldNumber: 3)
+    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
   public static func ==(lhs: Knock, rhs: Knock) -> Bool {
     if lhs._hotKnock != rhs._hotKnock {return false}
     if lhs._expectsReadConfirmation != rhs._expectsReadConfirmation {return false}
+    if lhs._sentToLegalHold != rhs._sentToLegalHold {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
@@ -3080,6 +3136,7 @@ extension Location: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationB
     3: .same(proto: "name"),
     4: .same(proto: "zoom"),
     5: .standard(proto: "expects_read_confirmation"),
+    6: .standard(proto: "sent_to_legal_hold"),
   ]
 
   public var isInitialized: Bool {
@@ -3096,6 +3153,7 @@ extension Location: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationB
       case 3: try decoder.decodeSingularStringField(value: &self._name)
       case 4: try decoder.decodeSingularInt32Field(value: &self._zoom)
       case 5: try decoder.decodeSingularBoolField(value: &self._expectsReadConfirmation)
+      case 6: try decoder.decodeSingularBoolField(value: &self._sentToLegalHold)
       default: break
       }
     }
@@ -3117,6 +3175,9 @@ extension Location: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationB
     if let v = self._expectsReadConfirmation {
       try visitor.visitSingularBoolField(value: v, fieldNumber: 5)
     }
+    if let v = self._sentToLegalHold {
+      try visitor.visitSingularBoolField(value: v, fieldNumber: 6)
+    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
@@ -3126,6 +3187,7 @@ extension Location: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationB
     if lhs._name != rhs._name {return false}
     if lhs._zoom != rhs._zoom {return false}
     if lhs._expectsReadConfirmation != rhs._expectsReadConfirmation {return false}
+    if lhs._sentToLegalHold != rhs._sentToLegalHold {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
@@ -3239,6 +3301,7 @@ extension Asset: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase
     4: .same(proto: "uploaded"),
     5: .same(proto: "preview"),
     6: .standard(proto: "expects_read_confirmation"),
+    7: .standard(proto: "sent_to_legal_hold"),
   ]
 
   fileprivate class _StorageClass {
@@ -3246,6 +3309,7 @@ extension Asset: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase
     var _status: Asset.OneOf_Status?
     var _preview: Asset.Preview? = nil
     var _expectsReadConfirmation: Bool? = nil
+    var _sentToLegalHold: Bool? = nil
 
     static let defaultInstance = _StorageClass()
 
@@ -3256,6 +3320,7 @@ extension Asset: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase
       _status = source._status
       _preview = source._preview
       _expectsReadConfirmation = source._expectsReadConfirmation
+      _sentToLegalHold = source._sentToLegalHold
     }
   }
 
@@ -3296,6 +3361,7 @@ extension Asset: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase
           if let v = v {_storage._status = .uploaded(v)}
         case 5: try decoder.decodeSingularMessageField(value: &_storage._preview)
         case 6: try decoder.decodeSingularBoolField(value: &_storage._expectsReadConfirmation)
+        case 7: try decoder.decodeSingularBoolField(value: &_storage._sentToLegalHold)
         default: break
         }
       }
@@ -3320,6 +3386,9 @@ extension Asset: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase
       if let v = _storage._expectsReadConfirmation {
         try visitor.visitSingularBoolField(value: v, fieldNumber: 6)
       }
+      if let v = _storage._sentToLegalHold {
+        try visitor.visitSingularBoolField(value: v, fieldNumber: 7)
+      }
     }
     try unknownFields.traverse(visitor: &visitor)
   }
@@ -3333,6 +3402,7 @@ extension Asset: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase
         if _storage._status != rhs_storage._status {return false}
         if _storage._preview != rhs_storage._preview {return false}
         if _storage._expectsReadConfirmation != rhs_storage._expectsReadConfirmation {return false}
+        if _storage._sentToLegalHold != rhs_storage._sentToLegalHold {return false}
         return true
       }
       if !storagesAreEqual {return false}
