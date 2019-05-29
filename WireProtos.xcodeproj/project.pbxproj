@@ -10,11 +10,7 @@
 		0908380A1B872DBF00629095 /* WireProtos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 090837FE1B872DBF00629095 /* WireProtos.framework */; };
 		09BCDB6E1BCBE08D0020DCC7 /* medium.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 09BCDB6D1BCBE08D0020DCC7 /* medium.jpg */; };
 		5E001FDD229E62DD00F22CDD /* messages.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E001FD7229E62DD00F22CDD /* messages.pb.swift */; };
-		5E001FDE229E62DD00F22CDD /* Messages.pbobjc.h in Headers */ = {isa = PBXBuildFile; fileRef = 5E001FD8229E62DD00F22CDD /* Messages.pbobjc.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		5E001FDF229E62DD00F22CDD /* Otr.pbobjc.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E001FD9229E62DD00F22CDD /* Otr.pbobjc.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		5E001FE0229E62DD00F22CDD /* otr.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E001FDA229E62DD00F22CDD /* otr.pb.swift */; };
-		5E001FE1229E62DD00F22CDD /* Otr.pbobjc.h in Headers */ = {isa = PBXBuildFile; fileRef = 5E001FDB229E62DD00F22CDD /* Otr.pbobjc.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		5E001FE2229E62DD00F22CDD /* Messages.pbobjc.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E001FDC229E62DD00F22CDD /* Messages.pbobjc.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		5E0026D8229EA5D800F22CDD /* Protobuf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E0026D7229EA5D800F22CDD /* Protobuf.framework */; };
 		5E0026D9229EA5E500F22CDD /* Protobuf.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 5E0026D7229EA5D800F22CDD /* Protobuf.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		5E13807A21A307CA004A646C /* SwiftProtobuf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E13807921A307CA004A646C /* SwiftProtobuf.framework */; };
@@ -68,11 +64,7 @@
 		54B5E1F71F0A6B77001F43A6 /* warnings-debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "warnings-debug.xcconfig"; sourceTree = "<group>"; };
 		54B5E1F81F0A6B77001F43A6 /* warnings.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = warnings.xcconfig; sourceTree = "<group>"; };
 		5E001FD7229E62DD00F22CDD /* messages.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = messages.pb.swift; sourceTree = "<group>"; };
-		5E001FD8229E62DD00F22CDD /* Messages.pbobjc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Messages.pbobjc.h; sourceTree = "<group>"; };
-		5E001FD9229E62DD00F22CDD /* Otr.pbobjc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Otr.pbobjc.m; sourceTree = "<group>"; };
 		5E001FDA229E62DD00F22CDD /* otr.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = otr.pb.swift; sourceTree = "<group>"; };
-		5E001FDB229E62DD00F22CDD /* Otr.pbobjc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Otr.pbobjc.h; sourceTree = "<group>"; };
-		5E001FDC229E62DD00F22CDD /* Messages.pbobjc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Messages.pbobjc.m; sourceTree = "<group>"; };
 		5E0026D7229EA5D800F22CDD /* Protobuf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Protobuf.framework; path = Carthage/Build/iOS/Protobuf.framework; sourceTree = "<group>"; };
 		5E13807921A307CA004A646C /* SwiftProtobuf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftProtobuf.framework; path = Carthage/Build/iOS/SwiftProtobuf.framework; sourceTree = "<group>"; };
 		5E13807F21A30AB7004A646C /* ProtosTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProtosTests.swift; sourceTree = "<group>"; };
@@ -196,11 +188,7 @@
 		5E001FD6229E62DD00F22CDD /* Protos */ = {
 			isa = PBXGroup;
 			children = (
-				5E001FD8229E62DD00F22CDD /* Messages.pbobjc.h */,
-				5E001FDC229E62DD00F22CDD /* Messages.pbobjc.m */,
 				5E001FD7229E62DD00F22CDD /* messages.pb.swift */,
-				5E001FDB229E62DD00F22CDD /* Otr.pbobjc.h */,
-				5E001FD9229E62DD00F22CDD /* Otr.pbobjc.m */,
 				5E001FDA229E62DD00F22CDD /* otr.pb.swift */,
 			);
 			path = Protos;
@@ -222,9 +210,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5E001FDE229E62DD00F22CDD /* Messages.pbobjc.h in Headers */,
 				F1FDF2E021B043F400E037A1 /* WireProtos.h in Headers */,
-				5E001FE1229E62DD00F22CDD /* Otr.pbobjc.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -333,8 +319,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5E001FE2229E62DD00F22CDD /* Messages.pbobjc.m in Sources */,
-				5E001FDF229E62DD00F22CDD /* Otr.pbobjc.m in Sources */,
 				5E001FDD229E62DD00F22CDD /* messages.pb.swift in Sources */,
 				5E001FE0229E62DD00F22CDD /* otr.pb.swift in Sources */,
 			);
