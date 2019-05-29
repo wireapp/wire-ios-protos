@@ -23,6 +23,3 @@ FOUNDATION_EXPORT double ProtosVersionNumber;
 
 //! Project version string for Protos.
 FOUNDATION_EXPORT const unsigned char ProtosVersionString[];
-
-#import <WireProtos/Messages.pbobjc.h>
-#import <WireProtos/Otr.pbobjc.h>
