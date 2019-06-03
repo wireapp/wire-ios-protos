@@ -1,4 +1,4 @@
-github "wireapp/swift-protobuf" "1.5.0"
 github "wireapp/backend-api-protobuf" "2.2"
-github "wireapp/generic-message-proto" "v1.23.0"
+github "wireapp/generic-message-proto" "13024746cb96527b5c3d7121e8d582a8b37e02c7"
 github "wireapp/protobuf-objc" "1.9.14"
+github "wireapp/swift-protobuf" "1.5.0"
