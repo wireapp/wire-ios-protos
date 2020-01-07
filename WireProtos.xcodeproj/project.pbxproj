@@ -271,7 +271,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0700;
-				LastUpgradeCheck = 1000;
+				LastUpgradeCheck = 1130;
 				ORGANIZATIONNAME = Wire;
 				TargetAttributes = {
 					090837FD1B872DBF00629095 = {
@@ -287,10 +287,11 @@
 			};
 			buildConfigurationList = 090837F81B872DBF00629095 /* Build configuration list for PBXProject "WireProtos" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = 090837F41B872DBF00629095;
 			productRefGroup = 090837FF1B872DBF00629095 /* Products */;
@@ -356,6 +357,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 54B5E1F21F0A6B77001F43A6 /* project-debug.xcconfig */;
 			buildSettings = {
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 			};
 			name = Debug;
@@ -364,6 +366,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 54B5E1F31F0A6B77001F43A6 /* project.xcconfig */;
 			buildSettings = {
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				SWIFT_COMPILATION_MODE = wholemodule;
 			};
