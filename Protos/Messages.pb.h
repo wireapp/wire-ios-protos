@@ -82,10 +82,20 @@
 @class ZMAssetVideoMetaDataBuilder;
 @class ZMAvailability;
 @class ZMAvailabilityBuilder;
+@class ZMButton;
+@class ZMButtonAction;
+@class ZMButtonActionBuilder;
+@class ZMButtonActionConfirmation;
+@class ZMButtonActionConfirmationBuilder;
+@class ZMButtonBuilder;
 @class ZMCalling;
 @class ZMCallingBuilder;
 @class ZMCleared;
 @class ZMClearedBuilder;
+@class ZMCompositeMessage;
+@class ZMCompositeMessageBuilder;
+@class ZMCompositeMessageItem;
+@class ZMCompositeMessageItemBuilder;
 @class ZMConfirmation;
 @class ZMConfirmationBuilder;
 @class ZMEphemeral;
@@ -197,6 +207,9 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 #define GenericMessage_reaction @"reaction"
 #define GenericMessage_ephemeral @"ephemeral"
 #define GenericMessage_availability @"availability"
+#define GenericMessage_compositeMessage @"compositeMessage"
+#define GenericMessage_buttonAction @"buttonAction"
+#define GenericMessage_buttonActionConfirmation @"buttonActionConfirmation"
 @interface ZMGenericMessage : PBGeneratedMessage<GeneratedMessageProtocol> {
 @private
   BOOL hasMessageId_:1;
@@ -216,6 +229,9 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
   BOOL hasReaction_:1;
   BOOL hasEphemeral_:1;
   BOOL hasAvailability_:1;
+  BOOL hasCompositeMessage_:1;
+  BOOL hasButtonAction_:1;
+  BOOL hasButtonActionConfirmation_:1;
   BOOL hasClientAction_:1;
   NSString* messageId;
   ZMText* text;
@@ -234,6 +250,9 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
   ZMReaction* reaction;
   ZMEphemeral* ephemeral;
   ZMAvailability* availability;
+  ZMCompositeMessage* compositeMessage;
+  ZMButtonAction* buttonAction;
+  ZMButtonActionConfirmation* buttonActionConfirmation;
   ZMClientAction clientAction;
 }
 - (BOOL) hasMessageId;
@@ -254,6 +273,9 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 - (BOOL) hasReaction;
 - (BOOL) hasEphemeral;
 - (BOOL) hasAvailability;
+- (BOOL) hasCompositeMessage;
+- (BOOL) hasButtonAction;
+- (BOOL) hasButtonActionConfirmation;
 @property (readonly, strong) NSString* messageId;
 @property (readonly, strong) ZMText* text;
 @property (readonly, strong) ZMImageAsset* image;
@@ -272,6 +294,9 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 @property (readonly, strong) ZMReaction* reaction;
 @property (readonly, strong) ZMEphemeral* ephemeral;
 @property (readonly, strong) ZMAvailability* availability;
+@property (readonly, strong) ZMCompositeMessage* compositeMessage;
+@property (readonly, strong) ZMButtonAction* buttonAction;
+@property (readonly, strong) ZMButtonActionConfirmation* buttonActionConfirmation;
 
 + (instancetype) defaultInstance;
 - (instancetype) defaultInstance;
@@ -429,6 +454,321 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 - (ZMGenericMessageBuilder*) setAvailabilityBuilder:(ZMAvailabilityBuilder*) builderForValue;
 - (ZMGenericMessageBuilder*) mergeAvailability:(ZMAvailability*) value;
 - (ZMGenericMessageBuilder*) clearAvailability;
+
+- (BOOL) hasCompositeMessage;
+- (ZMCompositeMessage*) compositeMessage;
+- (ZMGenericMessageBuilder*) setCompositeMessage:(ZMCompositeMessage*) value;
+- (ZMGenericMessageBuilder*) setCompositeMessageBuilder:(ZMCompositeMessageBuilder*) builderForValue;
+- (ZMGenericMessageBuilder*) mergeCompositeMessage:(ZMCompositeMessage*) value;
+- (ZMGenericMessageBuilder*) clearCompositeMessage;
+
+- (BOOL) hasButtonAction;
+- (ZMButtonAction*) buttonAction;
+- (ZMGenericMessageBuilder*) setButtonAction:(ZMButtonAction*) value;
+- (ZMGenericMessageBuilder*) setButtonActionBuilder:(ZMButtonActionBuilder*) builderForValue;
+- (ZMGenericMessageBuilder*) mergeButtonAction:(ZMButtonAction*) value;
+- (ZMGenericMessageBuilder*) clearButtonAction;
+
+- (BOOL) hasButtonActionConfirmation;
+- (ZMButtonActionConfirmation*) buttonActionConfirmation;
+- (ZMGenericMessageBuilder*) setButtonActionConfirmation:(ZMButtonActionConfirmation*) value;
+- (ZMGenericMessageBuilder*) setButtonActionConfirmationBuilder:(ZMButtonActionConfirmationBuilder*) builderForValue;
+- (ZMGenericMessageBuilder*) mergeButtonActionConfirmation:(ZMButtonActionConfirmation*) value;
+- (ZMGenericMessageBuilder*) clearButtonActionConfirmation;
+@end
+
+#define CompositeMessage_items @"items"
+@interface ZMCompositeMessage : PBGeneratedMessage<GeneratedMessageProtocol> {
+@private
+  NSMutableArray * itemsArray;
+}
+@property (readonly, strong) NSArray<ZMCompositeMessageItem*> * items;
+- (ZMCompositeMessageItem*)itemsAtIndex:(NSUInteger)index;
+
++ (instancetype) defaultInstance;
+- (instancetype) defaultInstance;
+
+- (BOOL) isInitialized;
+- (void) writeToCodedOutputStream:(PBCodedOutputStream*) output;
+- (ZMCompositeMessageBuilder*) builder;
++ (ZMCompositeMessageBuilder*) builder;
++ (ZMCompositeMessageBuilder*) builderWithPrototype:(ZMCompositeMessage*) prototype;
+- (ZMCompositeMessageBuilder*) toBuilder;
+
++ (ZMCompositeMessage*) parseFromData:(NSData*) data;
++ (ZMCompositeMessage*) parseFromData:(NSData*) data extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
++ (ZMCompositeMessage*) parseFromInputStream:(NSInputStream*) input;
++ (ZMCompositeMessage*) parseFromInputStream:(NSInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
++ (ZMCompositeMessage*) parseFromCodedInputStream:(PBCodedInputStream*) input;
++ (ZMCompositeMessage*) parseFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
+@end
+
+#define Item_text @"text"
+#define Item_button @"button"
+@interface ZMCompositeMessageItem : PBGeneratedMessage<GeneratedMessageProtocol> {
+@private
+  BOOL hasText_:1;
+  BOOL hasButton_:1;
+  ZMText* text;
+  ZMButton* button;
+}
+- (BOOL) hasText;
+- (BOOL) hasButton;
+@property (readonly, strong) ZMText* text;
+@property (readonly, strong) ZMButton* button;
+
++ (instancetype) defaultInstance;
+- (instancetype) defaultInstance;
+
+- (BOOL) isInitialized;
+- (void) writeToCodedOutputStream:(PBCodedOutputStream*) output;
+- (ZMCompositeMessageItemBuilder*) builder;
++ (ZMCompositeMessageItemBuilder*) builder;
++ (ZMCompositeMessageItemBuilder*) builderWithPrototype:(ZMCompositeMessageItem*) prototype;
+- (ZMCompositeMessageItemBuilder*) toBuilder;
+
++ (ZMCompositeMessageItem*) parseFromData:(NSData*) data;
++ (ZMCompositeMessageItem*) parseFromData:(NSData*) data extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
++ (ZMCompositeMessageItem*) parseFromInputStream:(NSInputStream*) input;
++ (ZMCompositeMessageItem*) parseFromInputStream:(NSInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
++ (ZMCompositeMessageItem*) parseFromCodedInputStream:(PBCodedInputStream*) input;
++ (ZMCompositeMessageItem*) parseFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
+@end
+
+@interface ZMCompositeMessageItemBuilder : PBGeneratedMessageBuilder {
+@private
+  ZMCompositeMessageItem* resultItem;
+}
+
+- (ZMCompositeMessageItem*) defaultInstance;
+
+- (ZMCompositeMessageItemBuilder*) clear;
+- (ZMCompositeMessageItemBuilder*) clone;
+
+- (ZMCompositeMessageItem*) build;
+- (ZMCompositeMessageItem*) buildPartial;
+
+- (ZMCompositeMessageItemBuilder*) mergeFrom:(ZMCompositeMessageItem*) other;
+- (ZMCompositeMessageItemBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input;
+- (ZMCompositeMessageItemBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
+
+- (BOOL) hasText;
+- (ZMText*) text;
+- (ZMCompositeMessageItemBuilder*) setText:(ZMText*) value;
+- (ZMCompositeMessageItemBuilder*) setTextBuilder:(ZMTextBuilder*) builderForValue;
+- (ZMCompositeMessageItemBuilder*) mergeText:(ZMText*) value;
+- (ZMCompositeMessageItemBuilder*) clearText;
+
+- (BOOL) hasButton;
+- (ZMButton*) button;
+- (ZMCompositeMessageItemBuilder*) setButton:(ZMButton*) value;
+- (ZMCompositeMessageItemBuilder*) setButtonBuilder:(ZMButtonBuilder*) builderForValue;
+- (ZMCompositeMessageItemBuilder*) mergeButton:(ZMButton*) value;
+- (ZMCompositeMessageItemBuilder*) clearButton;
+@end
+
+@interface ZMCompositeMessageBuilder : PBGeneratedMessageBuilder {
+@private
+  ZMCompositeMessage* resultCompositeMessage;
+}
+
+- (ZMCompositeMessage*) defaultInstance;
+
+- (ZMCompositeMessageBuilder*) clear;
+- (ZMCompositeMessageBuilder*) clone;
+
+- (ZMCompositeMessage*) build;
+- (ZMCompositeMessage*) buildPartial;
+
+- (ZMCompositeMessageBuilder*) mergeFrom:(ZMCompositeMessage*) other;
+- (ZMCompositeMessageBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input;
+- (ZMCompositeMessageBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
+
+- (NSMutableArray<ZMCompositeMessageItem*> *)items;
+- (ZMCompositeMessageItem*)itemsAtIndex:(NSUInteger)index;
+- (ZMCompositeMessageBuilder *)addItems:(ZMCompositeMessageItem*)value;
+- (ZMCompositeMessageBuilder *)setItemsArray:(NSArray<ZMCompositeMessageItem*> *)array;
+- (ZMCompositeMessageBuilder *)clearItems;
+@end
+
+#define Button_text @"text"
+#define Button_id @"id"
+@interface ZMButton : PBGeneratedMessage<GeneratedMessageProtocol> {
+@private
+  BOOL hasText_:1;
+  BOOL hasId_:1;
+  NSString* text;
+  NSString* id;
+}
+- (BOOL) hasText;
+- (BOOL) hasId;
+@property (readonly, strong) NSString* text;
+@property (readonly, strong) NSString* id;
+
++ (instancetype) defaultInstance;
+- (instancetype) defaultInstance;
+
+- (BOOL) isInitialized;
+- (void) writeToCodedOutputStream:(PBCodedOutputStream*) output;
+- (ZMButtonBuilder*) builder;
++ (ZMButtonBuilder*) builder;
++ (ZMButtonBuilder*) builderWithPrototype:(ZMButton*) prototype;
+- (ZMButtonBuilder*) toBuilder;
+
++ (ZMButton*) parseFromData:(NSData*) data;
++ (ZMButton*) parseFromData:(NSData*) data extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
++ (ZMButton*) parseFromInputStream:(NSInputStream*) input;
++ (ZMButton*) parseFromInputStream:(NSInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
++ (ZMButton*) parseFromCodedInputStream:(PBCodedInputStream*) input;
++ (ZMButton*) parseFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
+@end
+
+@interface ZMButtonBuilder : PBGeneratedMessageBuilder {
+@private
+  ZMButton* resultButton;
+}
+
+- (ZMButton*) defaultInstance;
+
+- (ZMButtonBuilder*) clear;
+- (ZMButtonBuilder*) clone;
+
+- (ZMButton*) build;
+- (ZMButton*) buildPartial;
+
+- (ZMButtonBuilder*) mergeFrom:(ZMButton*) other;
+- (ZMButtonBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input;
+- (ZMButtonBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
+
+- (BOOL) hasText;
+- (NSString*) text;
+- (ZMButtonBuilder*) setText:(NSString*) value;
+- (ZMButtonBuilder*) clearText;
+
+- (BOOL) hasId;
+- (NSString*) id;
+- (ZMButtonBuilder*) setId:(NSString*) value;
+- (ZMButtonBuilder*) clearId;
+@end
+
+#define ButtonAction_button_id @"buttonId"
+#define ButtonAction_reference_message_id @"referenceMessageId"
+@interface ZMButtonAction : PBGeneratedMessage<GeneratedMessageProtocol> {
+@private
+  BOOL hasButtonId_:1;
+  BOOL hasReferenceMessageId_:1;
+  NSString* buttonId;
+  NSString* referenceMessageId;
+}
+- (BOOL) hasButtonId;
+- (BOOL) hasReferenceMessageId;
+@property (readonly, strong) NSString* buttonId;
+@property (readonly, strong) NSString* referenceMessageId;
+
++ (instancetype) defaultInstance;
+- (instancetype) defaultInstance;
+
+- (BOOL) isInitialized;
+- (void) writeToCodedOutputStream:(PBCodedOutputStream*) output;
+- (ZMButtonActionBuilder*) builder;
++ (ZMButtonActionBuilder*) builder;
++ (ZMButtonActionBuilder*) builderWithPrototype:(ZMButtonAction*) prototype;
+- (ZMButtonActionBuilder*) toBuilder;
+
++ (ZMButtonAction*) parseFromData:(NSData*) data;
++ (ZMButtonAction*) parseFromData:(NSData*) data extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
++ (ZMButtonAction*) parseFromInputStream:(NSInputStream*) input;
++ (ZMButtonAction*) parseFromInputStream:(NSInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
++ (ZMButtonAction*) parseFromCodedInputStream:(PBCodedInputStream*) input;
++ (ZMButtonAction*) parseFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
+@end
+
+@interface ZMButtonActionBuilder : PBGeneratedMessageBuilder {
+@private
+  ZMButtonAction* resultButtonAction;
+}
+
+- (ZMButtonAction*) defaultInstance;
+
+- (ZMButtonActionBuilder*) clear;
+- (ZMButtonActionBuilder*) clone;
+
+- (ZMButtonAction*) build;
+- (ZMButtonAction*) buildPartial;
+
+- (ZMButtonActionBuilder*) mergeFrom:(ZMButtonAction*) other;
+- (ZMButtonActionBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input;
+- (ZMButtonActionBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
+
+- (BOOL) hasButtonId;
+- (NSString*) buttonId;
+- (ZMButtonActionBuilder*) setButtonId:(NSString*) value;
+- (ZMButtonActionBuilder*) clearButtonId;
+
+- (BOOL) hasReferenceMessageId;
+- (NSString*) referenceMessageId;
+- (ZMButtonActionBuilder*) setReferenceMessageId:(NSString*) value;
+- (ZMButtonActionBuilder*) clearReferenceMessageId;
+@end
+
+#define ButtonActionConfirmation_reference_message_id @"referenceMessageId"
+#define ButtonActionConfirmation_button_id @"buttonId"
+@interface ZMButtonActionConfirmation : PBGeneratedMessage<GeneratedMessageProtocol> {
+@private
+  BOOL hasReferenceMessageId_:1;
+  BOOL hasButtonId_:1;
+  NSString* referenceMessageId;
+  NSString* buttonId;
+}
+- (BOOL) hasReferenceMessageId;
+- (BOOL) hasButtonId;
+@property (readonly, strong) NSString* referenceMessageId;
+@property (readonly, strong) NSString* buttonId;
+
++ (instancetype) defaultInstance;
+- (instancetype) defaultInstance;
+
+- (BOOL) isInitialized;
+- (void) writeToCodedOutputStream:(PBCodedOutputStream*) output;
+- (ZMButtonActionConfirmationBuilder*) builder;
++ (ZMButtonActionConfirmationBuilder*) builder;
++ (ZMButtonActionConfirmationBuilder*) builderWithPrototype:(ZMButtonActionConfirmation*) prototype;
+- (ZMButtonActionConfirmationBuilder*) toBuilder;
+
++ (ZMButtonActionConfirmation*) parseFromData:(NSData*) data;
++ (ZMButtonActionConfirmation*) parseFromData:(NSData*) data extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
++ (ZMButtonActionConfirmation*) parseFromInputStream:(NSInputStream*) input;
++ (ZMButtonActionConfirmation*) parseFromInputStream:(NSInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
++ (ZMButtonActionConfirmation*) parseFromCodedInputStream:(PBCodedInputStream*) input;
++ (ZMButtonActionConfirmation*) parseFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
+@end
+
+@interface ZMButtonActionConfirmationBuilder : PBGeneratedMessageBuilder {
+@private
+  ZMButtonActionConfirmation* resultButtonActionConfirmation;
+}
+
+- (ZMButtonActionConfirmation*) defaultInstance;
+
+- (ZMButtonActionConfirmationBuilder*) clear;
+- (ZMButtonActionConfirmationBuilder*) clone;
+
+- (ZMButtonActionConfirmation*) build;
+- (ZMButtonActionConfirmation*) buildPartial;
+
+- (ZMButtonActionConfirmationBuilder*) mergeFrom:(ZMButtonActionConfirmation*) other;
+- (ZMButtonActionConfirmationBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input;
+- (ZMButtonActionConfirmationBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
+
+- (BOOL) hasReferenceMessageId;
+- (NSString*) referenceMessageId;
+- (ZMButtonActionConfirmationBuilder*) setReferenceMessageId:(NSString*) value;
+- (ZMButtonActionConfirmationBuilder*) clearReferenceMessageId;
+
+- (BOOL) hasButtonId;
+- (NSString*) buttonId;
+- (ZMButtonActionConfirmationBuilder*) setButtonId:(NSString*) value;
+- (ZMButtonActionConfirmationBuilder*) clearButtonId;
 @end
 
 #define Availability_type @"type"
@@ -1333,17 +1673,22 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 
 #define MessageEdit_replacing_message_id @"replacingMessageId"
 #define MessageEdit_text @"text"
+#define MessageEdit_compositeMessage @"compositeMessage"
 @interface ZMMessageEdit : PBGeneratedMessage<GeneratedMessageProtocol> {
 @private
   BOOL hasReplacingMessageId_:1;
   BOOL hasText_:1;
+  BOOL hasCompositeMessage_:1;
   NSString* replacingMessageId;
   ZMText* text;
+  ZMCompositeMessage* compositeMessage;
 }
 - (BOOL) hasReplacingMessageId;
 - (BOOL) hasText;
+- (BOOL) hasCompositeMessage;
 @property (readonly, strong) NSString* replacingMessageId;
 @property (readonly, strong) ZMText* text;
+@property (readonly, strong) ZMCompositeMessage* compositeMessage;
 
 + (instancetype) defaultInstance;
 - (instancetype) defaultInstance;
@@ -1391,6 +1736,13 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 - (ZMMessageEditBuilder*) setTextBuilder:(ZMTextBuilder*) builderForValue;
 - (ZMMessageEditBuilder*) mergeText:(ZMText*) value;
 - (ZMMessageEditBuilder*) clearText;
+
+- (BOOL) hasCompositeMessage;
+- (ZMCompositeMessage*) compositeMessage;
+- (ZMMessageEditBuilder*) setCompositeMessage:(ZMCompositeMessage*) value;
+- (ZMMessageEditBuilder*) setCompositeMessageBuilder:(ZMCompositeMessageBuilder*) builderForValue;
+- (ZMMessageEditBuilder*) mergeCompositeMessage:(ZMCompositeMessage*) value;
+- (ZMMessageEditBuilder*) clearCompositeMessage;
 @end
 
 #define Quote_quoted_message_id @"quotedMessageId"
