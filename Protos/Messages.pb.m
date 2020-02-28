@@ -1844,14 +1844,37 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
 
 @interface ZMCompositeMessage ()
 @property (strong) NSMutableArray<ZMCompositeMessageItem*> * itemsArray;
+@property BOOL expectsReadConfirmation;
+@property ZMLegalHoldStatus legalHoldStatus;
 @end
 
 @implementation ZMCompositeMessage
 
 @synthesize itemsArray;
 @dynamic items;
+- (BOOL) hasExpectsReadConfirmation {
+  return !!hasExpectsReadConfirmation_;
+}
+- (void) setHasExpectsReadConfirmation:(BOOL) _value_ {
+  hasExpectsReadConfirmation_ = !!_value_;
+}
+- (BOOL) expectsReadConfirmation {
+  return !!expectsReadConfirmation_;
+}
+- (void) setExpectsReadConfirmation:(BOOL) _value_ {
+  expectsReadConfirmation_ = !!_value_;
+}
+- (BOOL) hasLegalHoldStatus {
+  return !!hasLegalHoldStatus_;
+}
+- (void) setHasLegalHoldStatus:(BOOL) _value_ {
+  hasLegalHoldStatus_ = !!_value_;
+}
+@synthesize legalHoldStatus;
 - (instancetype) init {
   if ((self = [super init])) {
+    self.expectsReadConfirmation = NO;
+    self.legalHoldStatus = ZMLegalHoldStatusUNKNOWN;
   }
   return self;
 }
@@ -1888,6 +1911,12 @@ static ZMCompositeMessage* defaultZMCompositeMessageInstance = nil;
   [self.itemsArray enumerateObjectsUsingBlock:^(ZMCompositeMessageItem *element, NSUInteger idx, BOOL *stop) {
     [output writeMessage:1 value:element];
   }];
+  if (self.hasExpectsReadConfirmation) {
+    [output writeBool:2 value:self.expectsReadConfirmation];
+  }
+  if (self.hasLegalHoldStatus) {
+    [output writeEnum:3 value:self.legalHoldStatus];
+  }
   [self.unknownFields writeToCodedOutputStream:output];
 }
 - (SInt32) serializedSize {
@@ -1900,6 +1929,12 @@ static ZMCompositeMessage* defaultZMCompositeMessageInstance = nil;
   [self.itemsArray enumerateObjectsUsingBlock:^(ZMCompositeMessageItem *element, NSUInteger idx, BOOL *stop) {
     size_ += computeMessageSize(1, element);
   }];
+  if (self.hasExpectsReadConfirmation) {
+    size_ += computeBoolSize(2, self.expectsReadConfirmation);
+  }
+  if (self.hasLegalHoldStatus) {
+    size_ += computeEnumSize(3, self.legalHoldStatus);
+  }
   size_ += self.unknownFields.serializedSize;
   memoizedSerializedSize = size_;
   return size_;
@@ -1941,6 +1976,12 @@ static ZMCompositeMessage* defaultZMCompositeMessageInstance = nil;
                      withIndent:[NSString stringWithFormat:@"%@  ", indent]];
     [output appendFormat:@"%@}\n", indent];
   }];
+  if (self.hasExpectsReadConfirmation) {
+    [output appendFormat:@"%@%@: %@\n", indent, @"expectsReadConfirmation", [NSNumber numberWithBool:self.expectsReadConfirmation]];
+  }
+  if (self.hasLegalHoldStatus) {
+    [output appendFormat:@"%@%@: %@\n", indent, @"legalHoldStatus", NSStringFromZMLegalHoldStatus(self.legalHoldStatus)];
+  }
   [self.unknownFields writeDescriptionTo:output withIndent:indent];
 }
 - (void) storeInDictionary:(NSMutableDictionary *)dictionary {
@@ -1948,6 +1989,12 @@ static ZMCompositeMessage* defaultZMCompositeMessageInstance = nil;
     NSMutableDictionary *elementDictionary = [NSMutableDictionary dictionary];
     [element storeInDictionary:elementDictionary];
     [dictionary setObject:[NSDictionary dictionaryWithDictionary:elementDictionary] forKey:@"items"];
+  }
+  if (self.hasExpectsReadConfirmation) {
+    [dictionary setObject: [NSNumber numberWithBool:self.expectsReadConfirmation] forKey: @"expectsReadConfirmation"];
+  }
+  if (self.hasLegalHoldStatus) {
+    [dictionary setObject: @(self.legalHoldStatus) forKey: @"legalHoldStatus"];
   }
   [self.unknownFields storeInDictionary:dictionary];
 }
@@ -1961,6 +2008,10 @@ static ZMCompositeMessage* defaultZMCompositeMessageInstance = nil;
   ZMCompositeMessage *otherMessage = other;
   return
       [self.itemsArray isEqualToArray:otherMessage.itemsArray] &&
+      self.hasExpectsReadConfirmation == otherMessage.hasExpectsReadConfirmation &&
+      (!self.hasExpectsReadConfirmation || self.expectsReadConfirmation == otherMessage.expectsReadConfirmation) &&
+      self.hasLegalHoldStatus == otherMessage.hasLegalHoldStatus &&
+      (!self.hasLegalHoldStatus || self.legalHoldStatus == otherMessage.legalHoldStatus) &&
       (self.unknownFields == otherMessage.unknownFields || (self.unknownFields != nil && [self.unknownFields isEqual:otherMessage.unknownFields]));
 }
 - (NSUInteger) hash {
@@ -1968,6 +2019,12 @@ static ZMCompositeMessage* defaultZMCompositeMessageInstance = nil;
   [self.itemsArray enumerateObjectsUsingBlock:^(ZMCompositeMessageItem *element, NSUInteger idx, BOOL *stop) {
     hashCode = hashCode * 31 + [element hash];
   }];
+  if (self.hasExpectsReadConfirmation) {
+    hashCode = hashCode * 31 + [[NSNumber numberWithBool:self.expectsReadConfirmation] hash];
+  }
+  if (self.hasLegalHoldStatus) {
+    hashCode = hashCode * 31 + self.legalHoldStatus;
+  }
   hashCode = hashCode * 31 + [self.unknownFields hash];
   return hashCode;
 }
@@ -2331,6 +2388,12 @@ static ZMCompositeMessageItem* defaultZMCompositeMessageItemInstance = nil;
       [resultCompositeMessage.itemsArray addObjectsFromArray:other.itemsArray];
     }
   }
+  if (other.hasExpectsReadConfirmation) {
+    [self setExpectsReadConfirmation:other.expectsReadConfirmation];
+  }
+  if (other.hasLegalHoldStatus) {
+    [self setLegalHoldStatus:other.legalHoldStatus];
+  }
   [self mergeUnknownFields:other.unknownFields];
   return self;
 }
@@ -2358,6 +2421,19 @@ static ZMCompositeMessageItem* defaultZMCompositeMessageItemInstance = nil;
         [self addItems:[subBuilder buildPartial]];
         break;
       }
+      case 16: {
+        [self setExpectsReadConfirmation:[input readBool]];
+        break;
+      }
+      case 24: {
+        ZMLegalHoldStatus value = (ZMLegalHoldStatus)[input readEnum];
+        if (ZMLegalHoldStatusIsValidValue(value)) {
+          [self setLegalHoldStatus:value];
+        } else {
+          [unknownFields mergeVarintField:3 value:value];
+        }
+        break;
+      }
     }
   }
 }
@@ -2380,6 +2456,38 @@ static ZMCompositeMessageItem* defaultZMCompositeMessageItemInstance = nil;
 }
 - (ZMCompositeMessageBuilder *)clearItems {
   resultCompositeMessage.itemsArray = nil;
+  return self;
+}
+- (BOOL) hasExpectsReadConfirmation {
+  return resultCompositeMessage.hasExpectsReadConfirmation;
+}
+- (BOOL) expectsReadConfirmation {
+  return resultCompositeMessage.expectsReadConfirmation;
+}
+- (ZMCompositeMessageBuilder*) setExpectsReadConfirmation:(BOOL) value {
+  resultCompositeMessage.hasExpectsReadConfirmation = YES;
+  resultCompositeMessage.expectsReadConfirmation = value;
+  return self;
+}
+- (ZMCompositeMessageBuilder*) clearExpectsReadConfirmation {
+  resultCompositeMessage.hasExpectsReadConfirmation = NO;
+  resultCompositeMessage.expectsReadConfirmation = NO;
+  return self;
+}
+- (BOOL) hasLegalHoldStatus {
+  return resultCompositeMessage.hasLegalHoldStatus;
+}
+- (ZMLegalHoldStatus) legalHoldStatus {
+  return resultCompositeMessage.legalHoldStatus;
+}
+- (ZMCompositeMessageBuilder*) setLegalHoldStatus:(ZMLegalHoldStatus) value {
+  resultCompositeMessage.hasLegalHoldStatus = YES;
+  resultCompositeMessage.legalHoldStatus = value;
+  return self;
+}
+- (ZMCompositeMessageBuilder*) clearLegalHoldStatus {
+  resultCompositeMessage.hasLegalHoldStatus = NO;
+  resultCompositeMessage.legalHoldStatus = ZMLegalHoldStatusUNKNOWN;
   return self;
 }
 @end

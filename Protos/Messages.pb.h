@@ -478,11 +478,21 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 @end
 
 #define CompositeMessage_items @"items"
+#define CompositeMessage_expects_read_confirmation @"expectsReadConfirmation"
+#define CompositeMessage_legal_hold_status @"legalHoldStatus"
 @interface ZMCompositeMessage : PBGeneratedMessage<GeneratedMessageProtocol> {
 @private
+  BOOL hasExpectsReadConfirmation_:1;
+  BOOL hasLegalHoldStatus_:1;
+  BOOL expectsReadConfirmation_:1;
+  ZMLegalHoldStatus legalHoldStatus;
   NSMutableArray * itemsArray;
 }
+- (BOOL) hasExpectsReadConfirmation;
+- (BOOL) hasLegalHoldStatus;
 @property (readonly, strong) NSArray<ZMCompositeMessageItem*> * items;
+- (BOOL) expectsReadConfirmation;
+@property (readonly) ZMLegalHoldStatus legalHoldStatus;
 - (ZMCompositeMessageItem*)itemsAtIndex:(NSUInteger)index;
 
 + (instancetype) defaultInstance;
@@ -589,6 +599,16 @@ NSString *NSStringFromZMAssetNotUploaded(ZMAssetNotUploaded value);
 - (ZMCompositeMessageBuilder *)addItems:(ZMCompositeMessageItem*)value;
 - (ZMCompositeMessageBuilder *)setItemsArray:(NSArray<ZMCompositeMessageItem*> *)array;
 - (ZMCompositeMessageBuilder *)clearItems;
+
+- (BOOL) hasExpectsReadConfirmation;
+- (BOOL) expectsReadConfirmation;
+- (ZMCompositeMessageBuilder*) setExpectsReadConfirmation:(BOOL) value;
+- (ZMCompositeMessageBuilder*) clearExpectsReadConfirmation;
+
+- (BOOL) hasLegalHoldStatus;
+- (ZMLegalHoldStatus) legalHoldStatus;
+- (ZMCompositeMessageBuilder*) setLegalHoldStatus:(ZMLegalHoldStatus) value;
+- (ZMCompositeMessageBuilder*) clearLegalHoldStatus;
 @end
 
 #define Button_text @"text"
