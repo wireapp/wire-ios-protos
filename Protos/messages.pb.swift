@@ -386,6 +386,24 @@ public struct CompositeMessage {
 
   public var items: [CompositeMessage.Item] = []
 
+  public var expectsReadConfirmation: Bool {
+    get {return _expectsReadConfirmation ?? false}
+    set {_expectsReadConfirmation = newValue}
+  }
+  /// Returns true if `expectsReadConfirmation` has been explicitly set.
+  public var hasExpectsReadConfirmation: Bool {return self._expectsReadConfirmation != nil}
+  /// Clears the value of `expectsReadConfirmation`. Subsequent reads from it will return its default value.
+  public mutating func clearExpectsReadConfirmation() {self._expectsReadConfirmation = nil}
+
+  public var legalHoldStatus: LegalHoldStatus {
+    get {return _legalHoldStatus ?? .unknown}
+    set {_legalHoldStatus = newValue}
+  }
+  /// Returns true if `legalHoldStatus` has been explicitly set.
+  public var hasLegalHoldStatus: Bool {return self._legalHoldStatus != nil}
+  /// Clears the value of `legalHoldStatus`. Subsequent reads from it will return its default value.
+  public mutating func clearLegalHoldStatus() {self._legalHoldStatus = nil}
+
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
   public struct Item {
@@ -437,6 +455,9 @@ public struct CompositeMessage {
   }
 
   public init() {}
+
+  fileprivate var _expectsReadConfirmation: Bool? = nil
+  fileprivate var _legalHoldStatus: LegalHoldStatus? = nil
 }
 
 public struct Button {
@@ -2427,6 +2448,8 @@ extension CompositeMessage: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
   public static let protoMessageName: String = "CompositeMessage"
   public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .same(proto: "items"),
+    2: .standard(proto: "expects_read_confirmation"),
+    3: .standard(proto: "legal_hold_status"),
   ]
 
   public var isInitialized: Bool {
@@ -2438,6 +2461,8 @@ extension CompositeMessage: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
     while let fieldNumber = try decoder.nextFieldNumber() {
       switch fieldNumber {
       case 1: try decoder.decodeRepeatedMessageField(value: &self.items)
+      case 2: try decoder.decodeSingularBoolField(value: &self._expectsReadConfirmation)
+      case 3: try decoder.decodeSingularEnumField(value: &self._legalHoldStatus)
       default: break
       }
     }
@@ -2447,11 +2472,19 @@ extension CompositeMessage: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
     if !self.items.isEmpty {
       try visitor.visitRepeatedMessageField(value: self.items, fieldNumber: 1)
     }
+    if let v = self._expectsReadConfirmation {
+      try visitor.visitSingularBoolField(value: v, fieldNumber: 2)
+    }
+    if let v = self._legalHoldStatus {
+      try visitor.visitSingularEnumField(value: v, fieldNumber: 3)
+    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
   public static func ==(lhs: CompositeMessage, rhs: CompositeMessage) -> Bool {
     if lhs.items != rhs.items {return false}
+    if lhs._expectsReadConfirmation != rhs._expectsReadConfirmation {return false}
+    if lhs._legalHoldStatus != rhs._legalHoldStatus {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
