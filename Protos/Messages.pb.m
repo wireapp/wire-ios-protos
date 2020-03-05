@@ -116,7 +116,7 @@ NSString *NSStringFromZMLegalHoldStatus(ZMLegalHoldStatus value) {
 @property (strong) ZMReaction* reaction;
 @property (strong) ZMEphemeral* ephemeral;
 @property (strong) ZMAvailability* availability;
-@property (strong) ZMCompositeMessage* compositeMessage;
+@property (strong) ZMComposite* composite;
 @property (strong) ZMButtonAction* buttonAction;
 @property (strong) ZMButtonActionConfirmation* buttonActionConfirmation;
 @end
@@ -249,13 +249,13 @@ NSString *NSStringFromZMLegalHoldStatus(ZMLegalHoldStatus value) {
   hasAvailability_ = !!_value_;
 }
 @synthesize availability;
-- (BOOL) hasCompositeMessage {
-  return !!hasCompositeMessage_;
+- (BOOL) hasComposite {
+  return !!hasComposite_;
 }
-- (void) setHasCompositeMessage:(BOOL) _value_ {
-  hasCompositeMessage_ = !!_value_;
+- (void) setHasComposite:(BOOL) _value_ {
+  hasComposite_ = !!_value_;
 }
-@synthesize compositeMessage;
+@synthesize composite;
 - (BOOL) hasButtonAction {
   return !!hasButtonAction_;
 }
@@ -290,7 +290,7 @@ NSString *NSStringFromZMLegalHoldStatus(ZMLegalHoldStatus value) {
     self.reaction = [ZMReaction defaultInstance];
     self.ephemeral = [ZMEphemeral defaultInstance];
     self.availability = [ZMAvailability defaultInstance];
-    self.compositeMessage = [ZMCompositeMessage defaultInstance];
+    self.composite = [ZMComposite defaultInstance];
     self.buttonAction = [ZMButtonAction defaultInstance];
     self.buttonActionConfirmation = [ZMButtonActionConfirmation defaultInstance];
   }
@@ -392,8 +392,8 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
       return NO;
     }
   }
-  if (self.hasCompositeMessage) {
-    if (!self.compositeMessage.isInitialized) {
+  if (self.hasComposite) {
+    if (!self.composite.isInitialized) {
       return NO;
     }
   }
@@ -464,8 +464,8 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
   if (self.hasAvailability) {
     [output writeMessage:19 value:self.availability];
   }
-  if (self.hasCompositeMessage) {
-    [output writeMessage:20 value:self.compositeMessage];
+  if (self.hasComposite) {
+    [output writeMessage:20 value:self.composite];
   }
   if (self.hasButtonAction) {
     [output writeMessage:21 value:self.buttonAction];
@@ -536,8 +536,8 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
   if (self.hasAvailability) {
     size_ += computeMessageSize(19, self.availability);
   }
-  if (self.hasCompositeMessage) {
-    size_ += computeMessageSize(20, self.compositeMessage);
+  if (self.hasComposite) {
+    size_ += computeMessageSize(20, self.composite);
   }
   if (self.hasButtonAction) {
     size_ += computeMessageSize(21, self.buttonAction);
@@ -682,9 +682,9 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
                          withIndent:[NSString stringWithFormat:@"%@  ", indent]];
     [output appendFormat:@"%@}\n", indent];
   }
-  if (self.hasCompositeMessage) {
-    [output appendFormat:@"%@%@ {\n", indent, @"compositeMessage"];
-    [self.compositeMessage writeDescriptionTo:output
+  if (self.hasComposite) {
+    [output appendFormat:@"%@%@ {\n", indent, @"composite"];
+    [self.composite writeDescriptionTo:output
                          withIndent:[NSString stringWithFormat:@"%@  ", indent]];
     [output appendFormat:@"%@}\n", indent];
   }
@@ -789,10 +789,10 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
    [self.availability storeInDictionary:messageDictionary];
    [dictionary setObject:[NSDictionary dictionaryWithDictionary:messageDictionary] forKey:@"availability"];
   }
-  if (self.hasCompositeMessage) {
+  if (self.hasComposite) {
    NSMutableDictionary *messageDictionary = [NSMutableDictionary dictionary]; 
-   [self.compositeMessage storeInDictionary:messageDictionary];
-   [dictionary setObject:[NSDictionary dictionaryWithDictionary:messageDictionary] forKey:@"compositeMessage"];
+   [self.composite storeInDictionary:messageDictionary];
+   [dictionary setObject:[NSDictionary dictionaryWithDictionary:messageDictionary] forKey:@"composite"];
   }
   if (self.hasButtonAction) {
    NSMutableDictionary *messageDictionary = [NSMutableDictionary dictionary]; 
@@ -851,8 +851,8 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
       (!self.hasEphemeral || [self.ephemeral isEqual:otherMessage.ephemeral]) &&
       self.hasAvailability == otherMessage.hasAvailability &&
       (!self.hasAvailability || [self.availability isEqual:otherMessage.availability]) &&
-      self.hasCompositeMessage == otherMessage.hasCompositeMessage &&
-      (!self.hasCompositeMessage || [self.compositeMessage isEqual:otherMessage.compositeMessage]) &&
+      self.hasComposite == otherMessage.hasComposite &&
+      (!self.hasComposite || [self.composite isEqual:otherMessage.composite]) &&
       self.hasButtonAction == otherMessage.hasButtonAction &&
       (!self.hasButtonAction || [self.buttonAction isEqual:otherMessage.buttonAction]) &&
       self.hasButtonActionConfirmation == otherMessage.hasButtonActionConfirmation &&
@@ -915,8 +915,8 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
   if (self.hasAvailability) {
     hashCode = hashCode * 31 + [self.availability hash];
   }
-  if (self.hasCompositeMessage) {
-    hashCode = hashCode * 31 + [self.compositeMessage hash];
+  if (self.hasComposite) {
+    hashCode = hashCode * 31 + [self.composite hash];
   }
   if (self.hasButtonAction) {
     hashCode = hashCode * 31 + [self.buttonAction hash];
@@ -1021,8 +1021,8 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
   if (other.hasAvailability) {
     [self mergeAvailability:other.availability];
   }
-  if (other.hasCompositeMessage) {
-    [self mergeCompositeMessage:other.compositeMessage];
+  if (other.hasComposite) {
+    [self mergeComposite:other.composite];
   }
   if (other.hasButtonAction) {
     [self mergeButtonAction:other.buttonAction];
@@ -1209,12 +1209,12 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
         break;
       }
       case 162: {
-        ZMCompositeMessageBuilder* subBuilder = [ZMCompositeMessage builder];
-        if (self.hasCompositeMessage) {
-          [subBuilder mergeFrom:self.compositeMessage];
+        ZMCompositeBuilder* subBuilder = [ZMComposite builder];
+        if (self.hasComposite) {
+          [subBuilder mergeFrom:self.composite];
         }
         [input readMessage:subBuilder extensionRegistry:extensionRegistry];
-        [self setCompositeMessage:[subBuilder buildPartial]];
+        [self setComposite:[subBuilder buildPartial]];
         break;
       }
       case 170: {
@@ -1750,34 +1750,34 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
   resultGenericMessage.availability = [ZMAvailability defaultInstance];
   return self;
 }
-- (BOOL) hasCompositeMessage {
-  return resultGenericMessage.hasCompositeMessage;
+- (BOOL) hasComposite {
+  return resultGenericMessage.hasComposite;
 }
-- (ZMCompositeMessage*) compositeMessage {
-  return resultGenericMessage.compositeMessage;
+- (ZMComposite*) composite {
+  return resultGenericMessage.composite;
 }
-- (ZMGenericMessageBuilder*) setCompositeMessage:(ZMCompositeMessage*) value {
-  resultGenericMessage.hasCompositeMessage = YES;
-  resultGenericMessage.compositeMessage = value;
+- (ZMGenericMessageBuilder*) setComposite:(ZMComposite*) value {
+  resultGenericMessage.hasComposite = YES;
+  resultGenericMessage.composite = value;
   return self;
 }
-- (ZMGenericMessageBuilder*) setCompositeMessageBuilder:(ZMCompositeMessageBuilder*) builderForValue {
-  return [self setCompositeMessage:[builderForValue build]];
+- (ZMGenericMessageBuilder*) setCompositeBuilder:(ZMCompositeBuilder*) builderForValue {
+  return [self setComposite:[builderForValue build]];
 }
-- (ZMGenericMessageBuilder*) mergeCompositeMessage:(ZMCompositeMessage*) value {
-  if (resultGenericMessage.hasCompositeMessage &&
-      resultGenericMessage.compositeMessage != [ZMCompositeMessage defaultInstance]) {
-    resultGenericMessage.compositeMessage =
-      [[[ZMCompositeMessage builderWithPrototype:resultGenericMessage.compositeMessage] mergeFrom:value] buildPartial];
+- (ZMGenericMessageBuilder*) mergeComposite:(ZMComposite*) value {
+  if (resultGenericMessage.hasComposite &&
+      resultGenericMessage.composite != [ZMComposite defaultInstance]) {
+    resultGenericMessage.composite =
+      [[[ZMComposite builderWithPrototype:resultGenericMessage.composite] mergeFrom:value] buildPartial];
   } else {
-    resultGenericMessage.compositeMessage = value;
+    resultGenericMessage.composite = value;
   }
-  resultGenericMessage.hasCompositeMessage = YES;
+  resultGenericMessage.hasComposite = YES;
   return self;
 }
-- (ZMGenericMessageBuilder*) clearCompositeMessage {
-  resultGenericMessage.hasCompositeMessage = NO;
-  resultGenericMessage.compositeMessage = [ZMCompositeMessage defaultInstance];
+- (ZMGenericMessageBuilder*) clearComposite {
+  resultGenericMessage.hasComposite = NO;
+  resultGenericMessage.composite = [ZMComposite defaultInstance];
   return self;
 }
 - (BOOL) hasButtonAction {
@@ -1842,13 +1842,13 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
 }
 @end
 
-@interface ZMCompositeMessage ()
-@property (strong) NSMutableArray<ZMCompositeMessageItem*> * itemsArray;
+@interface ZMComposite ()
+@property (strong) NSMutableArray<ZMCompositeItem*> * itemsArray;
 @property BOOL expectsReadConfirmation;
 @property ZMLegalHoldStatus legalHoldStatus;
 @end
 
-@implementation ZMCompositeMessage
+@implementation ZMComposite
 
 @synthesize itemsArray;
 @dynamic items;
@@ -1878,27 +1878,27 @@ static ZMGenericMessage* defaultZMGenericMessageInstance = nil;
   }
   return self;
 }
-static ZMCompositeMessage* defaultZMCompositeMessageInstance = nil;
+static ZMComposite* defaultZMCompositeInstance = nil;
 + (void) initialize {
-  if (self == [ZMCompositeMessage class]) {
-    defaultZMCompositeMessageInstance = [[ZMCompositeMessage alloc] init];
+  if (self == [ZMComposite class]) {
+    defaultZMCompositeInstance = [[ZMComposite alloc] init];
   }
 }
 + (instancetype) defaultInstance {
-  return defaultZMCompositeMessageInstance;
+  return defaultZMCompositeInstance;
 }
 - (instancetype) defaultInstance {
-  return defaultZMCompositeMessageInstance;
+  return defaultZMCompositeInstance;
 }
-- (NSArray<ZMCompositeMessageItem*> *)items {
+- (NSArray<ZMCompositeItem*> *)items {
   return itemsArray;
 }
-- (ZMCompositeMessageItem*)itemsAtIndex:(NSUInteger)index {
+- (ZMCompositeItem*)itemsAtIndex:(NSUInteger)index {
   return [itemsArray objectAtIndex:index];
 }
 - (BOOL) isInitialized {
   __block BOOL isInititems = YES;
-   [self.items enumerateObjectsUsingBlock:^(ZMCompositeMessageItem *element, NSUInteger idx, BOOL *stop) {
+   [self.items enumerateObjectsUsingBlock:^(ZMCompositeItem *element, NSUInteger idx, BOOL *stop) {
     if (!element.isInitialized) {
       isInititems = NO;
       *stop = YES;
@@ -1908,7 +1908,7 @@ static ZMCompositeMessage* defaultZMCompositeMessageInstance = nil;
   return YES;
 }
 - (void) writeToCodedOutputStream:(PBCodedOutputStream*) output {
-  [self.itemsArray enumerateObjectsUsingBlock:^(ZMCompositeMessageItem *element, NSUInteger idx, BOOL *stop) {
+  [self.itemsArray enumerateObjectsUsingBlock:^(ZMCompositeItem *element, NSUInteger idx, BOOL *stop) {
     [output writeMessage:1 value:element];
   }];
   if (self.hasExpectsReadConfirmation) {
@@ -1926,7 +1926,7 @@ static ZMCompositeMessage* defaultZMCompositeMessageInstance = nil;
   }
 
   size_ = 0;
-  [self.itemsArray enumerateObjectsUsingBlock:^(ZMCompositeMessageItem *element, NSUInteger idx, BOOL *stop) {
+  [self.itemsArray enumerateObjectsUsingBlock:^(ZMCompositeItem *element, NSUInteger idx, BOOL *stop) {
     size_ += computeMessageSize(1, element);
   }];
   if (self.hasExpectsReadConfirmation) {
@@ -1939,38 +1939,38 @@ static ZMCompositeMessage* defaultZMCompositeMessageInstance = nil;
   memoizedSerializedSize = size_;
   return size_;
 }
-+ (ZMCompositeMessage*) parseFromData:(NSData*) data {
-  return (ZMCompositeMessage*)[[[ZMCompositeMessage builder] mergeFromData:data] build];
++ (ZMComposite*) parseFromData:(NSData*) data {
+  return (ZMComposite*)[[[ZMComposite builder] mergeFromData:data] build];
 }
-+ (ZMCompositeMessage*) parseFromData:(NSData*) data extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
-  return (ZMCompositeMessage*)[[[ZMCompositeMessage builder] mergeFromData:data extensionRegistry:extensionRegistry] build];
++ (ZMComposite*) parseFromData:(NSData*) data extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  return (ZMComposite*)[[[ZMComposite builder] mergeFromData:data extensionRegistry:extensionRegistry] build];
 }
-+ (ZMCompositeMessage*) parseFromInputStream:(NSInputStream*) input {
-  return (ZMCompositeMessage*)[[[ZMCompositeMessage builder] mergeFromInputStream:input] build];
++ (ZMComposite*) parseFromInputStream:(NSInputStream*) input {
+  return (ZMComposite*)[[[ZMComposite builder] mergeFromInputStream:input] build];
 }
-+ (ZMCompositeMessage*) parseFromInputStream:(NSInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
-  return (ZMCompositeMessage*)[[[ZMCompositeMessage builder] mergeFromInputStream:input extensionRegistry:extensionRegistry] build];
++ (ZMComposite*) parseFromInputStream:(NSInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  return (ZMComposite*)[[[ZMComposite builder] mergeFromInputStream:input extensionRegistry:extensionRegistry] build];
 }
-+ (ZMCompositeMessage*) parseFromCodedInputStream:(PBCodedInputStream*) input {
-  return (ZMCompositeMessage*)[[[ZMCompositeMessage builder] mergeFromCodedInputStream:input] build];
++ (ZMComposite*) parseFromCodedInputStream:(PBCodedInputStream*) input {
+  return (ZMComposite*)[[[ZMComposite builder] mergeFromCodedInputStream:input] build];
 }
-+ (ZMCompositeMessage*) parseFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
-  return (ZMCompositeMessage*)[[[ZMCompositeMessage builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
++ (ZMComposite*) parseFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  return (ZMComposite*)[[[ZMComposite builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
 }
-+ (ZMCompositeMessageBuilder*) builder {
-  return [[ZMCompositeMessageBuilder alloc] init];
++ (ZMCompositeBuilder*) builder {
+  return [[ZMCompositeBuilder alloc] init];
 }
-+ (ZMCompositeMessageBuilder*) builderWithPrototype:(ZMCompositeMessage*) prototype {
-  return [[ZMCompositeMessage builder] mergeFrom:prototype];
++ (ZMCompositeBuilder*) builderWithPrototype:(ZMComposite*) prototype {
+  return [[ZMComposite builder] mergeFrom:prototype];
 }
-- (ZMCompositeMessageBuilder*) builder {
-  return [ZMCompositeMessage builder];
+- (ZMCompositeBuilder*) builder {
+  return [ZMComposite builder];
 }
-- (ZMCompositeMessageBuilder*) toBuilder {
-  return [ZMCompositeMessage builderWithPrototype:self];
+- (ZMCompositeBuilder*) toBuilder {
+  return [ZMComposite builderWithPrototype:self];
 }
 - (void) writeDescriptionTo:(NSMutableString*) output withIndent:(NSString*) indent {
-  [self.itemsArray enumerateObjectsUsingBlock:^(ZMCompositeMessageItem *element, NSUInteger idx, BOOL *stop) {
+  [self.itemsArray enumerateObjectsUsingBlock:^(ZMCompositeItem *element, NSUInteger idx, BOOL *stop) {
     [output appendFormat:@"%@%@ {\n", indent, @"items"];
     [element writeDescriptionTo:output
                      withIndent:[NSString stringWithFormat:@"%@  ", indent]];
@@ -1985,7 +1985,7 @@ static ZMCompositeMessage* defaultZMCompositeMessageInstance = nil;
   [self.unknownFields writeDescriptionTo:output withIndent:indent];
 }
 - (void) storeInDictionary:(NSMutableDictionary *)dictionary {
-  for (ZMCompositeMessageItem* element in self.itemsArray) {
+  for (ZMCompositeItem* element in self.itemsArray) {
     NSMutableDictionary *elementDictionary = [NSMutableDictionary dictionary];
     [element storeInDictionary:elementDictionary];
     [dictionary setObject:[NSDictionary dictionaryWithDictionary:elementDictionary] forKey:@"items"];
@@ -2002,10 +2002,10 @@ static ZMCompositeMessage* defaultZMCompositeMessageInstance = nil;
   if (other == self) {
     return YES;
   }
-  if (![other isKindOfClass:[ZMCompositeMessage class]]) {
+  if (![other isKindOfClass:[ZMComposite class]]) {
     return NO;
   }
-  ZMCompositeMessage *otherMessage = other;
+  ZMComposite *otherMessage = other;
   return
       [self.itemsArray isEqualToArray:otherMessage.itemsArray] &&
       self.hasExpectsReadConfirmation == otherMessage.hasExpectsReadConfirmation &&
@@ -2016,7 +2016,7 @@ static ZMCompositeMessage* defaultZMCompositeMessageInstance = nil;
 }
 - (NSUInteger) hash {
   __block NSUInteger hashCode = 7;
-  [self.itemsArray enumerateObjectsUsingBlock:^(ZMCompositeMessageItem *element, NSUInteger idx, BOOL *stop) {
+  [self.itemsArray enumerateObjectsUsingBlock:^(ZMCompositeItem *element, NSUInteger idx, BOOL *stop) {
     hashCode = hashCode * 31 + [element hash];
   }];
   if (self.hasExpectsReadConfirmation) {
@@ -2030,12 +2030,12 @@ static ZMCompositeMessage* defaultZMCompositeMessageInstance = nil;
 }
 @end
 
-@interface ZMCompositeMessageItem ()
+@interface ZMCompositeItem ()
 @property (strong) ZMText* text;
 @property (strong) ZMButton* button;
 @end
 
-@implementation ZMCompositeMessageItem
+@implementation ZMCompositeItem
 
 - (BOOL) hasText {
   return !!hasText_;
@@ -2058,17 +2058,17 @@ static ZMCompositeMessage* defaultZMCompositeMessageInstance = nil;
   }
   return self;
 }
-static ZMCompositeMessageItem* defaultZMCompositeMessageItemInstance = nil;
+static ZMCompositeItem* defaultZMCompositeItemInstance = nil;
 + (void) initialize {
-  if (self == [ZMCompositeMessageItem class]) {
-    defaultZMCompositeMessageItemInstance = [[ZMCompositeMessageItem alloc] init];
+  if (self == [ZMCompositeItem class]) {
+    defaultZMCompositeItemInstance = [[ZMCompositeItem alloc] init];
   }
 }
 + (instancetype) defaultInstance {
-  return defaultZMCompositeMessageItemInstance;
+  return defaultZMCompositeItemInstance;
 }
 - (instancetype) defaultInstance {
-  return defaultZMCompositeMessageItemInstance;
+  return defaultZMCompositeItemInstance;
 }
 - (BOOL) isInitialized {
   if (self.hasText) {
@@ -2109,35 +2109,35 @@ static ZMCompositeMessageItem* defaultZMCompositeMessageItemInstance = nil;
   memoizedSerializedSize = size_;
   return size_;
 }
-+ (ZMCompositeMessageItem*) parseFromData:(NSData*) data {
-  return (ZMCompositeMessageItem*)[[[ZMCompositeMessageItem builder] mergeFromData:data] build];
++ (ZMCompositeItem*) parseFromData:(NSData*) data {
+  return (ZMCompositeItem*)[[[ZMCompositeItem builder] mergeFromData:data] build];
 }
-+ (ZMCompositeMessageItem*) parseFromData:(NSData*) data extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
-  return (ZMCompositeMessageItem*)[[[ZMCompositeMessageItem builder] mergeFromData:data extensionRegistry:extensionRegistry] build];
++ (ZMCompositeItem*) parseFromData:(NSData*) data extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  return (ZMCompositeItem*)[[[ZMCompositeItem builder] mergeFromData:data extensionRegistry:extensionRegistry] build];
 }
-+ (ZMCompositeMessageItem*) parseFromInputStream:(NSInputStream*) input {
-  return (ZMCompositeMessageItem*)[[[ZMCompositeMessageItem builder] mergeFromInputStream:input] build];
++ (ZMCompositeItem*) parseFromInputStream:(NSInputStream*) input {
+  return (ZMCompositeItem*)[[[ZMCompositeItem builder] mergeFromInputStream:input] build];
 }
-+ (ZMCompositeMessageItem*) parseFromInputStream:(NSInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
-  return (ZMCompositeMessageItem*)[[[ZMCompositeMessageItem builder] mergeFromInputStream:input extensionRegistry:extensionRegistry] build];
++ (ZMCompositeItem*) parseFromInputStream:(NSInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  return (ZMCompositeItem*)[[[ZMCompositeItem builder] mergeFromInputStream:input extensionRegistry:extensionRegistry] build];
 }
-+ (ZMCompositeMessageItem*) parseFromCodedInputStream:(PBCodedInputStream*) input {
-  return (ZMCompositeMessageItem*)[[[ZMCompositeMessageItem builder] mergeFromCodedInputStream:input] build];
++ (ZMCompositeItem*) parseFromCodedInputStream:(PBCodedInputStream*) input {
+  return (ZMCompositeItem*)[[[ZMCompositeItem builder] mergeFromCodedInputStream:input] build];
 }
-+ (ZMCompositeMessageItem*) parseFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
-  return (ZMCompositeMessageItem*)[[[ZMCompositeMessageItem builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
++ (ZMCompositeItem*) parseFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  return (ZMCompositeItem*)[[[ZMCompositeItem builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
 }
-+ (ZMCompositeMessageItemBuilder*) builder {
-  return [[ZMCompositeMessageItemBuilder alloc] init];
++ (ZMCompositeItemBuilder*) builder {
+  return [[ZMCompositeItemBuilder alloc] init];
 }
-+ (ZMCompositeMessageItemBuilder*) builderWithPrototype:(ZMCompositeMessageItem*) prototype {
-  return [[ZMCompositeMessageItem builder] mergeFrom:prototype];
++ (ZMCompositeItemBuilder*) builderWithPrototype:(ZMCompositeItem*) prototype {
+  return [[ZMCompositeItem builder] mergeFrom:prototype];
 }
-- (ZMCompositeMessageItemBuilder*) builder {
-  return [ZMCompositeMessageItem builder];
+- (ZMCompositeItemBuilder*) builder {
+  return [ZMCompositeItem builder];
 }
-- (ZMCompositeMessageItemBuilder*) toBuilder {
-  return [ZMCompositeMessageItem builderWithPrototype:self];
+- (ZMCompositeItemBuilder*) toBuilder {
+  return [ZMCompositeItem builderWithPrototype:self];
 }
 - (void) writeDescriptionTo:(NSMutableString*) output withIndent:(NSString*) indent {
   if (self.hasText) {
@@ -2171,10 +2171,10 @@ static ZMCompositeMessageItem* defaultZMCompositeMessageItemInstance = nil;
   if (other == self) {
     return YES;
   }
-  if (![other isKindOfClass:[ZMCompositeMessageItem class]]) {
+  if (![other isKindOfClass:[ZMCompositeItem class]]) {
     return NO;
   }
-  ZMCompositeMessageItem *otherMessage = other;
+  ZMCompositeItem *otherMessage = other;
   return
       self.hasText == otherMessage.hasText &&
       (!self.hasText || [self.text isEqual:otherMessage.text]) &&
@@ -2195,42 +2195,42 @@ static ZMCompositeMessageItem* defaultZMCompositeMessageItemInstance = nil;
 }
 @end
 
-@interface ZMCompositeMessageItemBuilder()
-@property (strong) ZMCompositeMessageItem* resultItem;
+@interface ZMCompositeItemBuilder()
+@property (strong) ZMCompositeItem* resultItem;
 @end
 
-@implementation ZMCompositeMessageItemBuilder
+@implementation ZMCompositeItemBuilder
 @synthesize resultItem;
 - (instancetype) init {
   if ((self = [super init])) {
-    self.resultItem = [[ZMCompositeMessageItem alloc] init];
+    self.resultItem = [[ZMCompositeItem alloc] init];
   }
   return self;
 }
 - (PBGeneratedMessage*) internalGetResult {
   return resultItem;
 }
-- (ZMCompositeMessageItemBuilder*) clear {
-  self.resultItem = [[ZMCompositeMessageItem alloc] init];
+- (ZMCompositeItemBuilder*) clear {
+  self.resultItem = [[ZMCompositeItem alloc] init];
   return self;
 }
-- (ZMCompositeMessageItemBuilder*) clone {
-  return [ZMCompositeMessageItem builderWithPrototype:resultItem];
+- (ZMCompositeItemBuilder*) clone {
+  return [ZMCompositeItem builderWithPrototype:resultItem];
 }
-- (ZMCompositeMessageItem*) defaultInstance {
-  return [ZMCompositeMessageItem defaultInstance];
+- (ZMCompositeItem*) defaultInstance {
+  return [ZMCompositeItem defaultInstance];
 }
-- (ZMCompositeMessageItem*) build {
+- (ZMCompositeItem*) build {
   [self checkInitialized];
   return [self buildPartial];
 }
-- (ZMCompositeMessageItem*) buildPartial {
-  ZMCompositeMessageItem* returnMe = resultItem;
+- (ZMCompositeItem*) buildPartial {
+  ZMCompositeItem* returnMe = resultItem;
   self.resultItem = nil;
   return returnMe;
 }
-- (ZMCompositeMessageItemBuilder*) mergeFrom:(ZMCompositeMessageItem*) other {
-  if (other == [ZMCompositeMessageItem defaultInstance]) {
+- (ZMCompositeItemBuilder*) mergeFrom:(ZMCompositeItem*) other {
+  if (other == [ZMCompositeItem defaultInstance]) {
     return self;
   }
   if (other.hasText) {
@@ -2242,10 +2242,10 @@ static ZMCompositeMessageItem* defaultZMCompositeMessageItemInstance = nil;
   [self mergeUnknownFields:other.unknownFields];
   return self;
 }
-- (ZMCompositeMessageItemBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input {
+- (ZMCompositeItemBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input {
   return [self mergeFromCodedInputStream:input extensionRegistry:[PBExtensionRegistry emptyRegistry]];
 }
-- (ZMCompositeMessageItemBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+- (ZMCompositeItemBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
   PBUnknownFieldSetBuilder* unknownFields = [PBUnknownFieldSet builderWithUnknownFields:self.unknownFields];
   while (YES) {
     SInt32 tag = [input readTag];
@@ -2287,15 +2287,15 @@ static ZMCompositeMessageItem* defaultZMCompositeMessageItemInstance = nil;
 - (ZMText*) text {
   return resultItem.text;
 }
-- (ZMCompositeMessageItemBuilder*) setText:(ZMText*) value {
+- (ZMCompositeItemBuilder*) setText:(ZMText*) value {
   resultItem.hasText = YES;
   resultItem.text = value;
   return self;
 }
-- (ZMCompositeMessageItemBuilder*) setTextBuilder:(ZMTextBuilder*) builderForValue {
+- (ZMCompositeItemBuilder*) setTextBuilder:(ZMTextBuilder*) builderForValue {
   return [self setText:[builderForValue build]];
 }
-- (ZMCompositeMessageItemBuilder*) mergeText:(ZMText*) value {
+- (ZMCompositeItemBuilder*) mergeText:(ZMText*) value {
   if (resultItem.hasText &&
       resultItem.text != [ZMText defaultInstance]) {
     resultItem.text =
@@ -2306,7 +2306,7 @@ static ZMCompositeMessageItem* defaultZMCompositeMessageItemInstance = nil;
   resultItem.hasText = YES;
   return self;
 }
-- (ZMCompositeMessageItemBuilder*) clearText {
+- (ZMCompositeItemBuilder*) clearText {
   resultItem.hasText = NO;
   resultItem.text = [ZMText defaultInstance];
   return self;
@@ -2317,15 +2317,15 @@ static ZMCompositeMessageItem* defaultZMCompositeMessageItemInstance = nil;
 - (ZMButton*) button {
   return resultItem.button;
 }
-- (ZMCompositeMessageItemBuilder*) setButton:(ZMButton*) value {
+- (ZMCompositeItemBuilder*) setButton:(ZMButton*) value {
   resultItem.hasButton = YES;
   resultItem.button = value;
   return self;
 }
-- (ZMCompositeMessageItemBuilder*) setButtonBuilder:(ZMButtonBuilder*) builderForValue {
+- (ZMCompositeItemBuilder*) setButtonBuilder:(ZMButtonBuilder*) builderForValue {
   return [self setButton:[builderForValue build]];
 }
-- (ZMCompositeMessageItemBuilder*) mergeButton:(ZMButton*) value {
+- (ZMCompositeItemBuilder*) mergeButton:(ZMButton*) value {
   if (resultItem.hasButton &&
       resultItem.button != [ZMButton defaultInstance]) {
     resultItem.button =
@@ -2336,56 +2336,56 @@ static ZMCompositeMessageItem* defaultZMCompositeMessageItemInstance = nil;
   resultItem.hasButton = YES;
   return self;
 }
-- (ZMCompositeMessageItemBuilder*) clearButton {
+- (ZMCompositeItemBuilder*) clearButton {
   resultItem.hasButton = NO;
   resultItem.button = [ZMButton defaultInstance];
   return self;
 }
 @end
 
-@interface ZMCompositeMessageBuilder()
-@property (strong) ZMCompositeMessage* resultCompositeMessage;
+@interface ZMCompositeBuilder()
+@property (strong) ZMComposite* resultComposite;
 @end
 
-@implementation ZMCompositeMessageBuilder
-@synthesize resultCompositeMessage;
+@implementation ZMCompositeBuilder
+@synthesize resultComposite;
 - (instancetype) init {
   if ((self = [super init])) {
-    self.resultCompositeMessage = [[ZMCompositeMessage alloc] init];
+    self.resultComposite = [[ZMComposite alloc] init];
   }
   return self;
 }
 - (PBGeneratedMessage*) internalGetResult {
-  return resultCompositeMessage;
+  return resultComposite;
 }
-- (ZMCompositeMessageBuilder*) clear {
-  self.resultCompositeMessage = [[ZMCompositeMessage alloc] init];
+- (ZMCompositeBuilder*) clear {
+  self.resultComposite = [[ZMComposite alloc] init];
   return self;
 }
-- (ZMCompositeMessageBuilder*) clone {
-  return [ZMCompositeMessage builderWithPrototype:resultCompositeMessage];
+- (ZMCompositeBuilder*) clone {
+  return [ZMComposite builderWithPrototype:resultComposite];
 }
-- (ZMCompositeMessage*) defaultInstance {
-  return [ZMCompositeMessage defaultInstance];
+- (ZMComposite*) defaultInstance {
+  return [ZMComposite defaultInstance];
 }
-- (ZMCompositeMessage*) build {
+- (ZMComposite*) build {
   [self checkInitialized];
   return [self buildPartial];
 }
-- (ZMCompositeMessage*) buildPartial {
-  ZMCompositeMessage* returnMe = resultCompositeMessage;
-  self.resultCompositeMessage = nil;
+- (ZMComposite*) buildPartial {
+  ZMComposite* returnMe = resultComposite;
+  self.resultComposite = nil;
   return returnMe;
 }
-- (ZMCompositeMessageBuilder*) mergeFrom:(ZMCompositeMessage*) other {
-  if (other == [ZMCompositeMessage defaultInstance]) {
+- (ZMCompositeBuilder*) mergeFrom:(ZMComposite*) other {
+  if (other == [ZMComposite defaultInstance]) {
     return self;
   }
   if (other.itemsArray.count > 0) {
-    if (resultCompositeMessage.itemsArray == nil) {
-      resultCompositeMessage.itemsArray = [[NSMutableArray alloc] initWithArray:other.itemsArray];
+    if (resultComposite.itemsArray == nil) {
+      resultComposite.itemsArray = [[NSMutableArray alloc] initWithArray:other.itemsArray];
     } else {
-      [resultCompositeMessage.itemsArray addObjectsFromArray:other.itemsArray];
+      [resultComposite.itemsArray addObjectsFromArray:other.itemsArray];
     }
   }
   if (other.hasExpectsReadConfirmation) {
@@ -2397,10 +2397,10 @@ static ZMCompositeMessageItem* defaultZMCompositeMessageItemInstance = nil;
   [self mergeUnknownFields:other.unknownFields];
   return self;
 }
-- (ZMCompositeMessageBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input {
+- (ZMCompositeBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input {
   return [self mergeFromCodedInputStream:input extensionRegistry:[PBExtensionRegistry emptyRegistry]];
 }
-- (ZMCompositeMessageBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+- (ZMCompositeBuilder*) mergeFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
   PBUnknownFieldSetBuilder* unknownFields = [PBUnknownFieldSet builderWithUnknownFields:self.unknownFields];
   while (YES) {
     SInt32 tag = [input readTag];
@@ -2416,7 +2416,7 @@ static ZMCompositeMessageItem* defaultZMCompositeMessageItemInstance = nil;
         break;
       }
       case 10: {
-        ZMCompositeMessageItemBuilder* subBuilder = [ZMCompositeMessageItem builder];
+        ZMCompositeItemBuilder* subBuilder = [ZMCompositeItem builder];
         [input readMessage:subBuilder extensionRegistry:extensionRegistry];
         [self addItems:[subBuilder buildPartial]];
         break;
@@ -2437,57 +2437,57 @@ static ZMCompositeMessageItem* defaultZMCompositeMessageItemInstance = nil;
     }
   }
 }
-- (NSMutableArray<ZMCompositeMessageItem*> *)items {
-  return resultCompositeMessage.itemsArray;
+- (NSMutableArray<ZMCompositeItem*> *)items {
+  return resultComposite.itemsArray;
 }
-- (ZMCompositeMessageItem*)itemsAtIndex:(NSUInteger)index {
-  return [resultCompositeMessage itemsAtIndex:index];
+- (ZMCompositeItem*)itemsAtIndex:(NSUInteger)index {
+  return [resultComposite itemsAtIndex:index];
 }
-- (ZMCompositeMessageBuilder *)addItems:(ZMCompositeMessageItem*)value {
-  if (resultCompositeMessage.itemsArray == nil) {
-    resultCompositeMessage.itemsArray = [[NSMutableArray alloc]init];
+- (ZMCompositeBuilder *)addItems:(ZMCompositeItem*)value {
+  if (resultComposite.itemsArray == nil) {
+    resultComposite.itemsArray = [[NSMutableArray alloc]init];
   }
-  [resultCompositeMessage.itemsArray addObject:value];
+  [resultComposite.itemsArray addObject:value];
   return self;
 }
-- (ZMCompositeMessageBuilder *)setItemsArray:(NSArray<ZMCompositeMessageItem*> *)array {
-  resultCompositeMessage.itemsArray = [[NSMutableArray alloc]initWithArray:array];
+- (ZMCompositeBuilder *)setItemsArray:(NSArray<ZMCompositeItem*> *)array {
+  resultComposite.itemsArray = [[NSMutableArray alloc]initWithArray:array];
   return self;
 }
-- (ZMCompositeMessageBuilder *)clearItems {
-  resultCompositeMessage.itemsArray = nil;
+- (ZMCompositeBuilder *)clearItems {
+  resultComposite.itemsArray = nil;
   return self;
 }
 - (BOOL) hasExpectsReadConfirmation {
-  return resultCompositeMessage.hasExpectsReadConfirmation;
+  return resultComposite.hasExpectsReadConfirmation;
 }
 - (BOOL) expectsReadConfirmation {
-  return resultCompositeMessage.expectsReadConfirmation;
+  return resultComposite.expectsReadConfirmation;
 }
-- (ZMCompositeMessageBuilder*) setExpectsReadConfirmation:(BOOL) value {
-  resultCompositeMessage.hasExpectsReadConfirmation = YES;
-  resultCompositeMessage.expectsReadConfirmation = value;
+- (ZMCompositeBuilder*) setExpectsReadConfirmation:(BOOL) value {
+  resultComposite.hasExpectsReadConfirmation = YES;
+  resultComposite.expectsReadConfirmation = value;
   return self;
 }
-- (ZMCompositeMessageBuilder*) clearExpectsReadConfirmation {
-  resultCompositeMessage.hasExpectsReadConfirmation = NO;
-  resultCompositeMessage.expectsReadConfirmation = NO;
+- (ZMCompositeBuilder*) clearExpectsReadConfirmation {
+  resultComposite.hasExpectsReadConfirmation = NO;
+  resultComposite.expectsReadConfirmation = NO;
   return self;
 }
 - (BOOL) hasLegalHoldStatus {
-  return resultCompositeMessage.hasLegalHoldStatus;
+  return resultComposite.hasLegalHoldStatus;
 }
 - (ZMLegalHoldStatus) legalHoldStatus {
-  return resultCompositeMessage.legalHoldStatus;
+  return resultComposite.legalHoldStatus;
 }
-- (ZMCompositeMessageBuilder*) setLegalHoldStatus:(ZMLegalHoldStatus) value {
-  resultCompositeMessage.hasLegalHoldStatus = YES;
-  resultCompositeMessage.legalHoldStatus = value;
+- (ZMCompositeBuilder*) setLegalHoldStatus:(ZMLegalHoldStatus) value {
+  resultComposite.hasLegalHoldStatus = YES;
+  resultComposite.legalHoldStatus = value;
   return self;
 }
-- (ZMCompositeMessageBuilder*) clearLegalHoldStatus {
-  resultCompositeMessage.hasLegalHoldStatus = NO;
-  resultCompositeMessage.legalHoldStatus = ZMLegalHoldStatusUNKNOWN;
+- (ZMCompositeBuilder*) clearLegalHoldStatus {
+  resultComposite.hasLegalHoldStatus = NO;
+  resultComposite.legalHoldStatus = ZMLegalHoldStatusUNKNOWN;
   return self;
 }
 @end
@@ -7554,7 +7554,7 @@ static ZMMessageDelete* defaultZMMessageDeleteInstance = nil;
 @interface ZMMessageEdit ()
 @property (strong) NSString* replacingMessageId;
 @property (strong) ZMText* text;
-@property (strong) ZMCompositeMessage* compositeMessage;
+@property (strong) ZMComposite* composite;
 @end
 
 @implementation ZMMessageEdit
@@ -7573,18 +7573,18 @@ static ZMMessageDelete* defaultZMMessageDeleteInstance = nil;
   hasText_ = !!_value_;
 }
 @synthesize text;
-- (BOOL) hasCompositeMessage {
-  return !!hasCompositeMessage_;
+- (BOOL) hasComposite {
+  return !!hasComposite_;
 }
-- (void) setHasCompositeMessage:(BOOL) _value_ {
-  hasCompositeMessage_ = !!_value_;
+- (void) setHasComposite:(BOOL) _value_ {
+  hasComposite_ = !!_value_;
 }
-@synthesize compositeMessage;
+@synthesize composite;
 - (instancetype) init {
   if ((self = [super init])) {
     self.replacingMessageId = @"";
     self.text = [ZMText defaultInstance];
-    self.compositeMessage = [ZMCompositeMessage defaultInstance];
+    self.composite = [ZMComposite defaultInstance];
   }
   return self;
 }
@@ -7609,8 +7609,8 @@ static ZMMessageEdit* defaultZMMessageEditInstance = nil;
       return NO;
     }
   }
-  if (self.hasCompositeMessage) {
-    if (!self.compositeMessage.isInitialized) {
+  if (self.hasComposite) {
+    if (!self.composite.isInitialized) {
       return NO;
     }
   }
@@ -7623,8 +7623,8 @@ static ZMMessageEdit* defaultZMMessageEditInstance = nil;
   if (self.hasText) {
     [output writeMessage:2 value:self.text];
   }
-  if (self.hasCompositeMessage) {
-    [output writeMessage:3 value:self.compositeMessage];
+  if (self.hasComposite) {
+    [output writeMessage:3 value:self.composite];
   }
   [self.unknownFields writeToCodedOutputStream:output];
 }
@@ -7641,8 +7641,8 @@ static ZMMessageEdit* defaultZMMessageEditInstance = nil;
   if (self.hasText) {
     size_ += computeMessageSize(2, self.text);
   }
-  if (self.hasCompositeMessage) {
-    size_ += computeMessageSize(3, self.compositeMessage);
+  if (self.hasComposite) {
+    size_ += computeMessageSize(3, self.composite);
   }
   size_ += self.unknownFields.serializedSize;
   memoizedSerializedSize = size_;
@@ -7688,9 +7688,9 @@ static ZMMessageEdit* defaultZMMessageEditInstance = nil;
                          withIndent:[NSString stringWithFormat:@"%@  ", indent]];
     [output appendFormat:@"%@}\n", indent];
   }
-  if (self.hasCompositeMessage) {
-    [output appendFormat:@"%@%@ {\n", indent, @"compositeMessage"];
-    [self.compositeMessage writeDescriptionTo:output
+  if (self.hasComposite) {
+    [output appendFormat:@"%@%@ {\n", indent, @"composite"];
+    [self.composite writeDescriptionTo:output
                          withIndent:[NSString stringWithFormat:@"%@  ", indent]];
     [output appendFormat:@"%@}\n", indent];
   }
@@ -7705,10 +7705,10 @@ static ZMMessageEdit* defaultZMMessageEditInstance = nil;
    [self.text storeInDictionary:messageDictionary];
    [dictionary setObject:[NSDictionary dictionaryWithDictionary:messageDictionary] forKey:@"text"];
   }
-  if (self.hasCompositeMessage) {
+  if (self.hasComposite) {
    NSMutableDictionary *messageDictionary = [NSMutableDictionary dictionary]; 
-   [self.compositeMessage storeInDictionary:messageDictionary];
-   [dictionary setObject:[NSDictionary dictionaryWithDictionary:messageDictionary] forKey:@"compositeMessage"];
+   [self.composite storeInDictionary:messageDictionary];
+   [dictionary setObject:[NSDictionary dictionaryWithDictionary:messageDictionary] forKey:@"composite"];
   }
   [self.unknownFields storeInDictionary:dictionary];
 }
@@ -7725,8 +7725,8 @@ static ZMMessageEdit* defaultZMMessageEditInstance = nil;
       (!self.hasReplacingMessageId || [self.replacingMessageId isEqual:otherMessage.replacingMessageId]) &&
       self.hasText == otherMessage.hasText &&
       (!self.hasText || [self.text isEqual:otherMessage.text]) &&
-      self.hasCompositeMessage == otherMessage.hasCompositeMessage &&
-      (!self.hasCompositeMessage || [self.compositeMessage isEqual:otherMessage.compositeMessage]) &&
+      self.hasComposite == otherMessage.hasComposite &&
+      (!self.hasComposite || [self.composite isEqual:otherMessage.composite]) &&
       (self.unknownFields == otherMessage.unknownFields || (self.unknownFields != nil && [self.unknownFields isEqual:otherMessage.unknownFields]));
 }
 - (NSUInteger) hash {
@@ -7737,8 +7737,8 @@ static ZMMessageEdit* defaultZMMessageEditInstance = nil;
   if (self.hasText) {
     hashCode = hashCode * 31 + [self.text hash];
   }
-  if (self.hasCompositeMessage) {
-    hashCode = hashCode * 31 + [self.compositeMessage hash];
+  if (self.hasComposite) {
+    hashCode = hashCode * 31 + [self.composite hash];
   }
   hashCode = hashCode * 31 + [self.unknownFields hash];
   return hashCode;
@@ -7789,8 +7789,8 @@ static ZMMessageEdit* defaultZMMessageEditInstance = nil;
   if (other.hasText) {
     [self mergeText:other.text];
   }
-  if (other.hasCompositeMessage) {
-    [self mergeCompositeMessage:other.compositeMessage];
+  if (other.hasComposite) {
+    [self mergeComposite:other.composite];
   }
   [self mergeUnknownFields:other.unknownFields];
   return self;
@@ -7827,12 +7827,12 @@ static ZMMessageEdit* defaultZMMessageEditInstance = nil;
         break;
       }
       case 26: {
-        ZMCompositeMessageBuilder* subBuilder = [ZMCompositeMessage builder];
-        if (self.hasCompositeMessage) {
-          [subBuilder mergeFrom:self.compositeMessage];
+        ZMCompositeBuilder* subBuilder = [ZMComposite builder];
+        if (self.hasComposite) {
+          [subBuilder mergeFrom:self.composite];
         }
         [input readMessage:subBuilder extensionRegistry:extensionRegistry];
-        [self setCompositeMessage:[subBuilder buildPartial]];
+        [self setComposite:[subBuilder buildPartial]];
         break;
       }
     }
@@ -7884,34 +7884,34 @@ static ZMMessageEdit* defaultZMMessageEditInstance = nil;
   resultMessageEdit.text = [ZMText defaultInstance];
   return self;
 }
-- (BOOL) hasCompositeMessage {
-  return resultMessageEdit.hasCompositeMessage;
+- (BOOL) hasComposite {
+  return resultMessageEdit.hasComposite;
 }
-- (ZMCompositeMessage*) compositeMessage {
-  return resultMessageEdit.compositeMessage;
+- (ZMComposite*) composite {
+  return resultMessageEdit.composite;
 }
-- (ZMMessageEditBuilder*) setCompositeMessage:(ZMCompositeMessage*) value {
-  resultMessageEdit.hasCompositeMessage = YES;
-  resultMessageEdit.compositeMessage = value;
+- (ZMMessageEditBuilder*) setComposite:(ZMComposite*) value {
+  resultMessageEdit.hasComposite = YES;
+  resultMessageEdit.composite = value;
   return self;
 }
-- (ZMMessageEditBuilder*) setCompositeMessageBuilder:(ZMCompositeMessageBuilder*) builderForValue {
-  return [self setCompositeMessage:[builderForValue build]];
+- (ZMMessageEditBuilder*) setCompositeBuilder:(ZMCompositeBuilder*) builderForValue {
+  return [self setComposite:[builderForValue build]];
 }
-- (ZMMessageEditBuilder*) mergeCompositeMessage:(ZMCompositeMessage*) value {
-  if (resultMessageEdit.hasCompositeMessage &&
-      resultMessageEdit.compositeMessage != [ZMCompositeMessage defaultInstance]) {
-    resultMessageEdit.compositeMessage =
-      [[[ZMCompositeMessage builderWithPrototype:resultMessageEdit.compositeMessage] mergeFrom:value] buildPartial];
+- (ZMMessageEditBuilder*) mergeComposite:(ZMComposite*) value {
+  if (resultMessageEdit.hasComposite &&
+      resultMessageEdit.composite != [ZMComposite defaultInstance]) {
+    resultMessageEdit.composite =
+      [[[ZMComposite builderWithPrototype:resultMessageEdit.composite] mergeFrom:value] buildPartial];
   } else {
-    resultMessageEdit.compositeMessage = value;
+    resultMessageEdit.composite = value;
   }
-  resultMessageEdit.hasCompositeMessage = YES;
+  resultMessageEdit.hasComposite = YES;
   return self;
 }
-- (ZMMessageEditBuilder*) clearCompositeMessage {
-  resultMessageEdit.hasCompositeMessage = NO;
-  resultMessageEdit.compositeMessage = [ZMCompositeMessage defaultInstance];
+- (ZMMessageEditBuilder*) clearComposite {
+  resultMessageEdit.hasComposite = NO;
+  resultMessageEdit.composite = [ZMComposite defaultInstance];
   return self;
 }
 @end
