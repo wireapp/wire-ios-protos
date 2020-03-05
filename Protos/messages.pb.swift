@@ -296,12 +296,12 @@ public struct GenericMessage {
     set {_uniqueStorage()._content = .availability(newValue)}
   }
 
-  public var compositeMessage: CompositeMessage {
+  public var composite: Composite {
     get {
-      if case .compositeMessage(let v)? = _storage._content {return v}
-      return CompositeMessage()
+      if case .composite(let v)? = _storage._content {return v}
+      return Composite()
     }
-    set {_uniqueStorage()._content = .compositeMessage(newValue)}
+    set {_uniqueStorage()._content = .composite(newValue)}
   }
 
   public var buttonAction: ButtonAction {
@@ -341,7 +341,7 @@ public struct GenericMessage {
     case reaction(Reaction)
     case ephemeral(Ephemeral)
     case availability(Availability)
-    case compositeMessage(CompositeMessage)
+    case composite(Composite)
     case buttonAction(ButtonAction)
     case buttonActionConfirmation(ButtonActionConfirmation)
 
@@ -365,7 +365,7 @@ public struct GenericMessage {
       case (.reaction(let l), .reaction(let r)): return l == r
       case (.ephemeral(let l), .ephemeral(let r)): return l == r
       case (.availability(let l), .availability(let r)): return l == r
-      case (.compositeMessage(let l), .compositeMessage(let r)): return l == r
+      case (.composite(let l), .composite(let r)): return l == r
       case (.buttonAction(let l), .buttonAction(let r)): return l == r
       case (.buttonActionConfirmation(let l), .buttonActionConfirmation(let r)): return l == r
       default: return false
@@ -379,12 +379,12 @@ public struct GenericMessage {
   fileprivate var _storage = _StorageClass.defaultInstance
 }
 
-public struct CompositeMessage {
+public struct Composite {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
 
-  public var items: [CompositeMessage.Item] = []
+  public var items: [Composite.Item] = []
 
   public var expectsReadConfirmation: Bool {
     get {return _expectsReadConfirmation ?? false}
@@ -439,7 +439,7 @@ public struct CompositeMessage {
       case button(Button)
 
     #if !swift(>=4.1)
-      public static func ==(lhs: CompositeMessage.Item.OneOf_Content, rhs: CompositeMessage.Item.OneOf_Content) -> Bool {
+      public static func ==(lhs: Composite.Item.OneOf_Content, rhs: Composite.Item.OneOf_Content) -> Bool {
         switch (lhs, rhs) {
         case (.text(let l), .text(let r)): return l == r
         case (.button(let l), .button(let r)): return l == r
@@ -1204,12 +1204,12 @@ public struct MessageEdit {
   }
 
   /// Reply can also be edited, but the edit will only affect the Text part
-  public var compositeMessage: CompositeMessage {
+  public var composite: Composite {
     get {
-      if case .compositeMessage(let v)? = _storage._content {return v}
-      return CompositeMessage()
+      if case .composite(let v)? = _storage._content {return v}
+      return Composite()
     }
-    set {_uniqueStorage()._content = .compositeMessage(newValue)}
+    set {_uniqueStorage()._content = .composite(newValue)}
   }
 
   public var unknownFields = SwiftProtobuf.UnknownStorage()
@@ -1217,13 +1217,13 @@ public struct MessageEdit {
   public enum OneOf_Content: Equatable {
     case text(Text)
     /// Reply can also be edited, but the edit will only affect the Text part
-    case compositeMessage(CompositeMessage)
+    case composite(Composite)
 
   #if !swift(>=4.1)
     public static func ==(lhs: MessageEdit.OneOf_Content, rhs: MessageEdit.OneOf_Content) -> Bool {
       switch (lhs, rhs) {
       case (.text(let l), .text(let r)): return l == r
-      case (.compositeMessage(let l), .compositeMessage(let r)): return l == r
+      case (.composite(let l), .composite(let r)): return l == r
       default: return false
       }
     }
@@ -2152,7 +2152,7 @@ extension GenericMessage: SwiftProtobuf.Message, SwiftProtobuf._MessageImplement
     17: .same(proto: "reaction"),
     18: .same(proto: "ephemeral"),
     19: .same(proto: "availability"),
-    20: .same(proto: "compositeMessage"),
+    20: .same(proto: "composite"),
     21: .same(proto: "buttonAction"),
     22: .same(proto: "buttonActionConfirmation"),
   ]
@@ -2198,7 +2198,7 @@ extension GenericMessage: SwiftProtobuf.Message, SwiftProtobuf._MessageImplement
       case .reaction(let v)?: if !v.isInitialized {return false}
       case .ephemeral(let v)?: if !v.isInitialized {return false}
       case .availability(let v)?: if !v.isInitialized {return false}
-      case .compositeMessage(let v)?: if !v.isInitialized {return false}
+      case .composite(let v)?: if !v.isInitialized {return false}
       case .buttonAction(let v)?: if !v.isInitialized {return false}
       case .buttonActionConfirmation(let v)?: if !v.isInitialized {return false}
       default: break
@@ -2347,13 +2347,13 @@ extension GenericMessage: SwiftProtobuf.Message, SwiftProtobuf._MessageImplement
           try decoder.decodeSingularMessageField(value: &v)
           if let v = v {_storage._content = .availability(v)}
         case 20:
-          var v: CompositeMessage?
+          var v: Composite?
           if let current = _storage._content {
             try decoder.handleConflictingOneOf()
-            if case .compositeMessage(let m) = current {v = m}
+            if case .composite(let m) = current {v = m}
           }
           try decoder.decodeSingularMessageField(value: &v)
-          if let v = v {_storage._content = .compositeMessage(v)}
+          if let v = v {_storage._content = .composite(v)}
         case 21:
           var v: ButtonAction?
           if let current = _storage._content {
@@ -2416,7 +2416,7 @@ extension GenericMessage: SwiftProtobuf.Message, SwiftProtobuf._MessageImplement
         try visitor.visitSingularMessageField(value: v, fieldNumber: 18)
       case .availability(let v)?:
         try visitor.visitSingularMessageField(value: v, fieldNumber: 19)
-      case .compositeMessage(let v)?:
+      case .composite(let v)?:
         try visitor.visitSingularMessageField(value: v, fieldNumber: 20)
       case .buttonAction(let v)?:
         try visitor.visitSingularMessageField(value: v, fieldNumber: 21)
@@ -2444,8 +2444,8 @@ extension GenericMessage: SwiftProtobuf.Message, SwiftProtobuf._MessageImplement
   }
 }
 
-extension CompositeMessage: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  public static let protoMessageName: String = "CompositeMessage"
+extension Composite: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = "Composite"
   public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .same(proto: "items"),
     2: .standard(proto: "expects_read_confirmation"),
@@ -2481,7 +2481,7 @@ extension CompositeMessage: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
     try unknownFields.traverse(visitor: &visitor)
   }
 
-  public static func ==(lhs: CompositeMessage, rhs: CompositeMessage) -> Bool {
+  public static func ==(lhs: Composite, rhs: Composite) -> Bool {
     if lhs.items != rhs.items {return false}
     if lhs._expectsReadConfirmation != rhs._expectsReadConfirmation {return false}
     if lhs._legalHoldStatus != rhs._legalHoldStatus {return false}
@@ -2490,15 +2490,15 @@ extension CompositeMessage: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
   }
 }
 
-extension CompositeMessage.Item: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  public static let protoMessageName: String = CompositeMessage.protoMessageName + ".Item"
+extension Composite.Item: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = Composite.protoMessageName + ".Item"
   public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .same(proto: "text"),
     2: .same(proto: "button"),
   ]
 
   fileprivate class _StorageClass {
-    var _content: CompositeMessage.Item.OneOf_Content?
+    var _content: Composite.Item.OneOf_Content?
 
     static let defaultInstance = _StorageClass()
 
@@ -2567,7 +2567,7 @@ extension CompositeMessage.Item: SwiftProtobuf.Message, SwiftProtobuf._MessageIm
     try unknownFields.traverse(visitor: &visitor)
   }
 
-  public static func ==(lhs: CompositeMessage.Item, rhs: CompositeMessage.Item) -> Bool {
+  public static func ==(lhs: Composite.Item, rhs: Composite.Item) -> Bool {
     if lhs._storage !== rhs._storage {
       let storagesAreEqual: Bool = withExtendedLifetime((lhs._storage, rhs._storage)) { (_args: (_StorageClass, _StorageClass)) in
         let _storage = _args.0
@@ -3523,7 +3523,7 @@ extension MessageEdit: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementati
   public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .standard(proto: "replacing_message_id"),
     2: .same(proto: "text"),
-    3: .same(proto: "compositeMessage"),
+    3: .same(proto: "composite"),
   ]
 
   fileprivate class _StorageClass {
@@ -3552,7 +3552,7 @@ extension MessageEdit: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementati
       if _storage._replacingMessageID == nil {return false}
       switch _storage._content {
       case .text(let v)?: if !v.isInitialized {return false}
-      case .compositeMessage(let v)?: if !v.isInitialized {return false}
+      case .composite(let v)?: if !v.isInitialized {return false}
       default: break
       }
       return true
@@ -3574,13 +3574,13 @@ extension MessageEdit: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementati
           try decoder.decodeSingularMessageField(value: &v)
           if let v = v {_storage._content = .text(v)}
         case 3:
-          var v: CompositeMessage?
+          var v: Composite?
           if let current = _storage._content {
             try decoder.handleConflictingOneOf()
-            if case .compositeMessage(let m) = current {v = m}
+            if case .composite(let m) = current {v = m}
           }
           try decoder.decodeSingularMessageField(value: &v)
-          if let v = v {_storage._content = .compositeMessage(v)}
+          if let v = v {_storage._content = .composite(v)}
         default: break
         }
       }
@@ -3595,7 +3595,7 @@ extension MessageEdit: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementati
       switch _storage._content {
       case .text(let v)?:
         try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
-      case .compositeMessage(let v)?:
+      case .composite(let v)?:
         try visitor.visitSingularMessageField(value: v, fieldNumber: 3)
       case nil: break
       }
