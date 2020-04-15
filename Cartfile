@@ -1,2 +1,2 @@
-github "wireapp/swift-protobuf" ~> 1.7
+github "wireapp/swift-protobuf" ~> 1.7.1
 github "wireapp/protobuf-objc" ~> 1.9
