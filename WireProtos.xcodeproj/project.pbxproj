@@ -17,8 +17,6 @@
 		5EAC172F21A30C390014E671 /* SwiftProtobuf.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 5E13807921A307CA004A646C /* SwiftProtobuf.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		F1FDF2E021B043F400E037A1 /* WireProtos.h in Headers */ = {isa = PBXBuildFile; fileRef = F1FDF2DF21B043F400E037A1 /* WireProtos.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F1FDF2E221B0443600E037A1 /* ProtocolBuffers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1FDF2E121B0443600E037A1 /* ProtocolBuffers.framework */; };
-		F1FDF2E721B04C1200E037A1 /* Otr.pb.m in Sources */ = {isa = PBXBuildFile; fileRef = F1FDF2E321B04C1100E037A1 /* Otr.pb.m */; };
-		F1FDF2E821B04C1200E037A1 /* Otr.pb.h in Headers */ = {isa = PBXBuildFile; fileRef = F1FDF2E421B04C1100E037A1 /* Otr.pb.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F1FDF2EB21B0547200E037A1 /* ProtocolBuffers.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = F1FDF2E121B0443600E037A1 /* ProtocolBuffers.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
@@ -75,8 +73,6 @@
 		F184BE851E65CADA0020EBB7 /* Cartfile.resolved */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cartfile.resolved; sourceTree = "<group>"; };
 		F1FDF2DF21B043F400E037A1 /* WireProtos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WireProtos.h; sourceTree = "<group>"; };
 		F1FDF2E121B0443600E037A1 /* ProtocolBuffers.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ProtocolBuffers.framework; path = Carthage/Build/iOS/ProtocolBuffers.framework; sourceTree = "<group>"; };
-		F1FDF2E321B04C1100E037A1 /* Otr.pb.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Otr.pb.m; sourceTree = "<group>"; };
-		F1FDF2E421B04C1100E037A1 /* Otr.pb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Otr.pb.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,8 +122,6 @@
 		090838001B872DBF00629095 /* Protos */ = {
 			isa = PBXGroup;
 			children = (
-				F1FDF2E421B04C1100E037A1 /* Otr.pb.h */,
-				F1FDF2E321B04C1100E037A1 /* Otr.pb.m */,
 				090838241B87347900629095 /* messages.proto */,
 				099223A61BED06E400668091 /* otr.proto */,
 				5E13807B21A30A9D004A646C /* messages.pb.swift */,
@@ -215,7 +209,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				F1FDF2E021B043F400E037A1 /* WireProtos.h in Headers */,
-				F1FDF2E821B04C1200E037A1 /* Otr.pb.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -323,7 +316,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				5E13807E21A30A9D004A646C /* otr.pb.swift in Sources */,
-				F1FDF2E721B04C1200E037A1 /* Otr.pb.m in Sources */,
 				5E13807D21A30A9D004A646C /* messages.pb.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
