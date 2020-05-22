@@ -16,8 +16,6 @@
 		5EAC172E21A30C390014E671 /* WireProtos.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 090837FE1B872DBF00629095 /* WireProtos.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		5EAC172F21A30C390014E671 /* SwiftProtobuf.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 5E13807921A307CA004A646C /* SwiftProtobuf.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		F1FDF2E021B043F400E037A1 /* WireProtos.h in Headers */ = {isa = PBXBuildFile; fileRef = F1FDF2DF21B043F400E037A1 /* WireProtos.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		F1FDF2E221B0443600E037A1 /* ProtocolBuffers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1FDF2E121B0443600E037A1 /* ProtocolBuffers.framework */; };
-		F1FDF2EB21B0547200E037A1 /* ProtocolBuffers.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = F1FDF2E121B0443600E037A1 /* ProtocolBuffers.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,7 +35,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				F1FDF2EB21B0547200E037A1 /* ProtocolBuffers.framework in CopyFiles */,
 				5EAC172E21A30C390014E671 /* WireProtos.framework in CopyFiles */,
 				5EAC172F21A30C390014E671 /* SwiftProtobuf.framework in CopyFiles */,
 			);
@@ -72,7 +69,6 @@
 		A9EF6A7323D76AC8002904B4 /* ios.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = ios.xcconfig; sourceTree = "<group>"; };
 		F184BE851E65CADA0020EBB7 /* Cartfile.resolved */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cartfile.resolved; sourceTree = "<group>"; };
 		F1FDF2DF21B043F400E037A1 /* WireProtos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WireProtos.h; sourceTree = "<group>"; };
-		F1FDF2E121B0443600E037A1 /* ProtocolBuffers.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ProtocolBuffers.framework; path = Carthage/Build/iOS/ProtocolBuffers.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,7 +76,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F1FDF2E221B0443600E037A1 /* ProtocolBuffers.framework in Frameworks */,
 				5E13807A21A307CA004A646C /* SwiftProtobuf.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -195,7 +190,6 @@
 		67FFDFDA66F3EEA3F9461130 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				F1FDF2E121B0443600E037A1 /* ProtocolBuffers.framework */,
 				5E13807921A307CA004A646C /* SwiftProtobuf.framework */,
 			);
 			name = Frameworks;
