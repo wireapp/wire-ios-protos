@@ -1,1 +1,1 @@
-github "wireapp/swift-protobuf" "1.13.0_xcode12.2"
+github "wireapp/swift-protobuf" ~> 1.13.0 
