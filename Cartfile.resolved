@@ -1,2 +1,2 @@
-github "wireapp/generic-message-proto" "v1.35.0"
-github "wireapp/swift-protobuf" "1.15.0_xcframework"
+github "wireapp/generic-message-proto" "v1.25.0"
+github "wireapp/swift-protobuf" "1.15.0_xcode12.4"
