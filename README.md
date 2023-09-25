@@ -16,6 +16,8 @@ This framework is part of Wire iOS SyncEngine. Additional documentation is avail
 
 The wire-ios-protos framework contains precompiled protocol buffer definitions for Swift.
 
+⚠️ **This repository is now part of [wire-ios-mono](https://github.com/wireapp/wire-ios-mono)**
+
 ## How to build
 
 This framework is using Carthage to manage its dependencies. To pull the dependencies binaries, run `carthage bootstrap --platform ios --use-xcframeworks --no-use-binaries`.
